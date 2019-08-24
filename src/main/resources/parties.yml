@@ -1,0 +1,11 @@
+# -- EXAMPLE SAVED PARTY -- #
+#party: 'partyname'
+#  exp-share: true
+#  join-status: 'open'
+#  party-leader: 'UUID'
+#  party-assistants:
+#      - 'UUID'
+#  members:
+#      - 'UUID' #leader
+#      - 'UUID' #assistant
+#      - 'UUID' #member

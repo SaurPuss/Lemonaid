@@ -1,0 +1,162 @@
+name: Lemonaid
+version: ${project.version}
+main: me.saurpuss.lemonaid.Lemonaid
+authors: [SaurPuss]
+description: Lots of basic commands put together in one plugin
+website: https://voxmc.com
+
+commands:
+  # Plugin specific commands
+  lemonaid:
+    description: Reload the Lemonaid plugin
+    usage: |
+      /<command> info - Plugin information
+      /<command> reload - Reload the plugin configs
+      /<command> ?|help - Plugin help file
+    default: OP
+    permission: lemonaid.admin.reload
+    permission-message: You do not have permission to do this
+
+  # Chat commands
+  msg:
+    description: Whisper to another player
+    usage: </command> [target] message
+    default: true
+    aliases: [tell, whisper]
+    permission: lemonaid.chat.private
+    permission-message: You do not have permission to do this
+  reply:
+    description: Reply to a whispered message
+    usage: /<command> message
+    default: true
+    aliases: [r]
+    permission: lemonaid.chat.private
+    permission-message: You do not have permission to do this
+  localchat:
+    description: Talk to the players within earshot
+    usage: /<command> message
+    default: true
+    permission: lemonaid.chat.local
+    permission-message: You do not have permission to do this
+
+  # Party commands
+  party:
+    description: All party all the time!
+    usage: |
+      /<command> - Display party help, or toggle to party chat
+      /<command> new [party_name] - Create a party, be careful to avoid spaces
+      /<command> invite [target] - Invite a player to your party
+      /<command> accept - Accept an invitation to a party
+      /<command> join [party_name] - Join an (open invite) party
+#      /<command> accept [player_name] - Accept an request to join your party
+
+      /<command> set - Display your party settings
+      /<command> set [setting] [on|off] - Toggle a party setting
+      /<command> set [open|invite|closed] - Open parties can be joined by anyone,
+      invite parties can be joined by invite from members, closed parties can only
+      be joined when the leader or an assistant invites.
+
+      /<command> assistant [target] - Toggle party assistant status, when true you
+      are giving this player permission to modify your party settings
+    permission: lemonaid.party.*
+    permission-message: You do not have permission to do this
+
+#  partychat:
+#    description: Talk to online members of your party
+#    usage: /<command> message
+#    default: true
+#    aliases: [pc]
+#    permission: lemonaid.chat.party
+#    permission-message: You do not have permission to do this
+
+  # Teleportation commands
+  tpa:
+    description: Send a teleportation request to another player
+    usage: /<command> [target]
+    default: true
+    permission: lemonaid.teleport.tpa
+    permission-message: You do not have permission to do this
+  tpahere:
+    description: Request another player teleport to your location
+    usage: /<command> [target]
+    permission: lemonaid.teleport.tpahere
+    permission-message: You do not have permission to do this
+  tpaccept:
+    description: Accept a teleportation request from another player
+    usage: /<command>
+    permission: lemonaid.teleport.tpaccept
+    permission-message: You do not have permission to do this
+  tpdeny:
+    description: Deny a teleportation request form another player
+    usage: /<command>
+    permission: lemonaid.teleport.tpaccept
+    permission-message: You do not have permission to do this
+
+  # OP level commands
+  fly:
+    description: Toggle fly mode
+    usage: /<command>
+    default: OP
+    permission: lemonaid.admin.fly
+    permission-message: You do not have permission to do this
+  broadcast:
+    description: Broadcast a message across the server
+    usage: /<command> message
+    default: OP
+    permission: lemonaid.admin.broadcast
+    permission-message: You do not have permission to do this
+    aliases: [bc]
+
+
+
+permissions:
+  lemonaid.admin.*:
+    description: Admin level permissions for Lemonaid
+    default: OP
+    children:
+      lemonaid.admin.fly: true
+      lemonaid.admin.broadcast: true
+      lemonaid.admin.reload: true
+  lemonaid.chat.*:
+    description: |
+      Permissions for different chats. Toggle if you prefer to
+      set them differently for groups or players.
+    default: true
+    children:
+      lemonaid.chat.local: true
+      lemonaid.chat.private: true
+      lemonaid.chat.colors: true
+#      lemonaid.chat.party: true
+  lemonaid.teleport.*:
+    description: Permissions for teleportation
+    default: true
+    children:
+      lemonaid.teleport.tpa: true
+      lemonaid.teleport.tpahere: true
+      lemonaid.teleport.tpaccept: true
+      lemonaid.teleport.tpdeny: true
+  lemonaid.party.*:
+    description: Permission to form, join, and edit parties
+    default: true
+    children:
+      lemonaid.party.create: true
+      lemonaid.party.join: true
+      lemonaid.party.leave: true
+      lemonaid.party.leader: false
+      lemonaid.party.temporary: false
+      lemonaid.party.assistant: false
+  lemonaid.party.leader.*:
+    description: |
+      Permission added to a party creator setting their edit
+      and remove permissions to true.
+    default: false
+    children:
+      lemonaid.party.leader.remove: true
+      lemonaid.party.leader.edit: true
+      lemonaid.party.leader.share: true
+  lemonaid.party.assistant:
+    description: Give permission to edit the party as an assistant.
+    default: false
+  lemonaid.party.temporary:
+    description: Create temporary parties.
+    default: false

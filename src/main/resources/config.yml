@@ -1,0 +1,32 @@
+
+
+
+
+
+
+
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Player join messages -
+# You can use '&' for color codes
+# Use - to indicate a new line
+# The announcement is a list of
+# options, one will be used at
+# random.
+# Use %target% to stub in the
+# joining player's display name.
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+first-join-announcement:
+  - Welcome %target% to the server!
+  - Never gonna give %target up, never gonna let %target% down
+first-join-message:
+  - Hello! Welcome to the Server!
+  - Please read the /rules and have a great time!
+message-of-the-day:
+  - Welcome back %name%
+  - Enjoy your stay!
+
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Social Settings -
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+local-chat-radius: 80
+
