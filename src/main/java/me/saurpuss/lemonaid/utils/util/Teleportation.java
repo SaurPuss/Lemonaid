@@ -27,6 +27,13 @@ public class Teleportation {
     public static void remove(Player player) {
         pendingTPA.remove(player);
     }
+    public static void removeTarget(Player target) {
+        for (HashMap.Entry<Player, Player> entry : pendingTPA.entrySet()) {
+            if (entry.getValue() == target) {
+                pendingTPA.remove(entry.getKey());
+            }
+        }
+    }
 
     // Check if player has pending Tp requests
     public static boolean isPendingPlayer(Player player) {
@@ -47,7 +54,6 @@ public class Teleportation {
                 list.add(entry.getKey().toString());
             }
         }
-
         return list;
     }
 
@@ -57,7 +63,6 @@ public class Teleportation {
                 return entry.getKey();
             }
         }
-
         return null;
     }
 
@@ -79,24 +84,11 @@ public class Teleportation {
                 focus.sendMessage("Incoming teleportation!");
                 source.teleport(destination);
             } else {
-                source.sendMessage(Utils.chat("Teleportation request canceled."));
+                source.sendMessage(Utils.chat("Teleportation request canceled!"));
             }
-
-            // TODO add remove here?
-
+            // Make sure the request is removed from the map
+            pendingTPA.remove(source);
         }, 100l);
-    }
-
-
-    public static void updateRequests(Player source, Player focus, boolean accept) {
-        if (pendingTPA.containsKey(source)) {
-            if (accept) {
-                teleportationEvent(source, focus);
-            }
-            remove(source);
-        } else {
-            focus.sendMessage(Utils.chat("No pending teleportation requests."));
-        }
     }
 
     public static boolean isConsole(CommandSender sender) {

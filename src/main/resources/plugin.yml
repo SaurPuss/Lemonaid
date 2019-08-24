@@ -87,8 +87,9 @@ commands:
     permission: lemonaid.teleport.tpaccept
     permission-message: You do not have permission to do this
   tpdeny:
-    description: Deny a teleportation request form another player
+    description: Deny or cancel a pending teleportation request
     usage: /<command>
+    aliases: [tpacancel]
     permission: lemonaid.teleport.tpaccept
     permission-message: You do not have permission to do this
 

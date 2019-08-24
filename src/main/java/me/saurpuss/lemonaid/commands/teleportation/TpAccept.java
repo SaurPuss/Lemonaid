@@ -39,7 +39,9 @@ public class TpAccept implements CommandExecutor {
 
                     if (requests.size() == 1) {
                         player = Teleportation.getSource(receiver);
-                    } else if (requests.size() > 1) {
+                    }
+                    // If there are multiple requests pending
+                    else if (requests.size() > 1) {
                         if (args.length < 1) {
                             StringBuilder list = new StringBuilder();
                             for (String p : requests) {
@@ -49,6 +51,8 @@ public class TpAccept implements CommandExecutor {
                                     + list.toString()) + "\n Type /tpaccept <name> to accept.");
                             return true;
                         } else {
+                            // Just grab the first one, ignore the rest
+                            // TODO allow multiple accept tp events with a loop and multi args
                             player = Bukkit.getPlayer(args[0]);
 
                             // In case of a typo or offline player
