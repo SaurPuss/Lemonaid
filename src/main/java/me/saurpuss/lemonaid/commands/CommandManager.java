@@ -1,4 +1,4 @@
 package me.saurpuss.lemonaid.commands;
 
-public class CommandManger {
+public class CommandManager {
 }

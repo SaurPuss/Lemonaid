@@ -15,7 +15,6 @@ import java.util.HashSet;
  */
 public class Teleportation {
 
-    // TODO move to utils package
     // Map all pending Tpa and TpaHere requests
     private static HashMap<Player, Player> pendingTPA = new HashMap<>();
 
@@ -33,7 +32,6 @@ public class Teleportation {
     public static boolean isPendingPlayer(Player player) {
         return pendingTPA.containsKey(player);
     }
-
 
     // Check if target has pending Tp requests
     public static boolean isPendingTarget(Player target) {

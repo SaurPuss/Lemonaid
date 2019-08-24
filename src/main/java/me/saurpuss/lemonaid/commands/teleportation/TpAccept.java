@@ -4,7 +4,6 @@ import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.util.Teleportation;
 import me.saurpuss.lemonaid.utils.util.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,72 +14,61 @@ import java.util.HashSet;
 public class TpAccept implements CommandExecutor {
 
     private Lemonaid plugin = Lemonaid.getInstance();
-    private int timer = 0;
-    private int scheduler = 1;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
-            Player target = (Player) sender;
-            HashSet<String> requests = Teleportation.pendingRequests(target);
-            Player player;
+            // Player is accepting of request
+            Player receiver = (Player) sender;
+            Player player = null; // Key
+            Player target; // Value
+            HashSet<String> requests;
 
-            // Check if there are mutltiple teleportation requests
-            if (requests.size() == 0) {
-                // No requests
-                target.sendMessage(Utils.chat("You have no pending teleportation requests."));
+            // Check tpa or tpahere requests
+            if ((!Teleportation.isPendingTarget(receiver)) && (!Teleportation.isPendingPlayer(receiver))) {
+                receiver.sendMessage(Utils.chat("You have no pending teleportation requests."));
                 return true;
-            } else if (requests.size() > 1) {
-                StringBuilder list = new StringBuilder();
-
-                for (String p : requests) {
-                    list.append("- " + p + "\n");
-                }
-
-                if (args.length != 1) {
-                    target.sendMessage(Utils.chat("You have pending teleportation requests from: "
-                            + list.toString()) + "\n Type /tpaccept <name> to accept.");
-                    return true;
-                } else {
-                    player = Bukkit.getPlayer(args[0]);
-
-                    if (player == null) {
-                        target.sendMessage(Utils.chat(args[0] + " is not a valid player."));
-                        return true;
-                    } else if (Teleportation.isPendingPlayer(player)) {
-
-                    } else {
-
-                    }
-                }
-            } else {
-                player = Teleportation.getSource(target);
             }
+            // Set the two parties to player and target depending on which is the destination
+            else {
+                // receiver is the destination
+                if (Teleportation.isPendingTarget(receiver)) {
+                    // build the list of requests
+                    requests = Teleportation.pendingRequests(receiver);
+                    target = receiver;
 
-            Location origin = player.getLocation();
+                    if (requests.size() == 1) {
+                        player = Teleportation.getSource(receiver);
+                    } else if (requests.size() > 1) {
+                        if (args.length < 1) {
+                            StringBuilder list = new StringBuilder();
+                            for (String p : requests) {
+                                list.append("- " + p + "\n");
+                            }
+                            receiver.sendMessage(Utils.chat("You have pending teleportation requests from: "
+                                    + list.toString()) + "\n Type /tpaccept <name> to accept.");
+                            return true;
+                        } else {
+                            player = Bukkit.getPlayer(args[0]);
 
-
-            // TODO replace this below
-            player.sendMessage(Utils.chat("Activating teleport, please do not move!"));
-            Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    if (timer == 5) {
-                        Teleportation.updateRequests(player, target, true);
-                        Bukkit.getServer().getScheduler().cancelTask(scheduler);
-                    } else {
-                        if (origin == player.getLocation())
-                            timer++;
-                        else {
-                            player.sendMessage(Utils.chat("Teleportation request cancelled"));
-                            Bukkit.getServer().getScheduler().cancelTask(scheduler);
+                            // In case of a typo or offline player
+                            if (player == null) {
+                                receiver.sendMessage(Utils.chat(args[0] + " is not online right now."));
+                                return true;
+                            }
                         }
                     }
                 }
-            }, 0, 20);
+                // receiver is the origin
+                else {
+                    player = receiver;
+                    target = Teleportation.getSource(receiver);
+                }
+            }
 
+            // Now that we have a player and a target, do the teleportation dance
+            Teleportation.teleportationEvent(player, target);
             return true;
-
         } else {
             return Teleportation.isConsole(sender);
         }
