@@ -42,7 +42,7 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("tpa").setExecutor(new Tpa());
         getCommand("tpahere").setExecutor(new TpaHere());
         getCommand("tpaccept").setExecutor(new TpAccept());
-        getCommand("tpdeny").setExecutor(new TpDeny());
+        getCommand("tpdeny").setExecutor(new TpDeny()); // also tpacancel
 
     }
 

@@ -34,8 +34,11 @@ commands:
     permission-message: You do not have permission to do this
   localchat:
     description: Talk to the players within earshot
-    usage: /<command> message
+    usage: |
+      /<command> - Toggle chat channel
+      /<command> message - Send a message in the local chat channel
     default: true
+    aliases: [l]
     permission: lemonaid.chat.local
     permission-message: You do not have permission to do this
 
@@ -89,7 +92,7 @@ commands:
   tpdeny:
     description: Deny or cancel a pending teleportation request
     usage: /<command>
-    aliases: [tpacancel]
+    aliases: [tpacancel, tpcancel]
     permission: lemonaid.teleport.tpaccept
     permission-message: You do not have permission to do this
 
