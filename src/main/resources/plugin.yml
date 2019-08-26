@@ -4,6 +4,7 @@ main: me.saurpuss.lemonaid.Lemonaid
 authors: [SaurPuss]
 description: Lots of basic commands put together in one plugin
 website: https://voxmc.com
+softdepend: [Vault]
 
 commands:
   # Plugin specific commands
@@ -93,7 +94,7 @@ commands:
     description: Deny or cancel a pending teleportation request
     usage: /<command>
     aliases: [tpacancel, tpcancel]
-    permission: lemonaid.teleport.tpaccept
+    permission: lemonaid.teleport.tpadeny
     permission-message: You do not have permission to do this
 
   # OP level commands

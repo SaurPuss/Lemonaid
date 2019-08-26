@@ -1,6 +1,8 @@
 package me.saurpuss.lemonaid.utils.util;
 
 import me.saurpuss.lemonaid.Lemonaid;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -14,7 +16,10 @@ import java.util.HashSet;
  * Helper class to facilitate teleportation events requested by the TPA commands
  */
 public class Teleportation {
+    static Lemonaid plugin = Lemonaid.getInstance();
+    static Economy economy = Lemonaid.getEconomy();
 
+    // TODO make this cross-world
     // Map all pending Tpa and TpaHere requests
     private static HashMap<Player, Player> pendingTPA = new HashMap<>();
 
@@ -72,19 +77,33 @@ public class Teleportation {
 
     // Execute teleportation
     public static void teleportationEvent(Player source, Player focus) {
-        source.sendMessage(Utils.chat("Teleportation commencing do not move!"));
+        source.sendMessage(Utils.tpa("Teleportation commencing do not move!"));
 
         Location origin = source.getLocation();
         Location destination = focus.getLocation();
 
         // Start timer
+        // TODO repeating task instead for more checks per tick?
         Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(Lemonaid.class), () -> {
             if (source.getLocation() == origin) {
-                source.sendMessage("Teleportation commencing!");
-                focus.sendMessage("Incoming teleportation!");
-                source.teleport(destination);
+                if (economy.isEnabled()) {
+                    // TODO make sure this money is taken from the initial requester
+                    EconomyResponse response = economy.withdrawPlayer(
+                            source, plugin.getConfig().getDouble("tp-cost"));
+                    if (!response.transactionSuccess()) {
+                        source.sendMessage(Utils.tpa("Balance too low! Teleportation request canceled!"));
+                    } else {
+                        source.sendMessage(Utils.tpa("Teleportation commencing!"));
+                        focus.sendMessage(Utils.tpa("Incoming teleportation!"));
+                        source.teleport(destination);
+                    }
+                } else {
+                    source.sendMessage(Utils.tpa("Teleportation commencing!"));
+                    focus.sendMessage(Utils.tpa("Incoming teleportation!"));
+                    source.teleport(destination);
+                }
             } else {
-                source.sendMessage(Utils.chat("Teleportation request canceled!"));
+                source.sendMessage(Utils.tpa("Teleportation request canceled!"));
             }
             // Make sure the request is removed from the map
             pendingTPA.remove(source);

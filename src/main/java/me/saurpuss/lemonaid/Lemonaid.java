@@ -7,11 +7,14 @@ import me.saurpuss.lemonaid.commands.teleportation.*;
 import me.saurpuss.lemonaid.events.OnJoin;
 import me.saurpuss.lemonaid.utils.util.Utils;
 import me.saurpuss.lemonaid.utils.config.PartiesConfig;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Lemonaid extends JavaPlugin {
     private static Lemonaid instance;
+    private static Economy economy;
 
     @Override
     public void onEnable() {
@@ -22,6 +25,7 @@ public final class Lemonaid extends JavaPlugin {
         registerConfigs();
         registerCommands();
         registerEvents();
+        registerDependencies();
     }
 
     @Override
@@ -64,7 +68,36 @@ public final class Lemonaid extends JavaPlugin {
 
     }
 
+    private void registerDependencies() {
+        // Set up Vault Economy if available
+        if (!setupEconomy()) {
+            getLogger().info(Utils.console("No Vault dependency found! Disabling related functionality!"));
+            economy = null;
+        }
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        economy = rsp.getProvider();
+        return economy != null;
+    }
+
+    public static Economy getEconomy() {
+        return economy;
+    }
+
     // Plugin instance for use in other classes
-    private static void setInstance(Lemonaid instance) { Lemonaid.instance = instance; }
-    public static Lemonaid getInstance() { return instance; }
+    private static void setInstance(Lemonaid instance) {
+        Lemonaid.instance = instance;
+    }
+
+    public static Lemonaid getInstance() {
+        return instance;
+    }
 }

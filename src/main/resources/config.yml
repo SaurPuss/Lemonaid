@@ -24,6 +24,11 @@ first-join-message:
 message-of-the-day:
   - Welcome back %name%
   - Enjoy your stay!
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Teleportation -
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+tp-cost: 100
+cross-world-tp: false
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 #   - Social Settings -

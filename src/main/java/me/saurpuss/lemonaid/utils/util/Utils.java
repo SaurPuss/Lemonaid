@@ -21,7 +21,11 @@ public class Utils {
     }
 
     public static String dm(String message) {
-        return ChatColor.translateAlternateColorCodes('&', message);
+        return ChatColor.translateAlternateColorCodes('&', "&e[MSG]&b " + message);
+    }
+
+    public static String tpa(String message) {
+        return ChatColor.translateAlternateColorCodes('&', "&e[TPA]&b " + message);
     }
 
     public static String broadcast(String message) {
