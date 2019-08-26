@@ -12,6 +12,10 @@ public class Utils {
         return ChatColor.translateAlternateColorCodes('&', "&e[Lemonaid]&c You don't have permission to do this!" );
     }
 
+    public static String admin(String message) {
+        return ChatColor.translateAlternateColorCodes('&', "&c[ADMIN] &e" + message);
+    }
+
     public static String console(String message) {
         return "[Lemonaid] " + message;
     }

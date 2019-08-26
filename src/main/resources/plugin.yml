@@ -122,6 +122,14 @@ permissions:
       lemonaid.admin.fly: true
       lemonaid.admin.broadcast: true
       lemonaid.admin.reload: true
+      lemonaid.admin.notify: true
+  lemonaid.admin.notify.*:
+    description: Notifications for moderators on specific event
+    default: OP
+    children:
+      lemonaid.admin.notify.login: true
+      lemonaid.admin.notify.logout: true
+      lemonaid.admin.notify.kick: true
   lemonaid.chat.*:
     description: |
       Permissions for different chats. Toggle if you prefer to

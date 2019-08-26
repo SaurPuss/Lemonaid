@@ -5,6 +5,7 @@ import me.saurpuss.lemonaid.commands.admin.Fly;
 import me.saurpuss.lemonaid.commands.social.whisper.Msg;
 import me.saurpuss.lemonaid.commands.teleportation.*;
 import me.saurpuss.lemonaid.events.OnJoin;
+import me.saurpuss.lemonaid.events.OnQuit;
 import me.saurpuss.lemonaid.utils.util.Utils;
 import me.saurpuss.lemonaid.utils.config.PartiesConfig;
 import net.milkbowl.vault.economy.Economy;
@@ -54,6 +55,7 @@ public final class Lemonaid extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
 
         pm.registerEvents(new OnJoin(), this);
+        pm.registerEvents(new OnQuit(), this);
     }
 
     private void registerConfigs() {

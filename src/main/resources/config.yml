@@ -1,29 +1,50 @@
-
-
-
-
-
-
-
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 #   - Player join messages -
-# You can use '&' for color codes
-# Use - to indicate a new line
-# The announcement is a list of
-# options, one will be used at
-# random.
-# Use %target% to stub in the
-# joining player's display name.
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-first-join-announcement:
+# You can use '&' for color codes.
+# Use - to indicate a new line with another motd option.
+# Use %target% to stub in the joining player's display name.
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+message-of-the-day:
+  - &eWelcome back %target%
+  - &eEnjoy your stay!
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Joining the server for the first time -
+# The announcement is a list of options, one will be used at random.
+# You can use '&' for color codes.
+# This is also where you set up the first join spawn and items
+# to be added to the player's inventory.
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+first-join-announcements:
   - Welcome %target% to the server!
   - Never gonna give %target up, never gonna let %target% down
 first-join-message:
   - Hello! Welcome to the Server!
   - Please read the /rules and have a great time!
-message-of-the-day:
-  - Welcome back %name%
-  - Enjoy your stay!
+first-join-spawn:
+  world: 'world'
+  x: 0
+  y: ~
+  z: 0
+  yaw: 0
+  pitch: 0
+first-join-items:
+  - item: 'COOKED_BEEF'
+    item-slot: 0
+    item-amount: 1
+    item-title: '&5Welcome to the server!'
+    item-description: >-
+      Please read &c/rules&r for more information.
+      Assholes will be yeeted!
+  - item: 'WOODEN_AXE'
+      item-slot: 1
+      item-amount: 1
+      item-title: 'Chop chop!'
+      item-description: >-
+        Use /help to find out more about the server
+
+
+
+
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 #   - Teleportation -
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
