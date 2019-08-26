@@ -18,26 +18,26 @@ public class Tpa implements CommandExecutor {
             Player player = (Player) sender;
 
             if (args.length == 0) {
-                player.sendMessage(Utils.chat("Type: /tpa <name> to request a teleport."));
+                player.sendMessage(Utils.tpa("Type: /tpa <name> to request a teleport."));
                 return true;
             } else {
                 // Check if player has a pending tpa
                 if (Teleportation.isPendingPlayer(player)) {
-                    player.sendMessage(Utils.chat("You have a tpa request pending. Type: /tpacancel remove it."));
+                    player.sendMessage(Utils.tpa("You have a tpa request pending. Type: /tpacancel remove it."));
                     return true;
                 }
 
                 // Get the first argument for a player, ignore all other arguments
                 Player target = Bukkit.getPlayer(args[0]);
                 if (target == null) {
-                    player.sendMessage(Utils.chat(args[0] + " is not online."));
+                    player.sendMessage(Utils.tpa(args[0] + " not found."));
                     return true;
                 }
 
                 // Send involved players a message about the tpa request
-                target.sendMessage(Utils.chat(player.getDisplayName() + " has requested to teleport to you. " +
+                target.sendMessage(Utils.tpa(player.getDisplayName() + " has requested to teleport to you. " +
                         "Type: /tpaccept or /tpdeny"));
-                player.sendMessage(Utils.chat(target.getDisplayName() + " has 30 seconds to accept your teleport request."));
+                player.sendMessage(Utils.tpa(target.getDisplayName() + " has 30 seconds to accept your teleport request."));
 
                 // Put request in the tpaRequests HashMap
                 Teleportation.request(player, target);
@@ -46,7 +46,7 @@ public class Tpa implements CommandExecutor {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                     if (Teleportation.isPendingPlayer(player)) {
                         Teleportation.remove(player);
-                        player.sendMessage(Utils.chat("Teleportation request to " + target.getDisplayName() + " expired."));
+                        player.sendMessage(Utils.tpa("Teleportation request to " + target.getDisplayName() + " expired."));
                     }
                 }, 600l);
                 return true;

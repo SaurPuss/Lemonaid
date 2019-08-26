@@ -15,7 +15,7 @@ public class TpaHere implements CommandExecutor {
             Player player = (Player) sender;
 
             if (args.length == 0) {
-                player.sendMessage(Utils.chat("Type: /tpahere <name> to request a teleport."));
+                player.sendMessage(Utils.tpa("Type: /tpahere <name> to request a teleport."));
                 return true;
             }
 

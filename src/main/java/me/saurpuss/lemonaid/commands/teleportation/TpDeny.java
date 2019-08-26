@@ -15,18 +15,18 @@ public class TpDeny implements CommandExecutor {
 
             // TODO combine with TpaCancel
             if (Teleportation.isPendingPlayer(player)) {
-                player.sendMessage(Utils.chat("Request canceled."));
+                player.sendMessage(Utils.tpa("Request canceled."));
                 Teleportation.remove(player);
 
                 return true;
             } else if (Teleportation.isPendingTarget(player)) {
                 // TODO allow for specific denial, instead of all
 
-                player.sendMessage(Utils.chat("Request canceled."));
+                player.sendMessage(Utils.tpa("Request canceled."));
                 Teleportation.removeTarget(player);
                 return true;
             } else {
-                player.sendMessage(Utils.chat("You have no pending teleportation requests."));
+                player.sendMessage(Utils.tpa("You have no pending teleportation requests."));
                 return true;
             }
         } else {

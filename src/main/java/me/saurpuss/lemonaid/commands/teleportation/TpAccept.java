@@ -26,7 +26,7 @@ public class TpAccept implements CommandExecutor {
 
             // Check tpa or tpahere requests
             if ((!Teleportation.isPendingTarget(receiver)) && (!Teleportation.isPendingPlayer(receiver))) {
-                receiver.sendMessage(Utils.chat("You have no pending teleportation requests."));
+                receiver.sendMessage(Utils.tpa("You have no pending teleportation requests."));
                 return true;
             }
             // Set the two parties to player and target depending on which is the destination
@@ -47,7 +47,7 @@ public class TpAccept implements CommandExecutor {
                             for (String p : requests) {
                                 list.append("- " + p + "\n");
                             }
-                            receiver.sendMessage(Utils.chat("You have pending teleportation requests from: "
+                            receiver.sendMessage(Utils.tpa("You have pending teleportation requests from: "
                                     + list.toString()) + "\n Type /tpaccept <name> to accept.");
                             return true;
                         } else {
@@ -57,7 +57,7 @@ public class TpAccept implements CommandExecutor {
 
                             // In case of a typo or offline player
                             if (player == null) {
-                                receiver.sendMessage(Utils.chat(args[0] + " is not online right now."));
+                                receiver.sendMessage(Utils.tpa(args[0] + " is not online right now."));
                                 return true;
                             }
                         }
