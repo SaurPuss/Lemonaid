@@ -3,6 +3,7 @@
 # You can use '&' for color codes.
 # Use - to indicate a new line with another motd option.
 # Use %target% to stub in the joining player's display name.
+# TODO use regex to replace %target% in the string with the player name
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 message-of-the-day:
   - &eWelcome back %target%
@@ -13,6 +14,7 @@ message-of-the-day:
 # You can use '&' for color codes.
 # This is also where you set up the first join spawn and items
 # to be added to the player's inventory.
+# TODO use regex to replace %target% in the string with the player name
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 first-join-announcements:
   - Welcome %target% to the server!
