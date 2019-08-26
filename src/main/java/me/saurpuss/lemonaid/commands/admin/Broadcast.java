@@ -15,6 +15,7 @@ public class Broadcast implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
+            // TODO use conversation builder api? for confimation
             if (player.hasPermission("lemonaid.admin.broadcast")) {
                 if (args.length == 0) {
                     player.sendMessage(Utils.chat("Type: /bc <message>"));

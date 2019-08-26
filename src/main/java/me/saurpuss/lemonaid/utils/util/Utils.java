@@ -17,7 +17,7 @@ public class Utils {
     }
 
     public static String console(String message) {
-        return "[Lemonaid] " + message;
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public static String announce(String message) {

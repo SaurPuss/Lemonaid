@@ -39,33 +39,33 @@ public class OnJoin implements Listener {
             e.setJoinMessage(ChatColor.translateAlternateColorCodes('&', announcement));
 
             // Check how many first join items are in the config
-            List<String> itemList = plugin.getConfig().getStringList("first-join-items");
-
-            for (String i : itemList) {
-                // TODO is this valid with the list things?
-                // Get the data from the config
-                String itemName = plugin.getConfig().getString("first-join-items.item").toUpperCase();
-                int itemSlot = plugin.getConfig().getInt("first-join-items.item.item-slot");
-                int itemAmount = plugin.getConfig().getInt("first-join-items.item.item-amount");
-                String itemTitle = plugin.getConfig().getString("first-join-items.item.item-title");
-                List<String> itemDescription = plugin.getConfig().getStringList("first-join-items.item.item-description");
-
-                ItemStack item = new ItemStack(Material.getMaterial(itemName), itemAmount);
-                if (item != null) {
-                    ItemMeta meta = item.getItemMeta();
-
-                    meta.setDisplayName(itemTitle);
-                    ArrayList<String> lore = new ArrayList<>();
-                    for (String s : itemDescription) {
-                        lore.add(s);
-                    }
-                    meta.setLore(lore);
-                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                    item.setItemMeta(meta);
-
-                    player.getInventory().setItem(itemSlot, item);
-                }
-            }
+//            List<String> itemList = plugin.getConfig().getStringList("first-join-items");
+//
+//            for (String i : itemList) {
+//                // TODO is this valid with the list things?
+//                // Get the data from the config
+//                String itemName = plugin.getConfig().getString("first-join-items.item").toUpperCase();
+//                int itemSlot = plugin.getConfig().getInt("first-join-items.item.item-slot");
+//                int itemAmount = plugin.getConfig().getInt("first-join-items.item.item-amount");
+//                String itemTitle = plugin.getConfig().getString("first-join-items.item.item-title");
+//                List<String> itemDescription = plugin.getConfig().getStringList("first-join-items.item.item-description");
+//
+//                ItemStack item = new ItemStack(Material.getMaterial(itemName), itemAmount);
+//                if (item != null) {
+//                    ItemMeta meta = item.getItemMeta();
+//
+//                    meta.setDisplayName(itemTitle);
+//                    ArrayList<String> lore = new ArrayList<>();
+//                    for (String s : itemDescription) {
+//                        lore.add(s);
+//                    }
+//                    meta.setLore(lore);
+//                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+//                    item.setItemMeta(meta);
+//
+//                    player.getInventory().setItem(itemSlot, item);
+//                }
+//            }
         }
 
         // Send a message to online admins about the login event

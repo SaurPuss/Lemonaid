@@ -2,6 +2,7 @@ package me.saurpuss.lemonaid;
 
 import me.saurpuss.lemonaid.commands.admin.Broadcast;
 import me.saurpuss.lemonaid.commands.admin.Fly;
+import me.saurpuss.lemonaid.commands.social.channels.LocalChat;
 import me.saurpuss.lemonaid.commands.social.whisper.Msg;
 import me.saurpuss.lemonaid.commands.teleportation.*;
 import me.saurpuss.lemonaid.events.OnJoin;
@@ -9,6 +10,7 @@ import me.saurpuss.lemonaid.events.OnQuit;
 import me.saurpuss.lemonaid.utils.util.Utils;
 import me.saurpuss.lemonaid.utils.config.PartiesConfig;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,7 +22,7 @@ public final class Lemonaid extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        getLogger().info(Utils.console("Plugin startup"));
+//        getLogger().info(Utils.console("Plugin startup"));
         setInstance(this);
 
         registerConfigs();
@@ -32,7 +34,7 @@ public final class Lemonaid extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        getLogger().info(Utils.console("Plugin shutdown"));
+//        getLogger().info(Utils.console("Plugin shutdown"));
     }
 
     private void registerCommands() {
@@ -42,6 +44,7 @@ public final class Lemonaid extends JavaPlugin {
 
         // Social commands
         getCommand("msg").setExecutor(new Msg());
+        getCommand("localchat").setExecutor(new LocalChat());
 
         // Util commands
         getCommand("tpa").setExecutor(new Tpa());
@@ -73,7 +76,7 @@ public final class Lemonaid extends JavaPlugin {
     private void registerDependencies() {
         // Set up Vault Economy if available
         if (!setupEconomy()) {
-            getLogger().info(Utils.console("No Vault dependency found! Disabling related functionality!"));
+            getLogger().warning("No Vault dependency found! Disabling related functionality!");
             economy = null;
         }
     }

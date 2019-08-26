@@ -9,7 +9,7 @@ softdepend: [Vault]
 commands:
   # Plugin specific commands
   lemonaid:
-    description: Reload the Lemonaid plugin
+    description: Lemonaid specific commands
     usage: |
       /<command> info - Plugin information
       /<command> reload - Reload the plugin configs
@@ -45,23 +45,21 @@ commands:
 
   # Party commands
   party:
-    description: All party all the time!
+    description: All party all the time
     usage: |
       /<command> - Display party help, or toggle to party chat
       /<command> new [party_name] - Create a party, be careful to avoid spaces
       /<command> invite [target] - Invite a player to your party
       /<command> accept - Accept an invitation to a party
       /<command> join [party_name] - Join an (open invite) party
-#      /<command> accept [player_name] - Accept an request to join your party
-
       /<command> set - Display your party settings
       /<command> set [setting] [on|off] - Toggle a party setting
       /<command> set [open|invite|closed] - Open parties can be joined by anyone,
       invite parties can be joined by invite from members, closed parties can only
       be joined when the leader or an assistant invites.
-
       /<command> assistant [target] - Toggle party assistant status, when true you
       are giving this player permission to modify your party settings
+    #      /<command> accept [player_name] - Accept an request to join your party
     permission: lemonaid.party.*
     permission-message: You do not have permission to do this
 

@@ -29,20 +29,20 @@ first-join-spawn:
   z: 0
   yaw: 0
   pitch: 0
-first-join-items:
-  - item: 'COOKED_BEEF'
-    item-slot: 0
-    item-amount: 1
-    item-title: '&5Welcome to the server!'
-    item-description: >-
-      Please read &c/rules&r for more information.
-      Assholes will be yeeted!
-  - item: 'WOODEN_AXE'
-      item-slot: 1
-      item-amount: 1
-      item-title: 'Chop chop!'
-      item-description: >-
-        Use /help to find out more about the server
+#first-join-items:
+#  - item: 'COOKED_BEEF'
+#    item-slot: 0
+#    item-amount: 1
+#    item-title: '&5Welcome to the server!'
+#    item-description: >-
+#      Please read &c/rules&r for more information.
+#      Assholes will be yeeted!
+#  - item: 'WOODEN_AXE'
+#      item-slot: 1
+#      item-amount: 1
+#      item-title: 'Chop chop!'
+#      item-description: >-
+#        Use /help to find out more about the server
 
 
 

@@ -86,6 +86,7 @@ public class Teleportation {
         // TODO repeating task instead for more checks per tick?
         Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(Lemonaid.class), () -> {
             if (source.getLocation() == origin) {
+                // TODO set location to only x,y,z to allow people to look and turn around
                 if (economy.isEnabled()) {
                     // TODO make sure this money is taken from the initial requester
                     EconomyResponse response = economy.withdrawPlayer(
