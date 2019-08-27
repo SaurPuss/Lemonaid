@@ -1,13 +1,13 @@
-package me.saurpuss.lemonaid.utils.util;
+package me.saurpuss.lemonaid.utils.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
+import me.saurpuss.lemonaid.utils.util.Utils;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +18,8 @@ import java.util.HashSet;
 public class Teleportation {
     static Lemonaid plugin = Lemonaid.getInstance();
     static Economy economy = Lemonaid.getEconomy();
+    private static int counter;
+    private static int id;
 
     // TODO make this cross-world
     // Map all pending Tpa and TpaHere requests
@@ -77,38 +79,50 @@ public class Teleportation {
 
     // Execute teleportation
     public static void teleportationEvent(Player source, Player focus) {
-        source.sendMessage(Utils.tpa("Teleportation commencing do not move!"));
+        // TODO bool tpa/tpahere, or case
+        source.sendMessage(Utils.tpa("Teleportation commencing in " + counter + " seconds do not move!"));
 
-        Location origin = source.getLocation();
         Location destination = focus.getLocation();
+        int oX = source.getLocation().getBlockX();
+        int oY = source.getLocation().getBlockY();
+        int oZ = source.getLocation().getBlockZ();
+        counter = 15;
 
-        // Start timer
-        // TODO repeating task instead for more checks per tick?
-        Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(Lemonaid.class), () -> {
-            if (source.getLocation() == origin) {
-                // TODO set location to only x,y,z to allow people to look and turn around
-                if (economy.isEnabled()) {
-                    // TODO make sure this money is taken from the initial requester
-                    EconomyResponse response = economy.withdrawPlayer(
-                            source, plugin.getConfig().getDouble("tp-cost"));
-                    if (!response.transactionSuccess()) {
-                        source.sendMessage(Utils.tpa("Balance too low! Teleportation request canceled!"));
+        // Start repeating timer
+        id = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+            if ((oX == source.getLocation().getBlockX()) && (oY == source.getLocation().getBlockY()) &&
+                (oZ == source.getLocation().getBlockZ()) && counter >= 0) {
+                if ((counter == 10) || (counter <= 5))
+                    source.sendMessage(Utils.tpa(counter + "!"));
+
+                if (counter == 0) {
+                    if (economy.isEnabled()) {
+                        // TODO make sure this money is taken from the initial requester
+                        EconomyResponse response = economy.withdrawPlayer(
+                                source, plugin.getConfig().getDouble("tp-cost"));
+                        if (!response.transactionSuccess()) {
+                            source.sendMessage(Utils.tpa("Balance too low! Teleportation request canceled!"));
+                        } else {
+                            source.sendMessage(Utils.tpa("Teleportation commencing!"));
+                            focus.sendMessage(Utils.tpa("Incoming teleportation!"));
+                            source.teleport(destination);
+                        }
                     } else {
                         source.sendMessage(Utils.tpa("Teleportation commencing!"));
                         focus.sendMessage(Utils.tpa("Incoming teleportation!"));
                         source.teleport(destination);
                     }
-                } else {
-                    source.sendMessage(Utils.tpa("Teleportation commencing!"));
-                    focus.sendMessage(Utils.tpa("Incoming teleportation!"));
-                    source.teleport(destination);
+                    // TODO end task
+                    pendingTPA.remove(source);
+                    Bukkit.getScheduler().cancelTask(id);
                 }
+                counter--;
             } else {
                 source.sendMessage(Utils.tpa("Teleportation request canceled!"));
+                pendingTPA.remove(source);
+                Bukkit.getScheduler().cancelTask(id);
             }
-            // Make sure the request is removed from the map
-            pendingTPA.remove(source);
-        }, 100l);
+        },0L, 20l);
     }
 
     public static boolean isConsole(CommandSender sender) {
