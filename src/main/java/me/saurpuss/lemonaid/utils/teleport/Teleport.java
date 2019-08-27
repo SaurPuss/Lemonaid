@@ -9,8 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -36,6 +34,8 @@ public class Teleport {
         this.target = target;
         this.tpType = tpType;
     }
+
+    public Player getClient() { return client; }
 
     public static void teleportEvent(Teleport tp) {
         Economy economy = Lemonaid.getEconomy();
@@ -138,18 +138,7 @@ public class Teleport {
         return true;
     }
 
-    public Teleport retrieveRequest(Player client, Player target) {
-        for (Teleport t : pendingRequests) {
-            // requester already has an outgoing request to this specific player regardless of type
-            if ((t.client == client) && (t.target == target)) {
-                return t;
-            }
-        }
-
-        return null;
-    }
-
-    public HashSet<Teleport> retrieveRequest(Player target) {
+    public static HashSet<Teleport> retrieveRequest(Player target) {
         HashSet<Teleport> requests = new HashSet<>();
         for (Teleport t : pendingRequests) {
             // requester already has an outgoing request to this specific player regardless of type

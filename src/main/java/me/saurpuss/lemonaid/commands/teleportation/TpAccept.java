@@ -1,9 +1,8 @@
 package me.saurpuss.lemonaid.commands.teleportation;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.teleport.Teleportation;
+import me.saurpuss.lemonaid.utils.teleport.Teleport;
 import me.saurpuss.lemonaid.utils.util.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,63 +17,58 @@ public class TpAccept implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
-            // Player is accepting of request
-            Player receiver = (Player) sender;
-            Player player = null; // Key
-            Player target; // Value
-            HashSet<String> requests;
+            Player target = (Player) sender;
+            // Check if there are incoming requests
+            HashSet<Teleport> incoming = Teleport.retrieveRequest(target);
 
-            // Check tpa or tpahere requests
-            if ((!Teleportation.isPendingTarget(receiver)) && (!Teleportation.isPendingPlayer(receiver))) {
-                receiver.sendMessage(Utils.tpa("You have no pending teleportation requests."));
+            if (incoming.isEmpty()) {
+                target.sendMessage(Utils.tpa("You have no pending teleport requests."));
                 return true;
             }
-            // Set the two parties to player and target depending on which is the destination
+
+            // there is 1 request: activate tp, ignore args
+            if (incoming.size() == 1) {
+                for (Teleport tp : incoming) {
+                    Teleport.teleportEvent(tp);
+                }
+                return true;
+            }
+            // There are multiple incoming requests
             else {
-                // receiver is the destination
-                if (Teleportation.isPendingTarget(receiver)) {
-                    // build the list of requests
-                    requests = Teleportation.pendingRequests(receiver);
-                    target = receiver;
+                if (args.length == 0) {
+                    StringBuilder s = new StringBuilder();
+                    s.append("You have incoming requests from: \n");
 
-                    if (requests.size() == 1) {
-                        player = Teleportation.getSource(receiver);
+                    for (Teleport tp : incoming) {
+                        s.append("- " + tp.getClient().getName() + "\n");
                     }
-                    // If there are multiple requests pending
-                    else if (requests.size() > 1) {
-                        if (args.length < 1) {
-                            StringBuilder list = new StringBuilder();
-                            for (String p : requests) {
-                                list.append("- " + p + "\n");
-                            }
-                            receiver.sendMessage(Utils.tpa("You have pending teleportation requests from: "
-                                    + list.toString()) + "\n Type /tpaccept <name> to accept.");
-                            return true;
-                        } else {
-                            // Just grab the first one, ignore the rest
-                            // TODO allow multiple accept tp events with a loop and multi args
-                            player = Bukkit.getPlayer(args[0]);
 
-                            // In case of a typo or offline player
-                            if (player == null) {
-                                receiver.sendMessage(Utils.tpa(args[0] + " is not online right now."));
-                                return true;
+                    s.append("Use /tpaccept <name> to accept a request.");
+
+                    target.sendMessage(Utils.tpa(s.toString()));
+                } if (args[0].equalsIgnoreCase("all")) {
+                    // accept all
+                    for (Teleport tp : incoming) {
+                        Teleport.teleportEvent(tp);
+                    }
+                    return true;
+                } else {
+                    // accept all valid arguments
+                    for (String arg: args) {
+                        for (Teleport tp : incoming) {
+                            if (arg.equalsIgnoreCase(tp.getClient().getDisplayName())) {
+                                Teleport.teleportEvent(tp);
+                                incoming.remove(tp);
+                            } else {
+                                target.sendMessage(Utils.tpa("Can't find " + arg + "."));
                             }
                         }
                     }
-                }
-                // receiver is the origin
-                else {
-                    player = receiver;
-                    target = Teleportation.getSource(receiver);
+                    return true;
                 }
             }
-
-            // Now that we have a player and a target, do the teleportation dance
-            Teleportation.teleportationEvent(player, target);
-            return true;
         } else {
-            return Teleportation.isConsole(sender);
+            return Teleport.isConsole(sender);
         }
     }
 }

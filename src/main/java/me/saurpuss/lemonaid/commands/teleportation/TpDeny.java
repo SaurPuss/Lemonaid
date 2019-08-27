@@ -1,36 +1,70 @@
 package me.saurpuss.lemonaid.commands.teleportation;
 
-import me.saurpuss.lemonaid.utils.teleport.Teleportation;
+import me.saurpuss.lemonaid.utils.teleport.Teleport;
 import me.saurpuss.lemonaid.utils.util.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.HashSet;
+
 public class TpDeny implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
-            Player player = (Player) sender;
+            Player target = (Player) sender;
+            // Check if there are incoming requests
+            HashSet<Teleport> incoming = Teleport.retrieveRequest(target);
 
-            // TODO combine with TpaCancel
-            if (Teleportation.isPendingPlayer(player)) {
-                player.sendMessage(Utils.tpa("Request canceled."));
-                Teleportation.remove(player);
-
-                return true;
-            } else if (Teleportation.isPendingTarget(player)) {
-                // TODO allow for specific denial, instead of all
-
-                player.sendMessage(Utils.tpa("Request canceled."));
-                Teleportation.removeTarget(player);
-                return true;
-            } else {
-                player.sendMessage(Utils.tpa("You have no pending teleportation requests."));
+            if (incoming.isEmpty()) {
+                target.sendMessage(Utils.tpa("You have no pending teleport requests."));
                 return true;
             }
+
+            // there is 1 request: activate tp, ignore args
+            if (incoming.size() == 1) {
+                for (Teleport tp : incoming) {
+                    Teleport.removeRequest(tp);
+                }
+                return true;
+            }
+            // There are multiple incoming requests
+            else {
+                if (args.length == 0) {
+                    StringBuilder s = new StringBuilder();
+                    s.append("You have incoming requests from: \n");
+
+                    for (Teleport tp : incoming) {
+                        s.append("- " + tp.getClient().getName() + "\n");
+                    }
+
+                    s.append("Use /tpdeny <name> to deny a request.");
+
+                    target.sendMessage(Utils.tpa(s.toString()));
+                } if (args[0].equalsIgnoreCase("all")) {
+                    // deny all
+                    for (Teleport tp : incoming) {
+                        Teleport.removeRequest(tp);
+                    }
+                    return true;
+                } else {
+                    // deny all valid arguments
+                    for (String arg: args) {
+                        for (Teleport tp : incoming) {
+                            if (arg.equalsIgnoreCase(tp.getClient().getDisplayName())) {
+                                Teleport.removeRequest(tp);
+                                incoming.remove(tp);
+                            } else {
+                                target.sendMessage(Utils.tpa("Can't find " + arg + "."));
+                            }
+                        }
+                    }
+                    return true;
+                }
+            }
         } else {
-            return Teleportation.isConsole(sender);
+            return Teleport.isConsole(sender);
         }
     }
 }
