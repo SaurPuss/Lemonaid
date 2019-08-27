@@ -36,6 +36,7 @@ public class Teleport {
     }
 
     public Player getClient() { return client; }
+    public Player getTarget() { return target; }
 
     public static void teleportEvent(Teleport tp) {
         Economy economy = Lemonaid.getEconomy();
@@ -141,8 +142,18 @@ public class Teleport {
     public static HashSet<Teleport> retrieveRequest(Player target) {
         HashSet<Teleport> requests = new HashSet<>();
         for (Teleport t : pendingRequests) {
-            // requester already has an outgoing request to this specific player regardless of type
             if (t.target == target) {
+                requests.add(t);
+            }
+        }
+
+        return requests;
+    }
+
+    public static HashSet<Teleport> outgoingRequests(Player player) {
+        HashSet<Teleport> requests = new HashSet<>();
+        for (Teleport t : pendingRequests) {
+            if (t.client == player) {
                 requests.add(t);
             }
         }

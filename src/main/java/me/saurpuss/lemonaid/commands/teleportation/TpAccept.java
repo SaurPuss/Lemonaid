@@ -43,7 +43,7 @@ public class TpAccept implements CommandExecutor {
                         s.append("- " + tp.getClient().getName() + "\n");
                     }
 
-                    s.append("Use /tpaccept <name> to accept a request.");
+                    s.append("Use /tpaccept <name>, or /tpaccept all to accept a request.");
 
                     target.sendMessage(Utils.tpa(s.toString()));
                 } if (args[0].equalsIgnoreCase("all")) {
