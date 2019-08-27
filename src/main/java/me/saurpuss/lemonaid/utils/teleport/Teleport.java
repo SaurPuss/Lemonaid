@@ -189,7 +189,8 @@ public class Teleport {
                     // Check if the player hasn't moved from x/y/z
                     if ((x == tp.client.getLocation().getBlockX()) &&
                             (y == tp.client.getLocation().getBlockY()) &&
-                            (z == tp.client.getLocation().getBlockZ())) {
+                            (z == tp.client.getLocation().getBlockZ()) &&
+                            (counter != 0)) {
                         // client has not moved
                         tp.counter--;
                         // send client countdown messages
@@ -198,15 +199,17 @@ public class Teleport {
                         } else if (tp.counter <= 5) {
                             tp.target.sendMessage(Utils.chat(tp.counter + "!"));
                         }
+                    } else if (counter == 0) {
+                        // teleport client & update lastLocation / teleports / task
+                        tp.client.teleport(getLastLocation(tp.client));
+                        setLastLocation(tp.client, location);
+                        Bukkit.getScheduler().cancelTask(id);
                     } else {
                         // client has moved! cancel task!
                         tp.client.sendMessage(Utils.chat("Teleportation canceled!"));
                         Bukkit.getScheduler().cancelTask(id);
                     }
-                    // teleport client & update lastLocation / teleports / task
-                    tp.client.teleport(getLastLocation(tp.client));
-                    setLastLocation(tp.client, location);
-                    Bukkit.getScheduler().cancelTask(id);
+
                 }, 0L, 20L);
         }
     }
