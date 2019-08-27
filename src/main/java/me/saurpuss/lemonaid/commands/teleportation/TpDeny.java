@@ -41,6 +41,7 @@ public class TpDeny implements CommandExecutor {
                         }
 
                         target.sendMessage(Utils.tpa("All pending teleport requests canceled."));
+                        return true;
                     } else {
                         // Check all arguments for incoming and outgoing requests
                         ArrayList<String> invalid = new ArrayList<>();
@@ -175,7 +176,8 @@ public class TpDeny implements CommandExecutor {
                 target.sendMessage(Utils.tpa("You have no pending teleport requests."));
                 return true;
             }
-        } else {
+        }
+        else {
             return Teleport.isConsole(sender);
         }
     }
