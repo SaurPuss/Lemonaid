@@ -3,6 +3,7 @@ package me.saurpuss.lemonaid;
 import me.saurpuss.lemonaid.commands.admin.Broadcast;
 import me.saurpuss.lemonaid.commands.admin.Cuff;
 import me.saurpuss.lemonaid.commands.admin.Fly;
+import me.saurpuss.lemonaid.commands.admin.Mute;
 import me.saurpuss.lemonaid.commands.social.Busy;
 import me.saurpuss.lemonaid.commands.social.Ignore;
 import me.saurpuss.lemonaid.commands.social.channels.LocalChat;
@@ -31,6 +32,8 @@ public final class Lemonaid extends JavaPlugin {
         registerCommands();
         registerEvents();
         registerDependencies();
+
+        updateLists();
     }
 
     @Override
@@ -80,6 +83,10 @@ public final class Lemonaid extends JavaPlugin {
 
     }
 
+    public static void updateLists() {
+        Cuff.cleanCuffList();
+    }
+
     private void registerDependencies() {
         // Set up Vault Economy if available
         if (!setupEconomy()) {
@@ -108,7 +115,6 @@ public final class Lemonaid extends JavaPlugin {
     private static void setInstance(Lemonaid instance) {
         Lemonaid.instance = instance;
     }
-
     public static Lemonaid getInstance() {
         return instance;
     }

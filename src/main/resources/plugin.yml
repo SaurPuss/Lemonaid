@@ -126,8 +126,11 @@ commands:
   cuff:
     description: Lock an offending player in place and prevent them from using chat.
     usage: |
-      /<command> [log] - Show a log of cuffs
+      /<command> log - Show a log of cuffs
+      /<command> list - Show a list of currently cuffed online players
+      /<command> list all - Show a list of currently cuffed online and offline players
       /<command> [target] - Toggle cuff on and off for your target
+      /<command> [target] offline - Cuff an offline player
       /<command> [target] [time] - Cuff a player for an amount of time
       /<command> [target] [time] [reason] - Cuff a player for an amount of time and log the reason
     default: OP
