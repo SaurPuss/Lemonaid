@@ -28,15 +28,19 @@ public class Teleport {
     private static HashSet<Teleport> pendingRequests = new HashSet<>();
 
     Teleport() {}
-
     public Teleport(Player client, Player target, TeleportType tpType) {
         this.client = client;
         this.target = target;
         this.tpType = tpType;
     }
 
-    public Player getClient() { return client; }
-    public Player getTarget() { return target; }
+    public Player getClient() {
+        return client;
+    }
+
+    public Player getTarget() {
+        return target;
+    }
 
     public static void teleportEvent(Teleport tp) {
         Economy economy = Lemonaid.getEconomy();
@@ -69,15 +73,18 @@ public class Teleport {
 
     private static void setLastLocation(Player player, Location location) {
         lastLocation.put(player, location);
+        // TODO save to config
     }
 
     private static Location getLastLocation(Player player) {
         if (lastLocation.containsKey(player)) {
+            // TODO get from config
             return lastLocation.get(player);
+        } else {
+            // save and return this location
+            setLastLocation(player, player.getLocation());
+            return player.getLocation();
         }
-        // TODO get from config
-
-        return null;
     }
 
     // TODO method to populate lastlocation map on start-up
@@ -90,44 +97,34 @@ public class Teleport {
             if ((t.client == tp.client) && (t.target == tp.target)) {
                 // remove existing and break the loop
                 pendingRequests.remove(t);
-                break;
-            }
-
+                break; }
             // requester already has an outgoing request
             // if requester already has incoming requests -> do nothing it will expire if ignored
             if ((t.client == tp.client) && ((tp.tpType == TeleportType.TPA)) || (tp.tpType == TeleportType.PTP)) {
                 tp.client.sendMessage(Utils.tpa("You have a teleport request pending. Type: /tpacancel remove it."));
-                return false;
-            }
-
+                return false; }
             // target already has an outgoing request
             if (((t.client == tp.target) && ((t.tpType == TeleportType.TPA)) || (t.tpType == TeleportType.PTP))) {
                 tp.client.sendMessage(Utils.tpa(tp.target.getName() + " already has a pending teleport request."));
-                return false;
-            }
-
+                return false; }
             // target already has an incoming request
             if ((t.target == tp.target) && ((tp.tpType == TeleportType.TPAHERE)) || (tp.tpType == TeleportType.PTPHERE)) {
                 tp.client.sendMessage(Utils.tpa(tp.target.getName() + " already has a pending teleport request."));
-                return false;
-            }
-        }
-
-        // TODO remove after confirming this can never happen
-        if (tp.tpType == TeleportType.BACK) {
-            plugin.getLogger().warning("Unexpected /back tried to get listed in pending teleport requests!");
-            return false;
+                return false; }
         }
 
         // TODO config file delay timer
         int delay = 30; // seconds
         String request = "";
         // TODO genders?
-        switch(tp.tpType) {
+        switch (tp.tpType) {
             case TPA: case PTP:
                 request = tp.client.getDisplayName() + " wants to teleport to you."; break;
             case TPAHERE: case PTPHERE:
                 request = tp.client.getDisplayName() + " wants you to teleport to them."; break;
+            case BACK: default:
+                plugin.getLogger().warning("Unexpected TeleportType tried to get listed in pending teleport requests!");
+                return false;
         }
         tp.target.sendMessage(Utils.tpa(request));
         tp.client.sendMessage(Utils.tpa("Request sent to " + tp.target.getName()));
@@ -141,42 +138,36 @@ public class Teleport {
 
     public static HashSet<Teleport> retrieveRequest(Player target) {
         HashSet<Teleport> requests = new HashSet<>();
-        for (Teleport t : pendingRequests) {
-            if (t.target == target) {
+        for (Teleport t : pendingRequests)
+            if (t.target == target)
                 requests.add(t);
-            }
-        }
 
         return requests;
     }
 
     public static HashSet<Teleport> outgoingRequests(Player player) {
         HashSet<Teleport> requests = new HashSet<>();
-        for (Teleport t : pendingRequests) {
-            if (t.client == player) {
+        for (Teleport t : pendingRequests)
+            if (t.client == player)
                 requests.add(t);
-            }
-        }
 
         return requests;
     }
 
 
     public static void removeRequest(Teleport tp) {
-        if (pendingRequests.contains(tp)) {
-            pendingRequests.remove(tp);
-        }
+        pendingRequests.remove(tp);
     }
 
     private static void activateTp(Teleport tp) {
         removeRequest(tp);
         switch (tp.tpType) {
             // client -> target
-            case TPA:
-            case PTP: teleportTask(tp.client, tp.target, counter, tp); break;
+            case TPA: case PTP:
+                teleportTask(tp.client, tp.target, counter, tp); break;
             // target -> client
-            case TPAHERE:
-            case PTPHERE: teleportTask(tp.target, tp.client, counter, tp); break;
+            case TPAHERE: case PTPHERE:
+                teleportTask(tp.target, tp.client, counter, tp); break;
             // client -> lastLocation
             case BACK: default:
                 // Basically teleportTask but just different enough to not warrant an overloaded method
@@ -187,10 +178,14 @@ public class Teleport {
                     int y = location.getBlockY();
                     int z = location.getBlockZ();
                     // Check if the player hasn't moved from x/y/z
-                    if ((x == tp.client.getLocation().getBlockX()) &&
+                    if (counter == 0) {
+                        // teleport client & update lastLocation / teleports / task
+                        tp.client.teleport(getLastLocation(tp.client));
+                        setLastLocation(tp.client, location);
+                        Bukkit.getScheduler().cancelTask(id);
+                    } else if ((x == tp.client.getLocation().getBlockX()) &&
                             (y == tp.client.getLocation().getBlockY()) &&
-                            (z == tp.client.getLocation().getBlockZ()) &&
-                            (counter != 0)) {
+                            (z == tp.client.getLocation().getBlockZ())) {
                         // client has not moved
                         tp.counter--;
                         // send client countdown messages
@@ -199,21 +194,14 @@ public class Teleport {
                         } else if (tp.counter <= 5) {
                             tp.target.sendMessage(Utils.chat(tp.counter + "!"));
                         }
-                    } else if (counter == 0) {
-                        // teleport client & update lastLocation / teleports / task
-                        tp.client.teleport(getLastLocation(tp.client));
-                        setLastLocation(tp.client, location);
-                        Bukkit.getScheduler().cancelTask(id);
                     } else {
                         // client has moved! cancel task!
                         tp.client.sendMessage(Utils.chat("Teleportation canceled!"));
                         Bukkit.getScheduler().cancelTask(id);
                     }
-
                 }, 0L, 20L);
         }
     }
-
 
     private static void teleportTask(Player player, Player target, int timer, Teleport tp) {
         // player -> target
@@ -224,12 +212,14 @@ public class Teleport {
             int z = location.getBlockZ();
             int counter = timer;
             player.sendMessage(Utils.tpa("Teleportation commencing in " + counter + " seconds! Do not move!"));
-
-            // Check if the player hasn't moved from x/y/z
-            if ((x == player.getLocation().getBlockX()) &&
+            if (counter == 0) {
+                // teleport client & update lastLocation / teleports / task
+                player.teleport(target.getLocation());
+                setLastLocation(player, location);
+                Bukkit.getScheduler().cancelTask(id);
+            } else if ((x == player.getLocation().getBlockX()) &&
                     (y == player.getLocation().getBlockY()) &&
-                    (z == player.getLocation().getBlockZ()) &&
-                    (counter != 0)) {
+                    (z == player.getLocation().getBlockZ())) {
                 // client has not moved
                 counter--;
                 // send client countdown messages
@@ -238,11 +228,6 @@ public class Teleport {
                 } else if (counter <= 5) {
                     player.sendMessage(Utils.chat(counter + "!"));
                 }
-            } else if (counter == 0) {
-                // teleport client & update lastLocation / teleports / task
-                player.teleport(target.getLocation());
-                setLastLocation(player, location);
-                Bukkit.getScheduler().cancelTask(id);
             } else {
                 // client has moved! cancel task!
                 player.sendMessage(Utils.chat("Teleportation canceled!"));
