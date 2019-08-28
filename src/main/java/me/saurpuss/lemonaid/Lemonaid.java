@@ -1,9 +1,13 @@
 package me.saurpuss.lemonaid;
 
 import me.saurpuss.lemonaid.commands.admin.Broadcast;
+import me.saurpuss.lemonaid.commands.admin.Cuff;
 import me.saurpuss.lemonaid.commands.admin.Fly;
+import me.saurpuss.lemonaid.commands.social.Busy;
+import me.saurpuss.lemonaid.commands.social.Ignore;
 import me.saurpuss.lemonaid.commands.social.channels.LocalChat;
 import me.saurpuss.lemonaid.commands.social.whisper.Msg;
+import me.saurpuss.lemonaid.commands.social.whisper.Reply;
 import me.saurpuss.lemonaid.commands.teleport.*;
 import me.saurpuss.lemonaid.events.OnJoin;
 import me.saurpuss.lemonaid.events.OnQuit;
@@ -39,9 +43,14 @@ public final class Lemonaid extends JavaPlugin {
         // Admin level command
         getCommand("fly").setExecutor(new Fly());
         getCommand("broadcast").setExecutor(new Broadcast());
+        getCommand("cuff").setExecutor(new Cuff());
+        getCommand("mute").setExecutor(new Mute());
 
         // Social commands
         getCommand("msg").setExecutor(new Msg());
+        getCommand("reply").setExecutor(new Reply());
+        getCommand("busy").setExecutor(new Busy());
+        getCommand("ignore").setExecutor(new Ignore());
         getCommand("localchat").setExecutor(new LocalChat());
 
         // Util commands
