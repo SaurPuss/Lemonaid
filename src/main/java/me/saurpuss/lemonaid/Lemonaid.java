@@ -4,7 +4,7 @@ import me.saurpuss.lemonaid.commands.admin.Broadcast;
 import me.saurpuss.lemonaid.commands.admin.Fly;
 import me.saurpuss.lemonaid.commands.social.channels.LocalChat;
 import me.saurpuss.lemonaid.commands.social.whisper.Msg;
-import me.saurpuss.lemonaid.commands.teleportation.*;
+import me.saurpuss.lemonaid.commands.teleport.*;
 import me.saurpuss.lemonaid.events.OnJoin;
 import me.saurpuss.lemonaid.events.OnQuit;
 import me.saurpuss.lemonaid.utils.config.PartiesConfig;
