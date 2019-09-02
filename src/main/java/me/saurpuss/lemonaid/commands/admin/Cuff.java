@@ -9,15 +9,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Cuff implements CommandExecutor {
 
-    Lemonaid plugin = Lemonaid.getInstance();
-    public static ArrayList<String> cuffLog = new ArrayList<>();
+    static Lemonaid plugin = Lemonaid.getInstance();
+    // TODO save and retrieve log from file instead of arraylist
+    public static ArrayList<CuffLog> cuffLog = new ArrayList<>();
+    // TODO save and retrieve map from file
     private static HashMap<Player, Date> cuffedPlayers = new HashMap<>();
 
     @Override
@@ -25,25 +26,37 @@ public class Cuff implements CommandExecutor {
         if ((!(sender instanceof Player)) || (sender.hasPermission("lemonaid.admin.cuff"))) {
             if (args.length == 0) {
                 sender.sendMessage(Utils.admin("Usage: /cuff <name> [time] [reason]"));
+                return true;
             } else {
                 Player target = Bukkit.getPlayer(args[0]);
                 if (target == null) {
+                    // Check if the player is offline
                     OfflinePlayer[] list = Bukkit.getOfflinePlayers();
                     for (OfflinePlayer p : list) {
                         if (p.getPlayer().getName().equalsIgnoreCase(args[0])) {
                             target = p.getPlayer();
                         }
                     }
-
-                    sender.sendMessage(Utils.admin(args[0] + " not found."));
-                    return true;
+                    // The player name was probably a typo
+                    if (target == null) {
+                        sender.sendMessage(Utils.admin(args[0] + " not found."));
+                        return true;
+                    }
                 }
                 // target is now defined
                 if (args.length == 1) {
-                    return cuffAction(target, 0, '0', null);
+                    return cuffAction(sender, target, 0, '0', null);
                 } else {
                     if (args[1].equals("0")) {
-                        return cuffAction(target, 0, '0', null);
+                        String reason = null;
+                        if (args.length >= 3) {
+                            StringBuilder s = new StringBuilder();
+                            for (int i = 2; i < args.length; i++)
+                                s.append(args[i]);
+
+                            reason = s.toString();
+                        }
+                        return cuffAction(sender, target, 0, '0', reason);
                     } else {
                         if (!Character.isLetter(args[1].charAt(args[1].length() - 1))) {
                             sender.sendMessage(Utils.admin("Usage: /cuff <player> 0, replace 0 with 1m, 10d, etc."));
@@ -66,21 +79,21 @@ public class Cuff implements CommandExecutor {
                                     return true;
                                 }
                             }
-                            return cuffAction(target, Integer.valueOf(s), time, null);
+
+                            // TODO check if correct
+                            String reason = null;
+                            if (args.length >= 3) {
+                                StringBuilder b = new StringBuilder();
+                                for (int i = 2; i < args.length; i++)
+                                    b.append(args[i]);
+
+                                reason = b.toString();
+                            }
+                            return cuffAction(sender, target, Integer.valueOf(s), time, reason);
                         }
-
-                        // check if chars before it are an int
-
-
                     }
-
-
                 }
-
             }
-
-
-            return true;
         } else {
             sender.sendMessage(Utils.error());
             return true;
@@ -96,11 +109,13 @@ public class Cuff implements CommandExecutor {
                     if (p.hasPermission("lemonaid.admin.notify.cuff"))
                         p.sendMessage(Utils.admin(player.getName() + " is cuffed."));
                 }
+                plugin.getLogger().info(player.getName() + " is cuffed.");
             } else {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (p.hasPermission("lemonaid.admin.notify.cuff"))
                         p.sendMessage(Utils.admin(player.getName() + " cuffed until " + date.toString() + "."));
                 }
+                plugin.getLogger().info(player.getName() + " cuffed until " + date.toString() + ".");
             }
         } else {
             cuffedPlayers.remove(player);
@@ -108,13 +123,17 @@ public class Cuff implements CommandExecutor {
                 if (p.hasPermission("lemonaid.admin.notify.cuff"))
                     p.sendMessage(Utils.admin(player.getName() + " is uncuffed."));
             }
+            plugin.getLogger().info(player.getName() + " is uncuffed.");
         }
         return true;
     }
 
-    private boolean cuffAction(Player player, int n, char amount, String reason) {
-        if (n == 0)
+    private boolean cuffAction(CommandSender sender, Player player, int n, char amount, String reason) {
+        if (n == 0) {
+            CuffLog log = new CuffLog(player, new Date(), null, (Player) sender, reason);
+            log.saveLog();
             return cuff(player, null);
+        }
 
         long multiplier = 0;
         boolean date = false;
@@ -138,11 +157,11 @@ public class Cuff implements CommandExecutor {
                 }
             }, 20 * multiplier * n);
         }
+        Date temp = new Date(System.currentTimeMillis() + (addition * 1000));
+        cuff(player, temp);
 
-        cuff(player, new Date(System.currentTimeMillis() + (addition * 1000)));
-
-        // TODO add log
-        logCuff(reason);
+        CuffLog log = new CuffLog(player, new Date(), temp, (Player)sender, reason);
+        log.saveLog();
 
 
         return true;
@@ -156,13 +175,79 @@ public class Cuff implements CommandExecutor {
                     if (p.hasPermission("lemonaid.admin.notify.cuff"))
                         p.sendMessage(Utils.admin(entry.getKey().getName() + " is uncuffed."));
                 }
+                plugin.getLogger().info(entry.getKey().getName() + " is cuffed.");
             }
         }
     }
 
-    private boolean logCuff(String log) {
-        // TODO make this a viable log
+    public static void saveCuffList() {
+        // TODO save current cuff list to file
+    }
+    public static void loadCuffList() {
+        // TODO get cuffs from the cuff log and slap them in the cuff list
 
-        return true;
+        // TODO fallback, if the list is empty rebuild from viable log entries
+    }
+
+    class CuffLog implements Serializable {
+        // TODO make an abstract parent so that MuteLog will be the same scheme
+
+        private Player player;
+        private Date date;
+        private Date end;
+        private Player actor;
+        private String reason;
+
+        CuffLog() {}
+        CuffLog(Player player, Date date, Date end, Player actor, String reason) {
+            this.player = player;
+            this.date = date;
+            this.end = end;
+            this.actor = actor;
+            this.reason = reason;
+        }
+
+        private String toString(CuffLog c){
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yy");
+            StringBuilder s = new StringBuilder();
+            s.append(c.player.getName() + " from: " + sdf.format(c.date));
+            if (c.end != null)
+                s.append(" until " + sdf.format(c.end));
+            s.append(" by " + c.actor.getName());
+            if (c.reason != null)
+                s.append(": " + c.reason);
+
+            return s.toString();
+        }
+
+        private void saveLog() {
+            // TODO try catch to properties file
+
+
+
+
+        }
+
+        public ArrayList<String> getLog() {
+            ArrayList<String> list = new ArrayList<>();
+            // TODO deserialize cufflogs and put in list
+
+            // TODO sort from newest to oldest
+            Collections.sort(list);
+
+            return list;
+        }
+
+        public ArrayList<String> getLog(int size) {
+            ArrayList<String> list = new ArrayList<>();
+            // TODO deserialize cufflogs and put in list
+
+            // TODO sort from newest to oldest
+            Collections.sort(list);
+
+            // TODO crop to size
+
+            return list;
+        }
     }
 }
