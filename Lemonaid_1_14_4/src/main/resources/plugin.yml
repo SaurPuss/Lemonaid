@@ -6,3 +6,86 @@ softdepend: [VaultAPI, WorldGuard]
 authors: [SaurPuss]
 description: Basically Essentials for practice purposes
 website: https://github.com/SaurPuss
+commands:
+  # Moderation commands
+  recap:
+    description: Leave a message for other permission holders
+    usage: /<command> <message>
+    default: OP
+    permission: lemonaid.admin.recap
+    permission-message: You do not have permission to do this
+
+  # Teleport commands
+  tpa:
+    description: Send a teleportation request to another player
+    usage: /<command> [target]
+    default: true
+    permission: lemonaid.teleport.tpa
+    permission-message: You do not have permission to do this
+  tpahere:
+    description: Request another player teleport to your location
+    usage: /<command> [target]
+    permission: lemonaid.teleport.tpahere
+    permission-message: You do not have permission to do this
+  tpaccept:
+    description: Accept a teleportation request from another player
+    usage: /<command>
+    permission: lemonaid.teleport.tpaccept
+    permission-message: You do not have permission to do this
+  tpdeny:
+    description: Deny or cancel a pending teleportation request
+    usage: /<command>
+    aliases: [tpacancel, tpcancel]
+    permission: lemonaid.teleport.tpadeny
+    permission-message: You do not have permission to do this
+  back:
+    description: Return to your last teleport location
+    usage: /<command>
+    permisson: lemonaid.teleport.back
+    permission-message: You do not have permission to do this
+  # Home commands
+  home:
+    description: Teleport to a home location
+    usage: |
+      /<command> - Return to a single home, or list available homes
+      /<command> [home] - Return to your specific home
+      /<command> list - List your available homes
+      /<command> limit - Show your home limit
+      /<command> set [home] - Set a specific home
+      /<command> del [home] - Delete a specific home
+    permission: lemonaid.teleport.home
+    permission-message: You do not have permission to do this
+  sethome:
+    description: Set a location as a home
+    usage: /<command> <name> - Set a home
+    permission: lemonaid.teleport.home
+    permission-message: You do not have permission to do this
+  delhome:
+    description: Delete a home location
+    usage: /<command> <name> - Delete a home
+    permission: lemonaid.teleport.home
+    permission-message: You do not have permission to do this
+
+
+permissions:
+  lemonaid.admin.*:
+    description: Moderation permissions
+    default: op
+    children:
+      lemonaid.admin.notify.*: true
+      lemonaid.admin.recap: true
+  lemonaid.admin.notify.*:
+    description: Moderation notification permissions
+    default: op
+    children:
+      lemonaid.admin.notify.stuff: true
+  lemonaid.teleport.*:
+    description: Teleportation permissions
+    default: true
+    children:
+      lemonaid.teleport.tpa: true
+      lemonaid.teleport.tpahere: true
+      lemonaid.teleport.tpaccept: true
+      lemonaid.teleport.tpadeny: true
+      lemonaid.teleport.back: true
+      lemonaid.teleport.home: true
