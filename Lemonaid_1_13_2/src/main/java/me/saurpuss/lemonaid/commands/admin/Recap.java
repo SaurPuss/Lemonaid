@@ -2,10 +2,9 @@ package me.saurpuss.lemonaid.commands.admin;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.util.Utils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 import java.io.*;
@@ -29,12 +28,8 @@ public class Recap implements CommandExecutor {
                     sender.sendMessage(s);
                 }
             } else {
-                StringBuilder s = new StringBuilder();
-                for (String a : args) {
-                    s.append(a + " ");
-                }
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                        addRecap(s.toString().trim())));
+                String s = StringUtils.join(args, ' ', 0, args.length);
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', addRecap(s)));
             }
             return true;
         } else {

@@ -1,26 +1,38 @@
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Custom Server List Options -
+# You can use '&' for color codes.
+# Use - to indicate a new line with another option.
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+server-motd:
+  - &cSexy Minecraft Server Here
+server-motd-hover:
+  - Website&#59; https://voxmc.com
+  - Reddit%3B https://reddit/com/r/voxmc
+  - Discord&#59; https://discord.gg/BCBMZTs
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 #   - Player join messages -
 # You can use '&' for color codes.
 # Use - to indicate a new line with another motd option.
-# Use %target% to stub in the joining player's display name.
-# TODO use regex to replace %target% in the string with the player name
+# Use %player% to stub in the joining player's display name.
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 message-of-the-day:
-  - &eWelcome back %target%
-  - &eEnjoy your stay!
+  - &eWelcome back %player%!
+  - &eHey %player%! Enjoy your stay!
+  - &eDon't forget to read the &6/rules&e!
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 #   - Joining the server for the first time -
 # The announcement is a list of options, one will be used at random.
 # You can use '&' for color codes.
 # This is also where you set up the first join spawn and items
 # to be added to the player's inventory.
-# TODO use regex to replace %target% in the string with the player name
+# Use %player% to stub in the joining player's display name.
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 first-join-announcements:
-  - Welcome %target% to the server!
-  - Never gonna give %target up, never gonna let %target% down
+  - Welcome %player% to the server!
+  - Never gonna give %player% up, never gonna let %player% down
+  - Say hello to %player%!
 first-join-message:
-  - Hello! Welcome to the Server!
+  - Hello %player%! Welcome to the Server!
   - Please read the /rules and have a great time!
 first-join-spawn:
   world: 'world'

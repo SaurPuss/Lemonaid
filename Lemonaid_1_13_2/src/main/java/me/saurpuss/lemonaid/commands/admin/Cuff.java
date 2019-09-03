@@ -2,6 +2,7 @@ package me.saurpuss.lemonaid.commands.admin;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.util.Utils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -50,11 +51,7 @@ public class Cuff implements CommandExecutor {
                     if (args[1].equals("0")) {
                         String reason = null;
                         if (args.length >= 3) {
-                            StringBuilder s = new StringBuilder();
-                            for (int i = 2; i < args.length; i++)
-                                s.append(args[i]);
-
-                            reason = s.toString();
+                            reason = StringUtils.join(args, ' ', 2, args.length);
                         }
                         return cuffAction(sender, target, 0, '0', reason);
                     } else {
@@ -83,11 +80,7 @@ public class Cuff implements CommandExecutor {
                             // TODO check if correct
                             String reason = null;
                             if (args.length >= 3) {
-                                StringBuilder b = new StringBuilder();
-                                for (int i = 2; i < args.length; i++)
-                                    b.append(args[i]);
-
-                                reason = b.toString();
+                                reason = StringUtils.join(args, ' ', 2, args.length);
                             }
                             return cuffAction(sender, target, Integer.valueOf(s), time, reason);
                         }
@@ -208,7 +201,7 @@ public class Cuff implements CommandExecutor {
         }
 
         private String toString(CuffLog c){
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yy");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yy");
             StringBuilder s = new StringBuilder();
             s.append(c.player.getName() + " from: " + sdf.format(c.date));
             if (c.end != null)

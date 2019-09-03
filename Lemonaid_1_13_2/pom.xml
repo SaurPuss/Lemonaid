@@ -5,17 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.saurpuss</groupId>
-    <artifactId>lemonaid</artifactId>
-    <version>1.13.2-1.0-SNAPSHOT</version>
+    <artifactId>lemonaid-1.13.2</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Lemonaid</name>
 
-    <description>Basically Essentials from scratch for learning purposes</description>
+    <description>Basically Essentials for practice purposes</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <url>https://github.com/SaurPuss</url>
 
     <build>
         <defaultGoal>clean package</defaultGoal>

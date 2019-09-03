@@ -1,0 +1,8 @@
+name: Lemonaid
+version: ${project.version}
+main: me.saurpuss.lemonaid.Lemonaid
+api-version: 1.14.4
+softdepend: [VaultAPI, WorldGuard]
+authors: [SaurPuss]
+description: Basically Essentials for practice purposes
+website: https://github.com/SaurPuss

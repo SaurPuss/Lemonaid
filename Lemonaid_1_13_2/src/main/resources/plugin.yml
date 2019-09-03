@@ -4,7 +4,7 @@ main: me.saurpuss.lemonaid.Lemonaid
 authors: [SaurPuss]
 description: Lots of basic commands put together in one plugin
 website: https://voxmc.com
-softdepend: [Vault, World Guard]
+softdepend: [Vault, WorldGuard]
 
 commands:
   # Plugin specific commands
@@ -54,7 +54,7 @@ commands:
       /<command> - Toggle chat channel
       /<command> message - Send a message in the local chat channel
     default: true
-    aliases: [l]
+    aliases: [l, lc, local]
     permission: lemonaid.chat.local
     permission-message: You do not have permission to do this
 
@@ -135,16 +135,29 @@ commands:
       /<command> [target] [time] [reason] - Cuff a player for an amount of time and log the reason
     default: OP
     permission: lemonaid.admin.cuff
+  jail:
+    description: Send a player to a jail defined by a World Guard region
+    usage: /<command> [target]
+    default: OP
+    permission: lemonaid.admin.jail
   mute:
     description: Prevent a player from speaking
     usage: |
-      /<command> [log] - Show a log of mutes
+      /<command> - Display last 10 mute logs
       /<command> [target] - Mute player indefinitely, apply again to unmute
       /<command> [target] [time] - Mute a player for a specific amount of time
+      (0 = indefinite | number + time: s = seconds, m = minutes, h = hours, d = days, y = years, "10m = 10minutes")
       /<command> [target] [time] [reason] - Mute a player for a specific amount of time and log the reason
       /<command> [target] [reason] - Mute a player indefinitely for a specific reason
     default: OP
     permission: lemonaid.admin.mute
+  recap:
+    description: Log quick recaps for information hand-off
+    usage: |
+      /<command> - Display last 10 recaps
+      /<command> [message] - Add recap
+    default: OP
+    permission: lemonaid.admin.recap
 
 
 
@@ -160,6 +173,7 @@ permissions:
       lemonaid.admin.notify: true
       lemonaid.admin.cuff: true
       lemonaid.admin.mute: true
+      lemonaid.admin.recap: true
       lemonaid.admin.jail: true
   lemonaid.admin.notify.*:
     description: Notifications for moderators on specific event
@@ -170,6 +184,7 @@ permissions:
       lemonaid.admin.notify.kick: true
       lemonaid.admin.notify.mute: true
       lemonaid.admin.notify.cuff: true
+      lemonaid.admin.notify.jail: true
   lemonaid.chat.*:
     description: |
       Permissions for different chats. Toggle if you prefer to

@@ -1,21 +1,14 @@
 package me.saurpuss.lemonaid;
 
-import me.saurpuss.lemonaid.commands.admin.Broadcast;
-import me.saurpuss.lemonaid.commands.admin.Cuff;
-import me.saurpuss.lemonaid.commands.admin.Fly;
-import me.saurpuss.lemonaid.commands.admin.Mute;
-import me.saurpuss.lemonaid.commands.social.Busy;
-import me.saurpuss.lemonaid.commands.social.Ignore;
-import me.saurpuss.lemonaid.commands.social.channels.LocalChat;
-import me.saurpuss.lemonaid.commands.social.whisper.Msg;
-import me.saurpuss.lemonaid.commands.social.whisper.Reply;
+import me.saurpuss.lemonaid.commands.admin.*;
+import me.saurpuss.lemonaid.commands.social.*;
+import me.saurpuss.lemonaid.commands.social.channels.*;
+import me.saurpuss.lemonaid.commands.social.whisper.*;
 import me.saurpuss.lemonaid.commands.teleport.*;
-import me.saurpuss.lemonaid.events.OnJoin;
-import me.saurpuss.lemonaid.events.OnQuit;
+import me.saurpuss.lemonaid.events.JoinLeave;
 import me.saurpuss.lemonaid.utils.config.PartiesConfig;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Lemonaid extends JavaPlugin {
@@ -48,6 +41,7 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("broadcast").setExecutor(new Broadcast());
         getCommand("cuff").setExecutor(new Cuff());
         getCommand("mute").setExecutor(new Mute());
+        getCommand("recap").setExecutor(new Recap());
 
         // Social commands
         getCommand("msg").setExecutor(new Msg());
@@ -67,8 +61,7 @@ public final class Lemonaid extends JavaPlugin {
     private void registerEvents() {
         PluginManager pm = getServer().getPluginManager();
 
-        pm.registerEvents(new OnJoin(), this);
-        pm.registerEvents(new OnQuit(), this);
+        pm.registerEvents(new JoinLeave(), this);
     }
 
     private void registerConfigs() {
@@ -93,6 +86,15 @@ public final class Lemonaid extends JavaPlugin {
             getLogger().warning("No Vault dependency found! Disabling related functionality!");
             economy = null;
         }
+
+        // Set up WorldGuard if available
+        if (true) {
+
+            getCommand("jail").setExecutor(new Jail());
+        } else {
+            getLogger().warning("No World Guard dependency found! Disabling related functionality!");
+        }
+
     }
 
     private boolean setupEconomy() {
