@@ -20,6 +20,7 @@ public final class Lemonaid extends JavaPlugin {
         // Plugin startup logic
 //        getLogger().info(Utils.console("Plugin startup"));
         setInstance(this);
+        // TODO ping DB
 
         registerConfigs();
         registerCommands();
@@ -27,6 +28,7 @@ public final class Lemonaid extends JavaPlugin {
         registerDependencies();
 
         updateLists();
+        // TODO create user wrapper that stores homes, last location, ignored list etc. Get data onJoin etc
     }
 
     @Override
@@ -39,8 +41,8 @@ public final class Lemonaid extends JavaPlugin {
         // Admin level command
         getCommand("fly").setExecutor(new Fly());
         getCommand("broadcast").setExecutor(new Broadcast());
-        getCommand("cuff").setExecutor(new Cuff());
-        getCommand("mute").setExecutor(new Mute());
+        getCommand("cuff").setExecutor(new Cuff()); // TODO after mute
+        getCommand("mute").setExecutor(new Mute()); // TODO make this a thing
         getCommand("recap").setExecutor(new Recap());
 
         // Social commands
@@ -76,6 +78,7 @@ public final class Lemonaid extends JavaPlugin {
 
     }
 
+    // TODO update cuff as a whole
     public static void updateLists() {
         Cuff.cleanCuffList();
     }
@@ -89,13 +92,17 @@ public final class Lemonaid extends JavaPlugin {
 
         // Set up WorldGuard if available
         if (true) {
-
             getCommand("jail").setExecutor(new Jail());
         } else {
             getLogger().warning("No World Guard dependency found! Disabling related functionality!");
         }
 
     }
+
+    public static Economy getEconomy() { return economy; }
+
+    private static void setInstance(Lemonaid instance) { Lemonaid.instance = instance; }
+    public static Lemonaid getInstance() { return instance; }
 
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -107,17 +114,5 @@ public final class Lemonaid extends JavaPlugin {
         }
         economy = rsp.getProvider();
         return economy != null;
-    }
-
-    public static Economy getEconomy() {
-        return economy;
-    }
-
-    // Plugin instance for use in other classes
-    private static void setInstance(Lemonaid instance) {
-        Lemonaid.instance = instance;
-    }
-    public static Lemonaid getInstance() {
-        return instance;
     }
 }

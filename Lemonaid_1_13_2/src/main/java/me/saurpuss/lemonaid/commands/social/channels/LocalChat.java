@@ -32,14 +32,14 @@ public class LocalChat implements CommandExecutor {
         // Sender is the console
         else {
             if (args.length <= 1) {
-                sender.sendMessage(Utils.console("Use /l <target> <message> to send a message in the area occupied by your target."));
+                sender.sendMessage(Utils.playerOnly("Use /l <target> <message> to send a message in the area occupied by your target."));
                 return true;
             }
 
             Player target = Bukkit.getPlayer(args[0]);
 
             if (target == null) {
-                sender.sendMessage(Utils.console(args[0] + " is not online."));
+                sender.sendMessage(Utils.playerOnly(args[0] + " is not online."));
                 return true;
             }
 

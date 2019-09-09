@@ -19,7 +19,7 @@ public class PartiesConfig {
         try {
             file.createNewFile();
         } catch (Exception e) {
-            Bukkit.getServer().getLogger().info(Utils.console("Error while creating parties.yml"));
+            Bukkit.getServer().getLogger().info(Utils.playerOnly("Error while creating parties.yml"));
 //            e.printStackTrace();
         }
 
@@ -34,7 +34,7 @@ public class PartiesConfig {
         try {
             customFile.save(file);
         } catch (Exception e) {
-            Bukkit.getServer().getLogger().info(Utils.console("Error while saving parties.yml"));
+            Bukkit.getServer().getLogger().info(Utils.playerOnly("Error while saving parties.yml"));
 //            e.printStackTrace();
         }
     }

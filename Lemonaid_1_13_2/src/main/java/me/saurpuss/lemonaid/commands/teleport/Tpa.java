@@ -17,12 +17,12 @@ public class Tpa implements CommandExecutor {
             Player player = (Player) sender;
 
             if (args.length == 0) {
-                player.sendMessage(Utils.tpa("Type: /tpa <name> to request a teleport."));
+                player.sendMessage(Utils.color("&6Type: /tpa <name> to request a teleport."));
                 return true;
             } else {
                 Player target = Bukkit.getPlayer(args[0]);
                 if (target == null) {
-                    player.sendMessage(Utils.tpa("Can't find " + args[0]));
+                    player.sendMessage(Utils.color("&cCan't find " + args[0]));
                     return true;
                 }
 

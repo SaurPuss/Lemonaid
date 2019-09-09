@@ -237,7 +237,7 @@ public class Teleport {
     }
 
     public static boolean isConsole(CommandSender sender) {
-        sender.sendMessage(Utils.console());
+        sender.sendMessage(Utils.playerOnly());
         return true;
     }
 }

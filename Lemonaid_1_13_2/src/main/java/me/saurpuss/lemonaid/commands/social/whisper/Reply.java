@@ -21,7 +21,7 @@ public class Reply implements CommandExecutor {
 
             return true;
         } else {
-            sender.sendMessage(Utils.console("Only players can use this command"));
+            sender.sendMessage(Utils.playerOnly());
             return true;
         }
     }

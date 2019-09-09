@@ -27,7 +27,7 @@ public class Home implements CommandExecutor {
 
         } else {
             if (args.length == 0) {
-                sender.sendMessage(Utils.console("Only players can use this command, use /home <name> to see the homes of a player."));
+                sender.sendMessage(Utils.playerOnly("Only players can use this command, use /home <name> to see the homes of a player."));
             } else {
                 Player target = Bukkit.getPlayer(args[0]);
 

@@ -41,7 +41,12 @@ public class Recap implements CommandExecutor {
         }
     }
 
+    /**
+     * Read from recap.txt
+     * @return Array List with String recaps
+     */
     private ArrayList<String> getLog() {
+        // TODO combine with getRecap?
         if (!file.exists())
             makeLog();
 
@@ -58,6 +63,10 @@ public class Recap implements CommandExecutor {
         return list;
     }
 
+    /**
+     * Get last 10 logs from recap.txt
+     * @return Linked List with String recaps
+     */
     private Deque<String> getRecap() {
         Deque<String> list = new LinkedList<>();
         for (int i = log.size() - 1; i > log.size() - 11; i--) {
@@ -67,8 +76,6 @@ public class Recap implements CommandExecutor {
     }
 
     private String addRecap(String message) {
-
-
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
         if (recap.size() == 10)
             recap.removeLast();
@@ -82,6 +89,7 @@ public class Recap implements CommandExecutor {
     }
 
     private void addLog(String message) {
+        // TODO combine with addRecap?
         if (!file.exists())
             makeLog();
 

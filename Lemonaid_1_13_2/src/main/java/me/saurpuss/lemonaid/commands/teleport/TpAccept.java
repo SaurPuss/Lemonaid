@@ -22,7 +22,7 @@ public class TpAccept implements CommandExecutor {
             HashSet<Teleport> incoming = Teleport.retrieveRequest(target);
 
             if (incoming.isEmpty()) {
-                target.sendMessage(Utils.tpa("You have no pending teleport requests."));
+                target.sendMessage(Utils.color("&cYou have no pending teleport requests."));
                 return true;
             }
 
@@ -37,15 +37,16 @@ public class TpAccept implements CommandExecutor {
             else {
                 if (args.length == 0) {
                     StringBuilder s = new StringBuilder();
-                    s.append("You have incoming requests from: \n");
+                    s.append("&6You have incoming requests from: \n");
 
                     for (Teleport tp : incoming) {
-                        s.append("- " + tp.getClient().getName() + "\n");
+                        s.append("&5- " + tp.getClient().getName() + "\n");
                     }
 
-                    s.append("Use /tpaccept <name>, or /tpaccept all to accept a request.");
+                    // TODO make the command bits a different color
+                    s.append("&6Use /tpaccept <name>, or /tpaccept all to accept a request.");
 
-                    target.sendMessage(Utils.tpa(s.toString()));
+                    target.sendMessage(Utils.color(s.toString()));
                 } if (args[0].equalsIgnoreCase("all")) {
                     // accept all
                     for (Teleport tp : incoming) {
@@ -54,13 +55,13 @@ public class TpAccept implements CommandExecutor {
                     return true;
                 } else {
                     // accept all valid arguments
-                    for (String arg: args) {
+                    for (String arg : args) {
                         for (Teleport tp : incoming) {
                             if (arg.equalsIgnoreCase(tp.getClient().getDisplayName())) {
                                 Teleport.teleportEvent(tp);
                                 incoming.remove(tp);
                             } else {
-                                target.sendMessage(Utils.tpa("Can't find " + arg + "."));
+                                target.sendMessage(Utils.color("&cCan't find " + arg + "."));
                             }
                         }
                     }

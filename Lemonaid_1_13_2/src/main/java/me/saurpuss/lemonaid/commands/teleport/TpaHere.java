@@ -19,7 +19,8 @@ public class TpaHere implements CommandExecutor {
             Player player = (Player) sender;
 
             if (args.length == 0) {
-                player.sendMessage(Utils.tpa("Type: /tpahere <name> to request a teleport."));
+                // TODO add colors to command bit
+                player.sendMessage(Utils.color("&6Type: /tpahere <name> to request a teleport."));
                 return true;
             } else {
                 // Compile a list of valid targets
@@ -27,7 +28,7 @@ public class TpaHere implements CommandExecutor {
                 for (String arg : args) {
                     Player target = Bukkit.getPlayer(arg);
                     if (target == null) {
-                        player.sendMessage(Utils.tpa("Can't find " + arg));
+                        player.sendMessage(Utils.color("&cCan't find " + arg));
                     } else {
                         list.add(target);
                     }

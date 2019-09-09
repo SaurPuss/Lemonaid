@@ -12,16 +12,9 @@ public class Utils {
         return ChatColor.translateAlternateColorCodes('&', "&cYou don't have permission to do this!" );
     }
 
-    public static String admin(String message) {
-        return ChatColor.translateAlternateColorCodes('&', "&c[ADMIN] &e" + message);
-    }
-
-    public static String console() {
+    public static String playerOnly() {
         return "Only players can use this command!";
     }
 
-    public static String tpa(String message) {
-        return ChatColor.translateAlternateColorCodes('&', "&e[TPA]&b " + message);
-    }
 
 }

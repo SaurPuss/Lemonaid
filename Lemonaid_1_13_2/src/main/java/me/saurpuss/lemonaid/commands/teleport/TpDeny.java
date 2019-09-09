@@ -23,6 +23,7 @@ public class TpDeny implements CommandExecutor {
             if ((!incoming.isEmpty()) && (!outgoing.isEmpty())) {
                 if (args.length == 0) {
                     StringBuilder s = new StringBuilder();
+                    // TODO add colors
                     s.append("\nYou have incoming teleport requests from: \n");
                     for (Teleport tp : incoming)
                         s.append("- " + tp.getClient().getName() + "\n");
@@ -31,7 +32,7 @@ public class TpDeny implements CommandExecutor {
                         s.append("- " + tp.getTarget().getName() + "\n");
                     s.append("Use /tpacancel <name>, or /tpacancel all to cancel a request.");
 
-                    target.sendMessage(Utils.tpa(s.toString()));
+                    target.sendMessage(Utils.color(s.toString()));
                     return true;
                 } else {
                     if (args[0].equalsIgnoreCase("all")) {
@@ -40,7 +41,7 @@ public class TpDeny implements CommandExecutor {
                             Teleport.removeRequest(tp);
                         }
 
-                        target.sendMessage(Utils.tpa("All pending teleport requests canceled."));
+                        target.sendMessage(Utils.color("&5All pending teleport requests canceled!"));
                         return true;
                     } else {
                         // Check all arguments for incoming and outgoing requests
@@ -69,17 +70,18 @@ public class TpDeny implements CommandExecutor {
                         }
 
                         if (invalid.size() == 1) {
-                            target.sendMessage(invalid.get(0) + " could not be found");
+                            target.sendMessage(Utils.color("&c" + invalid.get(0) + " could not be found"));
                         } else if (invalid.size() > 1) {
                             StringBuilder message = new StringBuilder();
+                            // TODO add colors
                             message.append("Unable to cancel: \n");
                             for (String s : invalid) {
                                 message.append("- " + s + "\n");
                             }
 
-                            target.sendMessage(Utils.tpa(message.toString()));
+                            target.sendMessage(Utils.color(message.toString()));
                         } else {
-                            target.sendMessage(Utils.tpa("Requests canceled."));
+                            target.sendMessage(Utils.color("&6Requests canceled."));
                         }
                         return true;
                     }
@@ -93,13 +95,14 @@ public class TpDeny implements CommandExecutor {
                     for (Teleport tp : incoming) {
                         Teleport.removeRequest(tp);
                     }
-                    target.sendMessage(Utils.tpa("Incoming teleport request canceled."));
+                    target.sendMessage(Utils.color("&6Incoming teleport request canceled."));
                     return true;
                 }
                 // There are multiple incoming requests
                 else {
                     if (args.length == 0) {
                         StringBuilder s = new StringBuilder();
+                        // TODO add colors
                         s.append("You have incoming teleport requests from: \n");
 
                         for (Teleport tp : incoming) {
@@ -108,7 +111,7 @@ public class TpDeny implements CommandExecutor {
 
                         s.append("Use /tpdeny <name> to deny a request.");
 
-                        target.sendMessage(Utils.tpa(s.toString()));
+                        target.sendMessage(Utils.color(s.toString()));
                     } else if (args[0].equalsIgnoreCase("all")) {
                         // deny all
                         for (Teleport tp : incoming) {
@@ -122,7 +125,7 @@ public class TpDeny implements CommandExecutor {
                                     Teleport.removeRequest(tp);
                                     incoming.remove(tp);
                                 } else {
-                                    target.sendMessage(Utils.tpa("Can't find " + arg + "."));
+                                    target.sendMessage(Utils.color("&cCan't find " + arg + "."));
                                 }
                             }
                         }
@@ -136,11 +139,12 @@ public class TpDeny implements CommandExecutor {
                     for (Teleport tp : outgoing) {
                         Teleport.removeRequest(tp);
                     }
-                    target.sendMessage(Utils.tpa("Your pending teleport request has been canceled."));
+                    target.sendMessage(Utils.color("&6Your pending teleport request has been canceled."));
                     return true;
                 } else {
                     if (args.length == 0) {
                         StringBuilder s = new StringBuilder();
+                        // TODO add color
                         s.append("You have outgoing teleport requests to: \n");
 
                         for (Teleport tp : outgoing) {
@@ -149,7 +153,7 @@ public class TpDeny implements CommandExecutor {
 
                         s.append("Use /tpacancel <name>, or /tpacancel all to cancel a request.");
 
-                        target.sendMessage(Utils.tpa(s.toString()));
+                        target.sendMessage(Utils.color(s.toString()));
                     } else if (args[0].equalsIgnoreCase("all")) {
                         // deny all
                         for (Teleport tp : outgoing) {
@@ -163,7 +167,7 @@ public class TpDeny implements CommandExecutor {
                                     Teleport.removeRequest(tp);
                                     outgoing.remove(tp);
                                 } else {
-                                    target.sendMessage(Utils.tpa("Can't find " + arg + "."));
+                                    target.sendMessage(Utils.color("&cCan't find " + arg + "."));
                                 }
                             }
                         }
@@ -173,7 +177,7 @@ public class TpDeny implements CommandExecutor {
             }
             // Incoming and outgoing are both empty
             else {
-                target.sendMessage(Utils.tpa("You have no pending teleport requests."));
+                target.sendMessage(Utils.color("&cYou have no pending teleport requests."));
                 return true;
             }
         }
