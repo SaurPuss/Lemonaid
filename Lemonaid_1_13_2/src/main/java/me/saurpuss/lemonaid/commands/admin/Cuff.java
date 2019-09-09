@@ -24,7 +24,7 @@ public class Cuff implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if ((!(sender instanceof Player)) || (sender.hasPermission("lemonaid.admin.cuff"))) {
             if (args.length == 0) {
-                sender.sendMessage(Utils.admin("Usage: /cuff <name> [time] [reason]"));
+                sender.sendMessage(Utils.color("Usage: /cuff <name> [time] [reason]"));
                 return true;
             } else {
                 Player target = Bukkit.getPlayer(args[0]);
@@ -38,7 +38,7 @@ public class Cuff implements CommandExecutor {
                     }
                     // The player name was probably a typo
                     if (target == null) {
-                        sender.sendMessage(Utils.admin(args[0] + " not found."));
+                        sender.sendMessage(Utils.color(args[0] + " not found."));
                         return true;
                     }
                 }
@@ -54,7 +54,7 @@ public class Cuff implements CommandExecutor {
                         return cuffAction(sender, target, 0, '0', reason);
                     } else {
                         if (!Character.isLetter(args[1].charAt(args[1].length() - 1))) {
-                            sender.sendMessage(Utils.admin("Usage: /cuff <player> 0, replace 0 with 1m, 10d, etc."));
+                            sender.sendMessage(Utils.color("Usage: /cuff <player> 0, replace 0 with 1m, 10d, etc."));
                             return true;
                         } else {
                             String s = "";
@@ -70,7 +70,7 @@ public class Cuff implements CommandExecutor {
                                             time = c;
                                     break;
                                 } else {
-                                    sender.sendMessage(Utils.admin("Usage: /cuff <player> t, replace t with 0, 1m, 10d, etc."));
+                                    sender.sendMessage(Utils.color("Usage: /cuff <player> t, replace t with 0, 1m, 10d, etc."));
                                     return true;
                                 }
                             }
@@ -98,13 +98,13 @@ public class Cuff implements CommandExecutor {
             if (date == null) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (p.hasPermission("lemonaid.admin.notify.cuff"))
-                        p.sendMessage(Utils.admin(player.getName() + " is cuffed."));
+                        p.sendMessage(Utils.color(player.getName() + " is cuffed."));
                 }
                 plugin.getLogger().info(player.getName() + " is cuffed.");
             } else {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (p.hasPermission("lemonaid.admin.notify.cuff"))
-                        p.sendMessage(Utils.admin(player.getName() + " cuffed until " + date.toString() + "."));
+                        p.sendMessage(Utils.color(player.getName() + " cuffed until " + date.toString() + "."));
                 }
                 plugin.getLogger().info(player.getName() + " cuffed until " + date.toString() + ".");
             }
@@ -112,7 +112,7 @@ public class Cuff implements CommandExecutor {
             cuffedPlayers.remove(player);
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (p.hasPermission("lemonaid.admin.notify.cuff"))
-                    p.sendMessage(Utils.admin(player.getName() + " is uncuffed."));
+                    p.sendMessage(Utils.color(player.getName() + " is uncuffed."));
             }
             plugin.getLogger().info(player.getName() + " is uncuffed.");
         }
@@ -144,7 +144,7 @@ public class Cuff implements CommandExecutor {
                 cuffedPlayers.remove(player);
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (p.hasPermission("lemonaid.admin.notify.cuff"))
-                        p.sendMessage(Utils.admin(player.getName() + " is uncuffed."));
+                        p.sendMessage(Utils.color(player.getName() + " is uncuffed."));
                 }
             }, 20 * multiplier * n);
         }
@@ -164,7 +164,7 @@ public class Cuff implements CommandExecutor {
                 cuffedPlayers.remove(entry.getKey());
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (p.hasPermission("lemonaid.admin.notify.cuff"))
-                        p.sendMessage(Utils.admin(entry.getKey().getName() + " is uncuffed."));
+                        p.sendMessage(Utils.color(entry.getKey().getName() + " is uncuffed."));
                 }
                 plugin.getLogger().info(entry.getKey().getName() + " is cuffed.");
             }

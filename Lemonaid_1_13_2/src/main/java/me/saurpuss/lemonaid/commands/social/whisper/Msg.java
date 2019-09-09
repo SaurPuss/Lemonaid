@@ -16,6 +16,7 @@ import java.util.UUID;
 public class Msg implements CommandExecutor {
 
     Lemonaid plugin = Lemonaid.getInstance();
+    // TODO move to util?
     private Map<UUID, UUID> lastMessage = new HashMap<>();
 
     /**
@@ -79,6 +80,7 @@ public class Msg implements CommandExecutor {
             }
         }
     }
+
     UUID getLastMessage(UUID uuid) {
         return lastMessage.get(uuid);
     }
