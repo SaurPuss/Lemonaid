@@ -17,6 +17,7 @@ public class Back implements CommandExecutor {
             Teleport.teleportEvent(new Teleport(player, null, TeleportType.BACK));
             return true;
         } else {
+            // TODO this can just be Utils.console() and return true
             return Teleport.isConsole(sender);
         }
     }

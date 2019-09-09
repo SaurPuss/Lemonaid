@@ -88,7 +88,7 @@ public class Cuff implements CommandExecutor {
                 }
             }
         } else {
-            sender.sendMessage(Utils.error());
+            sender.sendMessage(Utils.noPermission());
             return true;
         }
     }

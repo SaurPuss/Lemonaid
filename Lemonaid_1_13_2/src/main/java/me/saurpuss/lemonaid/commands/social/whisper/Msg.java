@@ -2,24 +2,30 @@ package me.saurpuss.lemonaid.commands.social.whisper;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.util.Utils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class Msg implements CommandExecutor {
 
     Lemonaid plugin = Lemonaid.getInstance();
+    private Map<UUID, UUID> lastMessage = new HashMap<>();
 
     /**
      * Send a private message to another player.
      * Logged in the console using:
-     *      [Lemonaid][MSG] {sender >> receiver} message
+     *      [MSG] {sender >> receiver} message
      * @param sender Command Sender
      * @param command /mgs, /tell, /whisper
      * @param label msg, tell, whisper
-     * @param args target message..
+     * @param args target message...
      * @return true
      */
     @Override
@@ -29,53 +35,61 @@ public class Msg implements CommandExecutor {
             Player player = (Player) sender;
 
             if (args.length <= 1) {
-                player.sendMessage(Utils.chat("Type: /" + label + " <player> <message>"));
+                player.sendMessage(Utils.color("&cType: /msg <player> <message>"));
                 return true;
             }
 
             Player target = Bukkit.getPlayer(args[0]);
-
             if (target == null) {
-                player.sendMessage(Utils.chat(args[0] + " is not online."));
+                player.sendMessage(Utils.color("&c" + args[0] + " is not online."));
                 return true;
             }
 
-            StringBuilder message = new StringBuilder();
-            for (int i = 1; i <args.length; i++) {
-                message.append(args[i] + " ");
-            }
+            String message = StringUtils.join(args, ' ', 1, args.length);
 
-            target.sendMessage(Utils.dm("&6" + player.getName() + "&c >> &r" + message.toString()));
-            player.sendMessage(Utils.dm("&6me &c>>&r " + message.toString()));
+            setLastMessage(player.getUniqueId(), target.getUniqueId());
+            // TODO lemonaid.chat.colors check and translation
+            target.sendMessage(Utils.color("&6[MSG]&c[&6" + player.getName() + "&c >> &6me&c]&f " + message));
+            player.sendMessage(Utils.color("&6[MSG]&c[&6me &c >> &6" + target.getName() + "&c]&f " + message));
 
             // Log a human readable copy in the console
             // TODO social spy copy for admins
-            plugin.getLogger().info(Utils.console("[MSG] {" + player.getName() + " >> " +
-                    target.getName() + "} " + message.toString()));
+            plugin.getLogger().info("[MSG] {" + player.getName() + " >> " + target.getName() + "} " + message);
+
             return true;
         }
         // The sender is the console
         else {
             if (args.length <= 1) {
-                sender.sendMessage(Utils.console("Type: /" + label + " <player> <message>"));
+                sender.sendMessage("Usage: /msg <player> <message>");
                 return true;
             } else {
                 Player target = Bukkit.getPlayer(args[0]);
 
                 if (target == null) {
-                    sender.sendMessage(Utils.console(args[0] + " is not online."));
+                    sender.sendMessage(args[0] + " is not online.");
                     return true;
                 }
 
-                StringBuilder message = new StringBuilder();
-                for (int i = 1; i <args.length; i++) {
-                    message.append(args[i] + " ");
-                }
+                String message = StringUtils.join(args, ' ', 1, args.length);
 
-                target.sendMessage(Utils.dm("&6" + sender.getName() + "&c >> &r" + message.toString()));
-                sender.sendMessage(Utils.dm("[MSG] >> " + message.toString()));
+                target.sendMessage(Utils.color("&e[MSG] >> &6 " + message));
+                sender.sendMessage("[MSG] >> "+ target.getName() + ": " + message);
                 return true;
             }
         }
+    }
+    UUID getLastMessage(UUID uuid) {
+        return lastMessage.get(uuid);
+    }
+
+    void setLastMessage(UUID sender, UUID receiver) {
+        this.lastMessage.put(receiver, sender);
+//        this.lastMessage.put(sender, receiver);
+    }
+
+    // TODO remove on player quit event to save memory
+    public void removeLastMessage(UUID player) {
+
     }
 }

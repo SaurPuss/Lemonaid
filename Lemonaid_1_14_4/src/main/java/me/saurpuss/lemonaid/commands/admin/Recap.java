@@ -33,7 +33,7 @@ public class Recap implements CommandExecutor {
             }
             return true;
         } else {
-            sender.sendMessage(Utils.error());
+            sender.sendMessage(Utils.noPermission());
             return true;
         }
     }

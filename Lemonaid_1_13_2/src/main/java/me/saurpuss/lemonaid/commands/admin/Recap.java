@@ -3,7 +3,6 @@ package me.saurpuss.lemonaid.commands.admin;
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.util.Utils;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
@@ -12,8 +11,12 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * Information hand-off in a small server side package
+ */
 public class Recap implements CommandExecutor {
 
+    // TODO replace Date with LocalDate
     private Lemonaid plugin = Lemonaid.getInstance();
     private File file = new File(plugin.getDataFolder(), "recap.txt");
     private ArrayList<String> log = getLog();
@@ -25,15 +28,15 @@ public class Recap implements CommandExecutor {
             if (args.length == 0) {
                 // print last 10 recaps
                 for (String s : recap) {
-                    sender.sendMessage(s);
+                    sender.sendMessage(Utils.color(s));
                 }
             } else {
                 String s = StringUtils.join(args, ' ', 0, args.length);
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', addRecap(s)));
+                sender.sendMessage(Utils.color(addRecap(s)));
             }
             return true;
         } else {
-            sender.sendMessage(Utils.error());
+            sender.sendMessage(Utils.noPermission());
             return true;
         }
     }
@@ -52,7 +55,6 @@ public class Recap implements CommandExecutor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return list;
     }
 
@@ -65,6 +67,8 @@ public class Recap implements CommandExecutor {
     }
 
     private String addRecap(String message) {
+
+
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
         if (recap.size() == 10)
             recap.removeLast();

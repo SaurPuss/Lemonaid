@@ -63,6 +63,9 @@ public class JoinLeave implements Listener {
                 p.sendMessage(Utils.admin(player.getName() + " quit the server."));
             }
         }
+
+
+        // TODO add msg hashmap remove entry
     }
 
     @EventHandler

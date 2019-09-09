@@ -1,8 +1,11 @@
 package me.saurpuss.lemonaid;
 
+import me.saurpuss.lemonaid.commands.admin.Broadcast;
 import me.saurpuss.lemonaid.commands.admin.Recap;
 import me.saurpuss.lemonaid.commands.teleport.*;
+import me.saurpuss.lemonaid.events.ChatEvents;
 import me.saurpuss.lemonaid.events.JoinLeave;
+import me.saurpuss.lemonaid.utils.config.HomesConfig;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -30,12 +33,14 @@ public final class Lemonaid extends JavaPlugin {
     private void registerCommands() {
         // Admin level command
         getCommand("recap").setExecutor(new Recap());
+        getCommand("broadcast").setExecutor(new Broadcast());
 
         // Util commands
         getCommand("tpa").setExecutor(new Tpa());
         getCommand("tpahere").setExecutor(new TpaHere());
         getCommand("tpaccept").setExecutor(new TpAccept());
         getCommand("tpdeny").setExecutor(new TpDeny()); // also tpacancel
+        getCommand("home").setExecutor(new Home());
 
     }
 
@@ -43,6 +48,7 @@ public final class Lemonaid extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
 
         pm.registerEvents(new JoinLeave(), this);
+        pm.registerEvents(new ChatEvents(), this);
     }
 
     private void registerConfigs() {
@@ -51,9 +57,9 @@ public final class Lemonaid extends JavaPlugin {
         saveDefaultConfig();
 
         // Homes config
-//        PartiesConfig.setup();
-//        PartiesConfig.get().options().copyDefaults(true);
-//        PartiesConfig.save();
+        HomesConfig.setup();
+        HomesConfig.get().options().copyDefaults(true);
+        HomesConfig.save();
 
     }
 

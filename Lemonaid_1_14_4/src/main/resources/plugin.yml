@@ -11,8 +11,13 @@ commands:
   recap:
     description: Leave a message for other permission holders
     usage: /<command> <message>
-    default: OP
     permission: lemonaid.admin.recap
+    permission-message: You do not have permission to do this
+  broadcast:
+    description: Broadcast a message to the entire server
+    usage: /<command> <message>
+    aliases: [bc]
+    permission: lemonaid.admin.broadcast
     permission-message: You do not have permission to do this
 
   # Teleport commands
@@ -53,17 +58,8 @@ commands:
       /<command> limit - Show your home limit
       /<command> set [home] - Set a specific home
       /<command> del [home] - Delete a specific home
-    permission: lemonaid.teleport.home
-    permission-message: You do not have permission to do this
-  sethome:
-    description: Set a location as a home
-    usage: /<command> <name> - Set a home
-    permission: lemonaid.teleport.home
-    permission-message: You do not have permission to do this
-  delhome:
-    description: Delete a home location
-    usage: /<command> <name> - Delete a home
-    permission: lemonaid.teleport.home
+    aliases: [sethome, delhome]
+    permission: lemonaid.teleport.home.*
     permission-message: You do not have permission to do this
 
 
@@ -74,6 +70,7 @@ permissions:
     children:
       lemonaid.admin.notify.*: true
       lemonaid.admin.recap: true
+      lemonaid.admin.broadcast: true
   lemonaid.admin.notify.*:
     description: Moderation notification permissions
     default: op
@@ -89,3 +86,6 @@ permissions:
       lemonaid.teleport.tpadeny: true
       lemonaid.teleport.back: true
       lemonaid.teleport.home: true
+  lemonaid.teleport.home.default:
+    description: Manage maximum amount of homes
+    default: true

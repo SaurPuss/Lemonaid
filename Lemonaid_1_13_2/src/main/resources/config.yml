@@ -62,8 +62,19 @@ first-join-spawn:
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 #   - Teleportation -
+# All times are in seconds
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-tp-cost: 100
+teleport:
+  available-timer: 30
+  tpa:
+    timer: 3
+    cost: 100
+  back:
+    timer: 3
+    cost: 10
+  ptp:
+    timer: 15
+    cost: 500
 cross-world-tp: false
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#

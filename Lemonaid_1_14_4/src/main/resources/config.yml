@@ -1,4 +1,24 @@
 # Use {name} to use a player's display name
 
 motd:
-  - Tiddies! Welcome to Beloved
+  - &d%name%&c, aw man!
+  - &cHold your titties! &6%name% &chas arrived!
+motd-first:
+  - &5Hide yo kids! Hide yo wife! &c%name% &5has arrived!
+
+teleport:
+  # number of  seconds a tp request remains active
+  available-timer: 30
+  # number of seconds a player has to stand still before tp activate
+  tpa: 3
+  back: 3
+
+home-limit:
+  default: 3
+  rank: 5
+  hundred: 100
+
+monitor-bad-words: true
+bad-words:
+  - quili
+  - sex
