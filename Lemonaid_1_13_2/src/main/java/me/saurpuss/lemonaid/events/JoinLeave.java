@@ -44,10 +44,13 @@ public class JoinLeave implements Listener {
            // TODO add first join items from kit
         }
 
+        // TODO check if player has active mute in place and add to activeMutes
+
+
         // Send a message to online admins about the login event
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.hasPermission("lemonaid.admin.notify.login")) {
-                p.sendMessage(Utils.admin(player.getName() + " joined the server."));
+                p.sendMessage(Utils.color(player.getName() + " joined the server."));
             }
         }
 
@@ -57,10 +60,12 @@ public class JoinLeave implements Listener {
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
 
+        // TODO check if player has mute in place and remove from active mutes for space reasons
+
         // Send a message to online admins about the quit event
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.hasPermission("lemonaid.admin.notify.logout")) {
-                p.sendMessage(Utils.admin(player.getName() + " quit the server."));
+                p.sendMessage(Utils.color(player.getName() + " quit the server."));
             }
         }
 
@@ -75,7 +80,7 @@ public class JoinLeave implements Listener {
         // Send a message to online admins about the quit event
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.hasPermission("lemonaid.admin.notify.kick")) {
-                p.sendMessage(Utils.admin(player.getName() + " was kicked from the server."));
+                p.sendMessage(Utils.color(player.getName() + " was kicked from the server."));
             }
         }
     }

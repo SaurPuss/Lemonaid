@@ -1,6 +1,6 @@
 package me.saurpuss.lemonaid.events;
 
-import me.saurpuss.lemonaid.commands.admin.Mute;
+import me.saurpuss.lemonaid.commands.admin.OldMute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +19,7 @@ public class ChatModeration implements Listener {
     public void chatEvent(AsyncPlayerChatEvent e) {
         Player player = e.getPlayer();
 
-        if (Mute.activeMutes.contains(player.getUniqueId())) {
+        if (OldMute.activeMutes.contains(player.getUniqueId())) {
             e.setCancelled(true);
         }
     }

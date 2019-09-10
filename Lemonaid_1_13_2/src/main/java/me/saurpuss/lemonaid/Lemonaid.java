@@ -42,7 +42,7 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("fly").setExecutor(new Fly());
         getCommand("broadcast").setExecutor(new Broadcast());
         getCommand("cuff").setExecutor(new Cuff()); // TODO after mute
-        getCommand("mute").setExecutor(new Mute()); // TODO make this a thing
+        getCommand("mute").setExecutor(new Mute());
         getCommand("recap").setExecutor(new Recap());
 
         // Social commands
