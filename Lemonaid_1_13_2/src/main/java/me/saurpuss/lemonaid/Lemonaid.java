@@ -5,16 +5,15 @@ import me.saurpuss.lemonaid.commands.social.*;
 import me.saurpuss.lemonaid.commands.social.channels.*;
 import me.saurpuss.lemonaid.commands.social.whisper.*;
 import me.saurpuss.lemonaid.commands.teleport.*;
-import me.saurpuss.lemonaid.events.ChatModeration;
-import me.saurpuss.lemonaid.events.JoinLeave;
-import me.saurpuss.lemonaid.utils.config.PartiesConfig;
+import me.saurpuss.lemonaid.events.*;
 import me.saurpuss.lemonaid.utils.players.Lemon;
+import me.saurpuss.lemonaid.utils.players.LemonConfig;
+import me.saurpuss.lemonaid.utils.players.MySQLDatabase;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public final class Lemonaid extends JavaPlugin {
     public static Lemonaid plugin;
@@ -27,7 +26,6 @@ public final class Lemonaid extends JavaPlugin {
 //        getLogger().info(Utils.console("Plugin startup"));
         plugin = this;
         userManager = new HashMap<>();
-        // TODO ping DB
 
         registerConfigs();
         registerCommands();
@@ -39,28 +37,35 @@ public final class Lemonaid extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
 //        getLogger().info(Utils.console("Plugin shutdown"));
+
+        // Save all remaining Lemons to DB
+        userManager.forEach((uuid, user) -> user.updateUser());
     }
 
     private void registerCommands() {
         // Admin level command
         getCommand("fly").setExecutor(new Fly());
         getCommand("broadcast").setExecutor(new Broadcast());
-        getCommand("cuff").setExecutor(new Cuff()); // TODO after mute
+        getCommand("recap").setExecutor(new Recap(this));
+
         getCommand("mute").setExecutor(new Mute(this));
-        getCommand("recap").setExecutor(new Recap());
+        getCommand("cuff").setExecutor(new Cuff());
+
 
         // Social commands
         getCommand("msg").setExecutor(new Msg(this));
         getCommand("reply").setExecutor(new Reply(this));
         getCommand("busy").setExecutor(new Busy(this));
-        getCommand("ignore").setExecutor(new Ignore());
-        getCommand("localchat").setExecutor(new LocalChat());
 
-        // Util commands
+        getCommand("ignore").setExecutor(new Ignore());
+        getCommand("localchat").setExecutor(new LocalChat(this));
+
+        // Teleport commands
         getCommand("tpa").setExecutor(new Tpa(this));
         getCommand("tpahere").setExecutor(new TpaHere(this));
         getCommand("tpaccept").setExecutor(new TpAccept());
         getCommand("tpdeny").setExecutor(new TpDeny()); // also tpacancel
+        getCommand("back").setExecutor(new Back());
 
     }
 
@@ -76,10 +81,21 @@ public final class Lemonaid extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
 
+        // Save user data in SQL or Config
+        if (getConfig().getBoolean("mysql")) {
+            MySQLDatabase.pingTables();
+        } else {
+            LemonConfig.setup();
+            LemonConfig.get().options().copyDefaults(true);
+            LemonConfig.save();
+        }
+
+        // TODO add this for the parties bits too
+
         // Party make-up config
-        PartiesConfig.setup();
-        PartiesConfig.get().options().copyDefaults(true);
-        PartiesConfig.save();
+//        PartiesConfig.setup();
+//        PartiesConfig.get().options().copyDefaults(true);
+//        PartiesConfig.save();
 
     }
 
@@ -91,35 +107,28 @@ public final class Lemonaid extends JavaPlugin {
         }
 
         // TODO Set up WorldGuard if available
-        if (true) {
+        if (getServer().getPluginManager().getPlugin("WorldGuard") != null) {
             getCommand("jail").setExecutor(new Jail());
         } else {
             getLogger().warning("No World Guard found! Disabling related functionality!");
         }
-
     }
 
-    public void mapPlayer(UUID uuid, Lemon user) {
-        userManager.put(uuid, user);
-    }
-    public void unmapPlayer(UUID uuid) {
-        userManager.remove(uuid);
-    }
-
-    public Lemon getUser(UUID uuid) {
-        return userManager.get(uuid);
-    }
+    // Keep track of Lemons
+    public void mapPlayer(UUID uuid, Lemon user) { userManager.put(uuid, user); }
+    public void unmapPlayer(UUID uuid) { userManager.remove(uuid); }
+    public Lemon getUser(UUID uuid) { return userManager.get(uuid); }
 
     public static Economy getEconomy() { return economy; }
 
     private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+        if (getServer().getPluginManager().getPlugin("Vault") == null)
             return false;
-        }
+
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
+        if (rsp == null)
             return false;
-        }
+
         economy = rsp.getProvider();
         return economy != null;
     }

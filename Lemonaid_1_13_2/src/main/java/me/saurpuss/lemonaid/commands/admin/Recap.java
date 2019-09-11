@@ -17,10 +17,14 @@ import java.util.*;
 public class Recap implements CommandExecutor {
 
     // TODO replace Date with LocalDate
-    private Lemonaid plugin = Lemonaid.getInstance();
+    private Lemonaid plugin;
     private File file = new File(plugin.getDataFolder(), "recap.txt");
     private ArrayList<String> log = getLog();
     private Deque<String> recap = getRecap();
+
+    public Recap(Lemonaid plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

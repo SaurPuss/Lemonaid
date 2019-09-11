@@ -8,7 +8,7 @@ mysql: false
   port: ''
   user: ''
   password: ''
-  table: 'lemonaid'
+  table-prefix: 'lemonaid'
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 #   - Custom Server List Options -

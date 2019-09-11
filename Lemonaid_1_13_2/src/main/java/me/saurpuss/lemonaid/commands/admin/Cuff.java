@@ -14,7 +14,7 @@ import java.util.*;
 
 public class Cuff implements CommandExecutor {
 
-    static Lemonaid plugin = Lemonaid.getInstance();
+    static Lemonaid plugin = Lemonaid.plugin;
     // TODO save and retrieve log from file instead of arraylist
     public static ArrayList<CuffLog> cuffLog = new ArrayList<>();
     // TODO save and retrieve map from file

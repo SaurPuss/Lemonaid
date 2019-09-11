@@ -3,6 +3,7 @@ package me.saurpuss.lemonaid.events;
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.players.Lemon;
 import me.saurpuss.lemonaid.utils.util.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,9 +28,17 @@ public class ChatModeration implements Listener {
         Player player = e.getPlayer();
         Lemon user = Lemon.getUser(player.getUniqueId());
 
+        // This player is not allowed to talk
         if (user.isMuted()) {
             player.sendMessage(Utils.color("&cYou do not have permission to talk right now!"));
             e.setCancelled(true);
+        }
+
+        // Remove this message from chat for players that have this person ignored
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            Lemon u = Lemon.getUser(p.getUniqueId());
+            if (u.isIgnored(player.getUniqueId()))
+                e.getRecipients().remove(p);
         }
     }
 

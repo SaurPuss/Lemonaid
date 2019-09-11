@@ -14,14 +14,12 @@ import java.util.*;
 public class JoinLeave implements Listener {
 
     private Lemonaid plugin;
-
     public JoinLeave(Lemonaid plugin) {
         this.plugin = plugin;
     }
 
-
     @EventHandler
-    public void messageOfTheDay(PlayerJoinEvent e) {
+    public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         plugin.mapPlayer(player.getUniqueId(), Lemon.getUser(player.getUniqueId()));
 
@@ -60,10 +58,10 @@ public class JoinLeave implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
-        // TODO save any data to DB
+        // Save player Lemon and remove player from userManager
+        Lemon user = plugin.getUser(player.getUniqueId());
+        user.updateUser();
         plugin.unmapPlayer(player.getUniqueId());
-
-        // TODO check if player has mute in place and remove from active mutes for space reasons
 
         // Send a message to online admins about the quit event
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -79,6 +77,9 @@ public class JoinLeave implements Listener {
     @EventHandler
     public void onKick(PlayerKickEvent e) {
         Player player = e.getPlayer();
+        Lemon user = plugin.getUser(player.getUniqueId());
+        user.updateUser();
+        plugin.unmapPlayer(player.getUniqueId());
 
         // Send a message to online admins about the quit event
         for (Player p : Bukkit.getOnlinePlayers()) {

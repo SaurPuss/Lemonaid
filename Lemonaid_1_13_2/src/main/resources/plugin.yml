@@ -22,21 +22,18 @@ commands:
   msg:
     description: Whisper to another player
     usage: /<command> [target] message
-    default: true
     aliases: [tell, whisper]
     permission: lemonaid.chat.private
     permission-message: You do not have permission to do this
   reply:
     description: Reply to a whispered message
     usage: /<command> message
-    default: true
     aliases: [r]
     permission: lemonaid.chat.private
     permission-message: You do not have permission to do this
   busy:
     description: Prevent incoming whispers and tp requests
     usage: /<command>
-    default: true
     aliases: [dnd]
     permission: lemonaid.chat.busy
     permission-message: You do not have permission to do this
@@ -45,7 +42,6 @@ commands:
     usage: |
       /<command> - Display your ignored list
       /<command> [target] - Add or remove your target from your ignore list
-    default: true
     permission: lemonaid.chat.ignore
     permission-message: You do not have permission to do this
   localchat:
@@ -53,7 +49,6 @@ commands:
     usage: |
       /<command> - Toggle chat channel
       /<command> message - Send a message in the local chat channel
-    default: true
     aliases: [l, lc, local]
     permission: lemonaid.chat.local
     permission-message: You do not have permission to do this
@@ -108,6 +103,11 @@ commands:
     usage: /<command>
     aliases: [tpacancel, tpcancel]
     permission: lemonaid.teleport.tpadeny
+    permission-message: You do not have permission to do this
+  back:
+    description: Return to your last saved location
+    usage: /<command>
+    permission: lemonaid.teleport.back
     permission-message: You do not have permission to do this
 
   # OP level commands
@@ -188,9 +188,7 @@ permissions:
       lemonaid.admin.recap: true
       lemonaid.admin.jail: true
       lemonaid.admin.slow: true
-      lemonaid.admin.slow.exempt: true
       lemonaid.admin.clearchat: true
-      lemonaid.admin.clearchat.exempt: true
   lemonaid.admin.notify.*:
     description: Notifications for moderators on specific event
     default: op
@@ -201,6 +199,8 @@ permissions:
       lemonaid.admin.notify.mute: true
       lemonaid.admin.notify.cuff: true
       lemonaid.admin.notify.jail: true
+      lemonaid.admin.slow.exempt: true
+      lemonaid.admin.clearchat.exempt: true
   lemonaid.chat.*:
     description: |
       Permissions for different chats. Toggle if you prefer to

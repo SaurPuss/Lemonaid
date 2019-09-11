@@ -12,7 +12,11 @@ import org.bukkit.entity.Player;
 
 public class LocalChat implements CommandExecutor {
 
-    Lemonaid plugin = Lemonaid.getInstance();
+    Lemonaid plugin;
+
+    public LocalChat(Lemonaid plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -32,14 +36,14 @@ public class LocalChat implements CommandExecutor {
         // Sender is the console
         else {
             if (args.length <= 1) {
-                sender.sendMessage(Utils.playerOnly("Use /l <target> <message> to send a message in the area occupied by your target."));
+                sender.sendMessage("Use /l <target> <message> to send a message in the area occupied by your target.");
                 return true;
             }
 
             Player target = Bukkit.getPlayer(args[0]);
 
             if (target == null) {
-                sender.sendMessage(Utils.playerOnly(args[0] + " is not online."));
+                sender.sendMessage(args[0] + " is not online.");
                 return true;
             }
 
