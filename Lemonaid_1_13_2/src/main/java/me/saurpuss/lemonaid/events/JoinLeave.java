@@ -1,37 +1,41 @@
 package me.saurpuss.lemonaid.events;
 
 import me.saurpuss.lemonaid.Lemonaid;
+import me.saurpuss.lemonaid.utils.players.Lemon;
 import me.saurpuss.lemonaid.utils.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.event.*;
+import org.bukkit.event.player.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class JoinLeave implements Listener {
 
-    Lemonaid plugin = Lemonaid.getInstance();
+    private Lemonaid plugin;
+
+    public JoinLeave(Lemonaid plugin) {
+        this.plugin = plugin;
+    }
+
 
     @EventHandler
     public void messageOfTheDay(PlayerJoinEvent e) {
         Player player = e.getPlayer();
+        plugin.mapPlayer(player.getUniqueId(), Lemon.getUser(player.getUniqueId()));
+
+
+
+
+
+        // TODO add to wrapper in map and retrieve custom attributes
 
         if (player.hasPlayedBefore()) {
             // Welcome to the server MOTD
             List<String> motdList = plugin.getConfig().getStringList("message-of-the-day");
             Random random = new Random(motdList.size());
-            String motd = motdList.get(random.nextInt()).replaceAll("%player%", player.getDisplayName());
+            String motd = motdList.get(random.nextInt()).replace("%player%", player.getDisplayName());
 
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', motd));
         } else {
@@ -43,9 +47,6 @@ public class JoinLeave implements Listener {
 
            // TODO add first join items from kit
         }
-
-        // TODO check if player has active mute in place and add to activeMutes
-
 
         // Send a message to online admins about the login event
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -59,6 +60,8 @@ public class JoinLeave implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
+        // TODO save any data to DB
+        plugin.unmapPlayer(player.getUniqueId());
 
         // TODO check if player has mute in place and remove from active mutes for space reasons
 

@@ -151,6 +151,18 @@ commands:
       /<command> [target] [reason] - Mute a player indefinitely for a specific reason
     default: OP
     permission: lemonaid.admin.mute
+  slowchat:
+    description: Toggle slow chat for all players
+    usage: /<command>
+    default: OP
+    aliases: [slow]
+    permission: lemonaid.admin.slow
+  clearchat:
+    description: Push that pesky chat out of scroll range
+    usage: /<command>
+    default: OP
+    aliases: [cc]
+    permission: lemonaid.admin.clearchat
   recap:
     description: Log quick recaps for information hand-off
     usage: |
@@ -165,7 +177,7 @@ commands:
 permissions:
   lemonaid.admin.*:
     description: Admin level permissions for Lemonaid
-    default: OP
+    default: op
     children:
       lemonaid.admin.fly: true
       lemonaid.admin.broadcast: true
@@ -175,9 +187,13 @@ permissions:
       lemonaid.admin.mute: true
       lemonaid.admin.recap: true
       lemonaid.admin.jail: true
+      lemonaid.admin.slow: true
+      lemonaid.admin.slow.exempt: true
+      lemonaid.admin.clearchat: true
+      lemonaid.admin.clearchat.exempt: true
   lemonaid.admin.notify.*:
     description: Notifications for moderators on specific event
-    default: OP
+    default: op
     children:
       lemonaid.admin.notify.login: true
       lemonaid.admin.notify.logout: true

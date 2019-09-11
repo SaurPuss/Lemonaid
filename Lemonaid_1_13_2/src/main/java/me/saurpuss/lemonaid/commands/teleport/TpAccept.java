@@ -1,18 +1,13 @@
 package me.saurpuss.lemonaid.commands.teleport;
 
-import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.teleport.Teleport;
 import me.saurpuss.lemonaid.utils.util.Utils;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 
 public class TpAccept implements CommandExecutor {
-
-    private Lemonaid plugin = Lemonaid.getInstance();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -20,14 +15,10 @@ public class TpAccept implements CommandExecutor {
             Player target = (Player) sender;
             // Check if there are incoming requests
             HashSet<Teleport> incoming = Teleport.retrieveRequest(target);
-
             if (incoming.isEmpty()) {
                 target.sendMessage(Utils.color("&cYou have no pending teleport requests."));
                 return true;
-            }
-
-            // there is 1 request: activate tp, ignore args
-            if (incoming.size() == 1) {
+            } else if (incoming.size() == 1) {
                 for (Teleport tp : incoming) {
                     Teleport.teleportEvent(tp);
                 }
@@ -38,38 +29,39 @@ public class TpAccept implements CommandExecutor {
                 if (args.length == 0) {
                     StringBuilder s = new StringBuilder();
                     s.append("&6You have incoming requests from: \n");
-
                     for (Teleport tp : incoming) {
                         s.append("&5- " + tp.getClient().getName() + "\n");
                     }
-
                     // TODO make the command bits a different color
                     s.append("&6Use /tpaccept <name>, or /tpaccept all to accept a request.");
 
                     target.sendMessage(Utils.color(s.toString()));
-                } if (args[0].equalsIgnoreCase("all")) {
-                    // accept all
-                    for (Teleport tp : incoming) {
-                        Teleport.teleportEvent(tp);
-                    }
-                    return true;
                 } else {
-                    // accept all valid arguments
-                    for (String arg : args) {
+                    if (args[0].equalsIgnoreCase("all")) {
                         for (Teleport tp : incoming) {
-                            if (arg.equalsIgnoreCase(tp.getClient().getDisplayName())) {
+                            Teleport.teleportEvent(tp);
+                        }
+                        return true;
+                    }
+                    // accept all valid arguments
+                    for (Teleport tp : incoming) {
+                        for (String arg : args) {
+                            if (arg.equalsIgnoreCase(tp.getClient().getName())) {
                                 Teleport.teleportEvent(tp);
                                 incoming.remove(tp);
-                            } else {
-                                target.sendMessage(Utils.color("&cCan't find " + arg + "."));
                             }
                         }
                     }
-                    return true;
+                    // Confirmation if all were successful
+                    if (incoming.isEmpty()) {
+                        target.sendMessage(Utils.color("Accepted all incoming teleport requests."));
+                    } // TODO list the pending requests?
                 }
+                return true;
             }
         } else {
-            return Teleport.isConsole(sender);
+            sender.sendMessage(Utils.playerOnly());
+            return true;
         }
     }
 }

@@ -1,4 +1,16 @@
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Database Options -
+# If you set mysql to false, user data will be saved to a config
+# file. Which is slower and can cause lag if used at scale
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+mysql: false
+  address: ''
+  port: ''
+  user: ''
+  password: ''
+  table: 'lemonaid'
+
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 #   - Custom Server List Options -
 # You can use '&' for color codes.
 # Use - to indicate a new line with another option.
@@ -65,17 +77,27 @@ first-join-spawn:
 # All times are in seconds
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 teleport:
-  available-timer: 30
+  request-timer: 30
   tpa:
     timer: 3
     cost: 100
+    cross-world: false
+  tpahere:
+    timer: 3
+    cost: 100
+    cross-world: false
   back:
     timer: 3
     cost: 10
+    cross-world: true
   ptp:
     timer: 15
     cost: 500
-cross-world-tp: false
+    cross-world: true
+  ptphere:
+    timer: 15
+    cost: 500
+    cross-world: true
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 #   - Social Settings -

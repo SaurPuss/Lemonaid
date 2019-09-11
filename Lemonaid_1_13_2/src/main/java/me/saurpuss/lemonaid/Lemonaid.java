@@ -5,30 +5,34 @@ import me.saurpuss.lemonaid.commands.social.*;
 import me.saurpuss.lemonaid.commands.social.channels.*;
 import me.saurpuss.lemonaid.commands.social.whisper.*;
 import me.saurpuss.lemonaid.commands.teleport.*;
+import me.saurpuss.lemonaid.events.ChatModeration;
 import me.saurpuss.lemonaid.events.JoinLeave;
 import me.saurpuss.lemonaid.utils.config.PartiesConfig;
+import me.saurpuss.lemonaid.utils.players.Lemon;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 public final class Lemonaid extends JavaPlugin {
-    private static Lemonaid instance;
+    public static Lemonaid plugin;
     private static Economy economy;
+    private HashMap<UUID, Lemon> userManager;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
 //        getLogger().info(Utils.console("Plugin startup"));
-        setInstance(this);
+        plugin = this;
+        userManager = new HashMap<>();
         // TODO ping DB
 
         registerConfigs();
         registerCommands();
         registerEvents();
         registerDependencies();
-
-        updateLists();
-        // TODO create user wrapper that stores homes, last location, ignored list etc. Get data onJoin etc
     }
 
     @Override
@@ -42,7 +46,7 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("fly").setExecutor(new Fly());
         getCommand("broadcast").setExecutor(new Broadcast());
         getCommand("cuff").setExecutor(new Cuff()); // TODO after mute
-        getCommand("mute").setExecutor(new Mute());
+        getCommand("mute").setExecutor(new Mute(this));
         getCommand("recap").setExecutor(new Recap());
 
         // Social commands
@@ -63,7 +67,8 @@ public final class Lemonaid extends JavaPlugin {
     private void registerEvents() {
         PluginManager pm = getServer().getPluginManager();
 
-        pm.registerEvents(new JoinLeave(), this);
+        pm.registerEvents(new JoinLeave(this), this);
+        pm.registerEvents(new ChatModeration(this), this);
     }
 
     private void registerConfigs() {
@@ -78,11 +83,6 @@ public final class Lemonaid extends JavaPlugin {
 
     }
 
-    // TODO update cuff as a whole
-    public static void updateLists() {
-        Cuff.cleanCuffList();
-    }
-
     private void registerDependencies() {
         // Set up Vault Economy if available
         if (!setupEconomy()) {
@@ -90,19 +90,27 @@ public final class Lemonaid extends JavaPlugin {
             economy = null;
         }
 
-        // Set up WorldGuard if available
+        // TODO Set up WorldGuard if available
         if (true) {
             getCommand("jail").setExecutor(new Jail());
         } else {
-            getLogger().warning("No World Guard dependency found! Disabling related functionality!");
+            getLogger().warning("No World Guard found! Disabling related functionality!");
         }
 
     }
 
-    public static Economy getEconomy() { return economy; }
+    public void mapPlayer(UUID uuid, Lemon user) {
+        userManager.put(uuid, user);
+    }
+    public void unmapPlayer(UUID uuid) {
+        userManager.remove(uuid);
+    }
 
-    private static void setInstance(Lemonaid instance) { Lemonaid.instance = instance; }
-    public static Lemonaid getInstance() { return instance; }
+    public Lemon getUser(UUID uuid) {
+        return userManager.get(uuid);
+    }
+
+    public static Economy getEconomy() { return economy; }
 
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {

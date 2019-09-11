@@ -1,12 +1,9 @@
 package me.saurpuss.lemonaid.commands.teleport;
 
-import me.saurpuss.lemonaid.utils.teleport.Teleport;
-import me.saurpuss.lemonaid.utils.teleport.TeleportType;
+import me.saurpuss.lemonaid.utils.teleport.*;
 import me.saurpuss.lemonaid.utils.util.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -16,13 +13,12 @@ public class TpaHere implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
-            Player player = (Player) sender;
-
             if (args.length == 0) {
                 // TODO add colors to command bit
-                player.sendMessage(Utils.color("&6Type: /tpahere <name> to request a teleport."));
+                sender.sendMessage(Utils.color("&6Type: /tpahere <name> to request a teleport."));
                 return true;
             } else {
+                Player player = (Player) sender;
                 // Compile a list of valid targets
                 HashSet<Player> list = new HashSet<>();
                 for (String arg : args) {
@@ -34,17 +30,16 @@ public class TpaHere implements CommandExecutor {
                     }
                 }
                 // No valid targets
-                if (list.isEmpty()) {
+                if (list.isEmpty())
                     return true;
-                }
 
-                // Send out requests
+                // Send tpahere requests
                 for (Player target : list)
                     Teleport.addRequest(new Teleport(player, target, TeleportType.TPAHERE));
-                return true;
             }
         } else {
-            return Teleport.isConsole(sender);
+            sender.sendMessage(Utils.playerOnly());
         }
+        return true;
     }
 }
