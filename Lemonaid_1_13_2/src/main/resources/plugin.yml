@@ -183,9 +183,10 @@ permissions:
       lemonaid.admin.broadcast: true
       lemonaid.admin.reload: true
       lemonaid.admin.notify: true
-      lemonaid.admin.cuff: true
       lemonaid.admin.mute: true
       lemonaid.admin.recap: true
+      lemonaid.admin.setignore: true
+      lemonaid.admin.cuff: true
       lemonaid.admin.jail: true
       lemonaid.admin.slow: true
       lemonaid.admin.clearchat: true
@@ -193,10 +194,12 @@ permissions:
     description: Notifications for moderators on specific event
     default: op
     children:
+      lemonaid.admin.notify.toggle: true
       lemonaid.admin.notify.login: true
       lemonaid.admin.notify.logout: true
       lemonaid.admin.notify.kick: true
       lemonaid.admin.notify.mute: true
+      lemonaid.admin.notify.ignore: true
       lemonaid.admin.notify.cuff: true
       lemonaid.admin.notify.jail: true
       lemonaid.admin.slow.exempt: true

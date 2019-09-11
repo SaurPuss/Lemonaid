@@ -56,8 +56,8 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("msg").setExecutor(new Msg(this));
         getCommand("reply").setExecutor(new Reply(this));
         getCommand("busy").setExecutor(new Busy(this));
+        getCommand("ignore").setExecutor(new Ignore(this));
 
-        getCommand("ignore").setExecutor(new Ignore());
         getCommand("localchat").setExecutor(new LocalChat(this));
 
         // Teleport commands

@@ -43,11 +43,14 @@ public class TpaHere implements CommandExecutor {
                 // Send tpahere requests
                 for (Player target : list) {
                     Lemon user = plugin.getUser(target.getUniqueId());
-                    if(user.isBusy()) {
+                    if (user.isBusy()) {
                         player.sendMessage(Utils.color(target.getName() + " is busy right now."));
-                    } else {
-                        Teleport.addRequest(new Teleport(player, target, TeleportType.TPAHERE));
+                        return true;
                     }
+                    if (user.isIgnored(player.getUniqueId()))
+                        return true;
+
+                    Teleport.addRequest(new Teleport(player, target, TeleportType.TPAHERE));
                 }
             }
         } else {

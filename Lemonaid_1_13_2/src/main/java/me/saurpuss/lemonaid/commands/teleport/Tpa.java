@@ -29,10 +29,13 @@ public class Tpa implements CommandExecutor {
                 }
                 Lemon user = plugin.getUser(target.getUniqueId());
 
-                if(user.isBusy()) {
+                if (user.isBusy()) {
                     player.sendMessage(Utils.color(target.getName() + " is busy right now."));
                     return true;
                 }
+
+                if (user.isIgnored(player.getUniqueId()))
+                    return true;
 
                 Teleport.addRequest(new Teleport(player, target, TeleportType.TPA));
             }
