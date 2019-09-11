@@ -50,15 +50,15 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("recap").setExecutor(new Recap());
 
         // Social commands
-        getCommand("msg").setExecutor(new Msg());
-        getCommand("reply").setExecutor(new Reply());
-        getCommand("busy").setExecutor(new Busy());
+        getCommand("msg").setExecutor(new Msg(this));
+        getCommand("reply").setExecutor(new Reply(this));
+        getCommand("busy").setExecutor(new Busy(this));
         getCommand("ignore").setExecutor(new Ignore());
         getCommand("localchat").setExecutor(new LocalChat());
 
         // Util commands
-        getCommand("tpa").setExecutor(new Tpa());
-        getCommand("tpahere").setExecutor(new TpaHere());
+        getCommand("tpa").setExecutor(new Tpa(this));
+        getCommand("tpahere").setExecutor(new TpaHere(this));
         getCommand("tpaccept").setExecutor(new TpAccept());
         getCommand("tpdeny").setExecutor(new TpDeny()); // also tpacancel
 

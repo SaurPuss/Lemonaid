@@ -1,5 +1,7 @@
 package me.saurpuss.lemonaid.commands.teleport;
 
+import me.saurpuss.lemonaid.Lemonaid;
+import me.saurpuss.lemonaid.utils.players.Lemon;
 import me.saurpuss.lemonaid.utils.teleport.*;
 import me.saurpuss.lemonaid.utils.util.Utils;
 import org.bukkit.Bukkit;
@@ -10,13 +12,18 @@ import java.util.HashSet;
 
 public class TpaHere implements CommandExecutor {
 
+    Lemonaid plugin;
+
+    public TpaHere(Lemonaid plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             if (args.length == 0) {
                 // TODO add colors to command bit
                 sender.sendMessage(Utils.color("&6Type: /tpahere <name> to request a teleport."));
-                return true;
             } else {
                 Player player = (Player) sender;
                 // Compile a list of valid targets
@@ -34,8 +41,14 @@ public class TpaHere implements CommandExecutor {
                     return true;
 
                 // Send tpahere requests
-                for (Player target : list)
-                    Teleport.addRequest(new Teleport(player, target, TeleportType.TPAHERE));
+                for (Player target : list) {
+                    Lemon user = plugin.getUser(target.getUniqueId());
+                    if(user.isBusy()) {
+                        player.sendMessage(Utils.color(target.getName() + " is busy right now."));
+                    } else {
+                        Teleport.addRequest(new Teleport(player, target, TeleportType.TPAHERE));
+                    }
+                }
             }
         } else {
             sender.sendMessage(Utils.playerOnly());

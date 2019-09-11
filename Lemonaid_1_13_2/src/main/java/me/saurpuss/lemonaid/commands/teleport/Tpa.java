@@ -1,5 +1,7 @@
 package me.saurpuss.lemonaid.commands.teleport;
 
+import me.saurpuss.lemonaid.Lemonaid;
+import me.saurpuss.lemonaid.utils.players.Lemon;
 import me.saurpuss.lemonaid.utils.teleport.*;
 import me.saurpuss.lemonaid.utils.util.Utils;
 import org.bukkit.Bukkit;
@@ -7,6 +9,11 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 public class Tpa implements CommandExecutor {
+
+    Lemonaid plugin;
+    public Tpa(Lemonaid plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -18,6 +25,12 @@ public class Tpa implements CommandExecutor {
                 Player target = Bukkit.getPlayer(args[0]);
                 if (target == null) {
                     player.sendMessage(Utils.color("&cCan't find " + args[0]));
+                    return true;
+                }
+                Lemon user = plugin.getUser(target.getUniqueId());
+
+                if(user.isBusy()) {
+                    player.sendMessage(Utils.color(target.getName() + " is busy right now."));
                     return true;
                 }
 

@@ -12,6 +12,8 @@ public class Lemon {
     private long muteEnd;
     private String nickname;
     private Location lastLocation;
+    private UUID lastMessage;
+    private boolean busy;
 
     public Lemon() {}
 
@@ -20,13 +22,17 @@ public class Lemon {
         muteEnd = 0;
         nickname = "";
         lastLocation = null;
+        lastMessage = null;
+        busy = false;
     }
 
-    public Lemon(UUID uuid, long muteEnd, String nickname, Location lastLocation) {
+    public Lemon(UUID uuid, long muteEnd, String nickname, Location lastLocation, UUID lastMessage, boolean busy) {
         this.uuid = uuid;
         this.muteEnd = muteEnd;
         this.nickname = nickname;
         this.lastLocation = lastLocation;
+        this.lastMessage = lastMessage;
+        this.busy = busy;
     }
 
     // getters and setters
@@ -38,12 +44,19 @@ public class Lemon {
     public void setNickname(String nickname) { this.nickname = nickname; }
     public Location getLastLocation() { return lastLocation; }
     public void setLastLocation(Location lastLocation) { this.lastLocation = lastLocation; }
+    public UUID getLastMessage() { return lastMessage; }
+    public void setLastMessage(UUID lastMessage) { this.lastMessage = lastMessage; }
+    public boolean isBusy() { return busy; }
+    public void setBusy(boolean busy) { this.busy = busy; }
 
     public boolean isMuted() { return muteEnd > System.currentTimeMillis(); }
 
     public static Lemon getUser(UUID uuid) {
         Lemon user = plugin.getUser(uuid);
         if (user == null) {
+            // TODO bool, check for sql method or config method
+
+
             // TODO retrieve from DB
             user = Database.getUser(uuid);
         }
@@ -51,6 +64,8 @@ public class Lemon {
     }
 
     private void saveUser() {
+        // TODO bool, check for sql method or config method
+
         // TODO save to DB
 
 
