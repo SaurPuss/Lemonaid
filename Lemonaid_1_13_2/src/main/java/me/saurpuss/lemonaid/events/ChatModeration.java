@@ -14,7 +14,6 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
 public class ChatModeration implements Listener {
     private Lemonaid plugin;
-
     public ChatModeration(Lemonaid plugin) {
         this.plugin = plugin;
     }

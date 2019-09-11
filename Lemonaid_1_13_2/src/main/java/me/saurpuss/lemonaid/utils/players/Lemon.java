@@ -115,6 +115,8 @@ public class Lemon {
 
     public void updateUser() {
         this.saveUser();
-        plugin.mapPlayer(this.uuid, this);
+        if (this == plugin.getUser(this.uuid)) {
+            plugin.mapPlayer(this.uuid, this);
+        }
     }
 }

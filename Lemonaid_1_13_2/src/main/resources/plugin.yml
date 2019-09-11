@@ -146,9 +146,9 @@ commands:
       /<command> - Display last 10 mute logs
       /<command> [target] - Mute player indefinitely, apply again to unmute
       /<command> [target] [time] - Mute a player for a specific amount of time
-      (0 = indefinite | number + time: s = seconds, m = minutes, h = hours, d = days, y = years, "10m = 10minutes")
+      (0 = indefinite | number + time: s = seconds, m = minutes, h = hours, d = days, w = weeks, y = years, "10m = 10minutes")
       /<command> [target] [time] [reason] - Mute a player for a specific amount of time and log the reason
-      /<command> [target] [reason] - Mute a player indefinitely for a specific reason
+      /<command> [target] 0 [reason] - Mute a player indefinitely for a specific reason
     default: OP
     permission: lemonaid.admin.mute
   slowchat:
