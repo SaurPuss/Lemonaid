@@ -22,6 +22,7 @@ public class Reply implements CommandExecutor {
             Lemon p = plugin.getUser(player.getUniqueId());
             Player target = Bukkit.getPlayer(p.getLastMessage());
 
+            // Only works for online players
             if (target == null) {
                 player.sendMessage(Utils.color("&cCan't find " + args[0] + "."));
                 return true;

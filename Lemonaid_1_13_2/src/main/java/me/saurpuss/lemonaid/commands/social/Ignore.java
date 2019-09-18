@@ -4,7 +4,6 @@ import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import me.saurpuss.lemonaid.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
@@ -19,28 +18,16 @@ public class Ignore implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if ((sender.hasPermission("lemonaid.admin.setignore")) && (args.length == 2)) {
             // Admin command to force an addition to a player's ignored list
-            Player player = Bukkit.getPlayer(args[0]);
+            Player player = Utils.getPlayer(args[0]);
             if (player == null) {
-                for(OfflinePlayer p : Bukkit.getOfflinePlayers()) {
-                    if (p.getName().equalsIgnoreCase(args[0]))
-                        player = p.getPlayer();
-                }
-                if (player == null) {
-                    sender.sendMessage(Utils.color("&cCan't find " + args[0]));
-                    return true;
-                }
+                sender.sendMessage(Utils.color("&cCan't find " + args[0]));
+                return true;
             }
 
-            Player target = Bukkit.getPlayer(args[1]);
+            Player target = Utils.getPlayer(args[1]);
             if (target == null) {
-                for(OfflinePlayer p : Bukkit.getOfflinePlayers()) {
-                    if (p.getName().equalsIgnoreCase(args[1]))
-                        target = p.getPlayer();
-                }
-                if (target == null) {
-                    sender.sendMessage(Utils.color("&cCan't find " + args[1]));
-                    return true;
-                }
+                sender.sendMessage(Utils.color("&cCan't find " + args[1]));
+                return true;
             }
 
             Lemon user = plugin.getUser(player.getUniqueId());
@@ -62,16 +49,10 @@ public class Ignore implements CommandExecutor {
                     sender.sendMessage(Utils.color("Type: /ignore <name> to toggle a player's ignored status"));
                 }
                 Player player = (Player) sender;
-                Player target = Bukkit.getPlayer(args[0]);
+                Player target = Utils.getPlayer(args[0]);
                 if (target == null) {
-                    for (OfflinePlayer p : Bukkit.getOfflinePlayers()) {
-                        if (p.getName().equalsIgnoreCase(args[0]))
-                            target = p.getPlayer();
-                    }
-                    if (target == null) {
-                        player.sendMessage(Utils.color("&cCan't find " + args[0]));
-                        return true;
-                    }
+                    player.sendMessage(Utils.color("&cCan't find " + args[0]));
+                    return true;
                 }
 
                 Lemon user = plugin.getUser(player.getUniqueId());

@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 public class Msg implements CommandExecutor {
 
+    // TODO bounce back if user is set to busy? to prevent one way spamming
     Lemonaid plugin;
 
     public Msg(Lemonaid plugin) {
