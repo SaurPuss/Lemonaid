@@ -20,6 +20,15 @@ commands:
     usage: /<command> <message>
     permission: lemonaid.admin.recap
     permission-message: You do not have permission to do this
+  mute:
+    description: Mute a bothersome player
+    usage: |
+      /<command> list - Recap the last 10 mute events
+      /<command> help - Get help applying mutes
+      /<command> [player] - Apply a permanent (un)mute to your target
+      /<command> [player] [time] [reason] - Apply a mute with more info
+    permission: lemonaid.admin.mute
+    permission-message: You do not have permission to do this
   broadcast:
     description: Broadcast a message to the entire server
     usage: /<command> <message>
@@ -78,12 +87,13 @@ permissions:
       lemonaid.admin.notify.*: true
       lemonaid.admin.recap: true
       lemonaid.admin.broadcast: true
-      lemonaid.admin.fly: true;
+      lemonaid.admin.fly: true
+      lemonaid.admin.mute: true
   lemonaid.admin.notify.*:
     description: Moderation notification permissions
     default: op
     children:
-      lemonaid.admin.notify.stuff: true
+      lemonaid.admin.notify.mute: true
   lemonaid.teleport.*:
     description: Teleportation permissions
     default: true

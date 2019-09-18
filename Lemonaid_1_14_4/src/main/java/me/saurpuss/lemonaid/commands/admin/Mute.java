@@ -1,8 +1,8 @@
 package me.saurpuss.lemonaid.commands.admin;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.players.Lemon;
-import me.saurpuss.lemonaid.utils.util.Utils;
+import me.saurpuss.lemonaid.utils.Utils;
+import me.saurpuss.lemonaid.utils.users.Lemon;
 import org.apache.commons.lang.StringUtils;
 
 import org.bukkit.Bukkit;
@@ -21,7 +21,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class Mute implements CommandExecutor {
-
 
     private Lemonaid plugin;
     /**

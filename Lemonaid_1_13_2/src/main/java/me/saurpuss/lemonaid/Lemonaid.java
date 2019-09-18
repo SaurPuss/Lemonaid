@@ -89,8 +89,6 @@ public final class Lemonaid extends JavaPlugin {
             LemonConfig.get().createSection("users");
             LemonConfig.get().options().copyDefaults(true);
             LemonConfig.save();
-
-
         }
 
         // TODO add this for the parties bits too

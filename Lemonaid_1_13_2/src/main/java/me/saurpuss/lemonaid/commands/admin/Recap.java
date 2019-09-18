@@ -18,7 +18,7 @@ import java.util.*;
 public class Recap implements CommandExecutor {
 
     private Lemonaid plugin;
-    private File file = new File(plugin.getDataFolder(), "recap.txt");
+    private final File file = new File(plugin.getDataFolder(), "recap.txt");
     private Deque<String> recap = getRecap();
 
     /**

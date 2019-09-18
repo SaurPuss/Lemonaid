@@ -1,7 +1,7 @@
 package me.saurpuss.lemonaid.commands.admin;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.util.Utils;
+import me.saurpuss.lemonaid.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,7 +18,7 @@ import java.util.*;
 public class Recap implements CommandExecutor {
 
     private Lemonaid plugin;
-    private File file = new File(plugin.getDataFolder(), "recap.txt");
+    private final File file = new File(plugin.getDataFolder(), "recap.txt");
     private Deque<String> recap = getRecap();
 
     /**
