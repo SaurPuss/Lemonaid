@@ -1,10 +1,11 @@
 package me.saurpuss.lemonaid.utils.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.players.Lemon;
-import me.saurpuss.lemonaid.utils.util.Utils;
+import me.saurpuss.lemonaid.utils.users.Lemon;
+import me.saurpuss.lemonaid.utils.Utils;
 import net.milkbowl.vault.economy.*;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -15,7 +16,6 @@ public class Teleport {
     private static HashSet<Teleport> pendingRequests = new HashSet<>();
 
     // Teleport()
-    // TODO replace player with UUID to save space?
     private Player client;
     private Player target;
     private TeleportType tpType;
@@ -167,10 +167,5 @@ public class Teleport {
                 Bukkit.getScheduler().cancelTask(id);
             }
         }, 0L, 20L);
-    }
-
-    public static boolean isConsole(CommandSender sender) {
-        sender.sendMessage(Utils.playerOnly());
-        return true;
     }
 }

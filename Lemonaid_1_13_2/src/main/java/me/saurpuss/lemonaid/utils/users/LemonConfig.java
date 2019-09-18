@@ -1,4 +1,4 @@
-package me.saurpuss.lemonaid.utils.players;
+package me.saurpuss.lemonaid.utils.users;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import org.bukkit.*;

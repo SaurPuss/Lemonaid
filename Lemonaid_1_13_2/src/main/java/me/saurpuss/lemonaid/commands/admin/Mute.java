@@ -1,8 +1,8 @@
 package me.saurpuss.lemonaid.commands.admin;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.players.Lemon;
-import me.saurpuss.lemonaid.utils.util.Utils;
+import me.saurpuss.lemonaid.utils.users.Lemon;
+import me.saurpuss.lemonaid.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 
 import org.bukkit.Bukkit;

@@ -15,7 +15,6 @@ public class Teleport {
     private static HashSet<Teleport> pendingRequests = new HashSet<>();
 
     // Teleport()
-    // TODO replace player with UUID to save space?
     private Player client;
     private Player target;
     private TeleportType tpType;
@@ -167,10 +166,5 @@ public class Teleport {
                 Bukkit.getScheduler().cancelTask(id);
             }
         }, 0L, 20L);
-    }
-
-    public static boolean isConsole(CommandSender sender) {
-        sender.sendMessage(Utils.playerOnly());
-        return true;
     }
 }

@@ -1,8 +1,8 @@
 package me.saurpuss.lemonaid.events;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.players.Lemon;
-import me.saurpuss.lemonaid.utils.util.Utils;
+import me.saurpuss.lemonaid.utils.users.Lemon;
+import me.saurpuss.lemonaid.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;

@@ -1,4 +1,4 @@
-package me.saurpuss.lemonaid.utils.util;
+package me.saurpuss.lemonaid.utils;
 
 import org.bukkit.ChatColor;
 
