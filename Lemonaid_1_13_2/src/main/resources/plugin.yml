@@ -15,6 +15,7 @@ commands:
       /<command> reload - Reload the plugin configs
       /<command> ?|help - Plugin help file
     default: OP
+    aliases: [lemon]
     permission: lemonaid.admin.reload
     permission-message: You do not have permission to do this
 

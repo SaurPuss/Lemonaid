@@ -6,7 +6,8 @@ import org.bukkit.Location;
 import java.util.*;
 
 public class Lemon {
-    private static Lemonaid plugin = Lemonaid.plugin;
+    private final static boolean DB_SQL = Lemonaid.plugin.getConfig().getBoolean("mysql");
+
     private UUID uuid, lastMessage;
     private long muteEnd;
     private String nickname;
@@ -15,8 +16,6 @@ public class Lemon {
     private HashMap<String, Location> homes;
     private int maxHomes; // TODO make this based on perm groups instead
     private HashSet<UUID> ignored;
-
-    public Lemon() {}
 
     public Lemon(UUID uuid) {
         this.uuid = uuid;
@@ -30,8 +29,8 @@ public class Lemon {
         ignored = new HashSet<>();
     }
 
-    public Lemon(UUID uuid, long muteEnd, String nickname, Location lastLocation, UUID lastMessage,
-                 boolean busy, HashMap<String, Location> homes, int maxHomes, HashSet<UUID> ignored) {
+    Lemon(UUID uuid, long muteEnd, String nickname, Location lastLocation, UUID lastMessage,
+          boolean busy, HashMap<String, Location> homes, int maxHomes, HashSet<UUID> ignored) {
         this.uuid = uuid;
         this.muteEnd = muteEnd;
         this.nickname = nickname;
@@ -96,9 +95,8 @@ public class Lemon {
 
 
 
-
-    public static Lemon getUser(UUID uuid) {
-        if (plugin.getConfig().getBoolean("mysql")) {
+    public Lemon getUser() {
+        if (DB_SQL) {
             return MySQLDatabase.getUser(uuid);
         } else {
             return LemonConfig.getUser(uuid);
@@ -106,7 +104,7 @@ public class Lemon {
     }
 
     private void saveUser() {
-        if (plugin.getConfig().getBoolean("mysql")) {
+        if (DB_SQL) {
             MySQLDatabase.saveUser(this);
         } else {
             LemonConfig.saveUser(this);
@@ -115,8 +113,6 @@ public class Lemon {
 
     public void updateUser() {
         this.saveUser();
-        if (this == plugin.getUser(this.uuid)) {
-            plugin.mapPlayer(this.uuid, this);
-        }
+        Lemonaid.plugin.mapPlayer(uuid, this);
     }
 }

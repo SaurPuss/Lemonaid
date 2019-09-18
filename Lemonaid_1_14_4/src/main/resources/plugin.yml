@@ -7,7 +7,14 @@ authors: [SaurPuss]
 description: Basically Essentials for practice purposes
 website: https://github.com/SaurPuss
 commands:
-  # Moderation commands
+  # Operator Commands
+  fly:
+    description: Toggle fly mode on yourself or a player
+    usage: |
+      /<command> - Toggle fly on yourself
+      /<command> [target] - Toggle fly on a target
+    permission: lemonaid.admin.fly
+    permission-message: You do not have permission to do this
   recap:
     description: Leave a message for other permission holders
     usage: /<command> <message>
@@ -71,6 +78,7 @@ permissions:
       lemonaid.admin.notify.*: true
       lemonaid.admin.recap: true
       lemonaid.admin.broadcast: true
+      lemonaid.admin.fly: true;
   lemonaid.admin.notify.*:
     description: Moderation notification permissions
     default: op

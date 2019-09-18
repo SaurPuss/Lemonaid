@@ -1,6 +1,7 @@
 package me.saurpuss.lemonaid;
 
 import me.saurpuss.lemonaid.commands.admin.Broadcast;
+import me.saurpuss.lemonaid.commands.admin.Fly;
 import me.saurpuss.lemonaid.commands.admin.Recap;
 import me.saurpuss.lemonaid.commands.teleport.*;
 import me.saurpuss.lemonaid.events.ChatEvents;
@@ -32,6 +33,7 @@ public final class Lemonaid extends JavaPlugin {
 
     private void registerCommands() {
         // Admin level command
+        getCommand("fly").setExecutor(new Fly());
         getCommand("recap").setExecutor(new Recap());
         getCommand("broadcast").setExecutor(new Broadcast());
 

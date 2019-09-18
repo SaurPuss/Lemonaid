@@ -3,104 +3,137 @@ package me.saurpuss.lemonaid.commands.admin;
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.util.Utils;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.command.*;
-import org.bukkit.entity.Player;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * Information hand-off in a small server side package
+ */
 public class Recap implements CommandExecutor {
 
-    private Lemonaid plugin = Lemonaid.getInstance();
+    private Lemonaid plugin;
     private File file = new File(plugin.getDataFolder(), "recap.txt");
-    private ArrayList<String> log = getLog();
     private Deque<String> recap = getRecap();
 
+    /**
+     * Constructor for internal use by the main class
+     * @param plugin Get the instance of Lemonaid running on the server
+     */
+    public Recap(Lemonaid plugin) {
+        this.plugin = plugin;
+    }
+
+    /**
+     * Command executing /recap or /recap [message].
+     * @param sender Console or a player with admin level permission
+     * @param command /recap
+     * @param label recap
+     * @param args message
+     * @return true - recap results
+     */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if ((!(sender instanceof Player)) || (sender.hasPermission("lemonaid.admin.recap"))) {
-            if (args.length == 0) {
-                // print last 10 recaps
-                for (String s : recap) {
-                    sender.sendMessage(s);
-                }
-            } else {
-                String s = StringUtils.join(args, ' ', 0, args.length);
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', addRecap(s)));
-            }
-            return true;
-        } else {
+        if (!sender.hasPermission("lemonaid.admin.recap")) {
             sender.sendMessage(Utils.noPermission());
             return true;
         }
+
+        // print last 10 recaps
+        if (args.length == 0) {
+            recap.forEach((message) -> sender.sendMessage(Utils.color(message)));
+            return true;
+        }
+
+        // add new recap
+        String message = StringUtils.join(args, ' ', 0, args.length);
+        sender.sendMessage(Utils.color(addRecap(message)));
+        return true;
     }
 
-    private ArrayList<String> getLog() {
+    /**
+     * Get last 10 logs from recap.txt and add them to the log Deque
+     * @return Linked List with String recaps
+     */
+    private Deque<String> getRecap() {
+        // Make sure the file exists
         if (!file.exists())
             makeLog();
 
+        // Read recap.txt and add to an ArrayList
         ArrayList<String> list = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(file), Charset.defaultCharset()))) {
-            String line = "";
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(file), Charset.defaultCharset()))) {
+            String line;
             while ((line = reader.readLine()) != null) {
                 list.add(line);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            plugin.getLogger().warning("Failed to read recap.txt!");
         }
 
-        return list;
-    }
-
-    private Deque<String> getRecap() {
-        Deque<String> list = new LinkedList<>();
+        // Read the last 10 entries from the ArrayList
+        Deque<String> log = new LinkedList<>();
         for (int i = log.size() - 1; i > log.size() - 11; i--) {
-            list.addFirst(log.get(i));
+            log.addFirst(list.get(i));
         }
-        return list;
+
+        // Return results
+        return log;
     }
 
+    /**
+     * Add a recap to the logs and recap.txt in the plugin folder.
+     * @param message Recap worthy String input
+     * @return "MONTH XX: Recap worthy String input"
+     */
     private String addRecap(String message) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
-        if (recap.size() == 10)
-            recap.removeLast();
-
-        String s = sdf.format("&c" + new Date()) + ": &f" + message;
-        recap.addFirst(s);
-        addLog(s);
-        plugin.getLogger().info("[RECAP] " + s);
-
-        return s;
-    }
-
-    private void addLog(String message) {
+        // Check for file
         if (!file.exists())
             makeLog();
 
+        // Check current recap
+        if (recap.size() == 10)
+            recap.removeLast();
+
+        // Add today to the recap before processing
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
+        String s = "&c" + sdf.format(new Date()) + "&f: " + message;
+
+        // Add recap to deque and recap.txt
+        recap.addFirst(s);
         try (PrintWriter writer = new PrintWriter(new FileWriter(file, true), true)) {
-            writer.println(message);
+            writer.println(s);
         } catch (IOException e) {
             plugin.getLogger().warning("Failed to log recap to recap.txt!");
         }
+
+        // Log to the console and return the formatted recap message
+        plugin.getLogger().info("[RECAP] " + s);
+        return s;
     }
 
+    /**
+     * Create a recap.txt in the config folder for saving recaps.
+     */
     private void makeLog() {
         try {
-            plugin.getLogger().info("Creating new recap.txt!");
+            // Make file and required directories
+            plugin.getLogger().info("Creating new recap.txt in the plugin folder!");
             file.getParentFile().mkdirs();
             file.createNewFile();
+
+            // Try to write to the newly created file
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
-            try (PrintWriter writer = new PrintWriter(new FileWriter(file, true), true)) {
-                writer.println(sdf.format("&c" + new Date()) + ": &fUse &d/recap <message> &fto add a recap");
-            } catch (IOException e) {
-                plugin.getLogger().warning("Failed to write to the new recap.txt!");
-            }
+            PrintWriter writer = new PrintWriter(new FileWriter(file, true), true);
+            writer.println("&c" + sdf.format(new Date()) + "&f: Use &d/recap <message> &fto add a recap");
         } catch (IOException e) {
-            plugin.getLogger().warning("Failed to create recap.txt!");
+            plugin.getLogger().warning("Error while creating recap.txt!!");
         }
     }
 }

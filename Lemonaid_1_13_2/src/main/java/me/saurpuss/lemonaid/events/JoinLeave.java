@@ -21,7 +21,7 @@ public class JoinLeave implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        plugin.mapPlayer(player.getUniqueId(), Lemon.getUser(player.getUniqueId()));
+        plugin.mapPlayer(player.getUniqueId(), new Lemon(player.getUniqueId()).getUser());
 
 
 

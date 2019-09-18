@@ -16,14 +16,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class Mute implements CommandExecutor {
-
-    private Lemonaid plugin;
-    private File mutesTXT = new File(plugin.getDataFolder(), "mutes.txt");
-    private Deque<String> recap = getRecap();
-
+    private final Lemonaid plugin;
     public Mute(Lemonaid plugin) {
         this.plugin = plugin;
     }
+
+    private File mutesTXT;
+    private Deque<String> recap = getRecap();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -51,7 +50,7 @@ public class Mute implements CommandExecutor {
                         sender.sendMessage(Utils.color("Usage: /mute <player> <time> <reason>, use /mute help for more information."));
                         return true;
                     }
-                    Lemon user = Lemon.getUser(target.getUniqueId());
+                    Lemon user = new Lemon(target.getUniqueId()).getUser();
                     if (user.isMuted()) {
                         user.setMuteEnd(0);
                         user.updateUser();
@@ -123,7 +122,7 @@ public class Mute implements CommandExecutor {
     }
 
     private void mute(CommandSender sender, Player target, long endMute, String reason) {
-        Lemon user = Lemon.getUser(target.getUniqueId());
+        Lemon user = new Lemon(target.getUniqueId()).getUser();
         user.setMuteEnd(endMute);
         user.updateUser();
 
@@ -158,6 +157,7 @@ public class Mute implements CommandExecutor {
     }
 
     private LinkedList<String> getRecap() {
+        mutesTXT = new File(plugin.getDataFolder(), "mutes.txt");
         if (!mutesTXT.exists()) {
             makeLog();
         }
@@ -183,6 +183,7 @@ public class Mute implements CommandExecutor {
     }
 
     private void makeLog() {
+        mutesTXT = new File(plugin.getDataFolder(), "mutes.txt");
         try {
             plugin.getLogger().info("Creating new mutes.txt!");
             mutesTXT.getParentFile().mkdirs();

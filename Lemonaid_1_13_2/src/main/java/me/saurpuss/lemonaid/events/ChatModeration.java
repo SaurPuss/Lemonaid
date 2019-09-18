@@ -5,12 +5,10 @@ import me.saurpuss.lemonaid.utils.players.Lemon;
 import me.saurpuss.lemonaid.utils.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerChannelEvent;
-import org.bukkit.event.player.PlayerCommandSendEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.*;
+import org.bukkit.event.player.*;
+
+import java.util.Date;
 
 public class ChatModeration implements Listener {
     private Lemonaid plugin;
@@ -25,17 +23,17 @@ public class ChatModeration implements Listener {
     @EventHandler
     public void chatEvent(AsyncPlayerChatEvent e) {
         Player player = e.getPlayer();
-        Lemon user = Lemon.getUser(player.getUniqueId());
+        Lemon user = new Lemon(player.getUniqueId()).getUser();
 
         // This player is not allowed to talk
         if (user.isMuted()) {
-            player.sendMessage(Utils.color("&cYou do not have permission to talk right now!"));
+            player.sendMessage(Utils.color("c&You are muted! You can't speak until " + new Date(user.getMuteEnd()).toString()));
             e.setCancelled(true);
         }
 
         // Remove this message from chat for players that have this person ignored
         for (Player p : Bukkit.getOnlinePlayers()) {
-            Lemon u = Lemon.getUser(p.getUniqueId());
+            Lemon u = new Lemon(p.getUniqueId()).getUser();
             if (u.isIgnored(player.getUniqueId()))
                 e.getRecipients().remove(p);
         }

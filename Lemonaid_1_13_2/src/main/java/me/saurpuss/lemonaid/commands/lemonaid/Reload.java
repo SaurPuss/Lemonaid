@@ -1,14 +1,7 @@
 package me.saurpuss.lemonaid.commands.lemonaid;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import me.saurpuss.lemonaid.commands.SubCommand;
 
-public class Reload implements CommandExecutor {
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // TODO reload configs and stuff
-//        Lemonaid.updateLists();
-        return false;
-    }
+public class Reload extends SubCommand {
+
 }

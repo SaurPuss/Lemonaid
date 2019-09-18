@@ -6,24 +6,20 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Utils {
-    // 2 AUG 2019
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd");
 
+    // Translate Chat Colors with & instead of §
     public static String color(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    public static String noPermission() {
-        return ChatColor.translateAlternateColorCodes('&',
-                "&cYou don't have permission to do this!" );
-    }
-
+    // No permission errors
+    public static String noPermission() { return "§cYou don't have permission to do this!"; }
     public static String playerOnly() {
-        return "Only players can use this command!";
+        return "§cOnly players can use this command!";
     }
 
+    // Formatting LocalDate, ex: AUG 02
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd");
     public static String dateToString(LocalDate date) { return date.format(formatter); }
     public static LocalDate stringToDate(String date) { return LocalDate.parse(date, formatter); }
-
-
 }
