@@ -1,6 +1,7 @@
 package me.saurpuss.lemonaid.utils.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
+import me.saurpuss.lemonaid.utils.users.Lemon;
 import me.saurpuss.lemonaid.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,16 +11,15 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class Teleport {
-    private static Lemonaid plugin = Lemonaid.getInstance();
+    private static Lemonaid plugin = Lemonaid.getPlugin(Lemonaid.class);
     private static HashSet<Teleport> pendingRequests = new HashSet<>();
-    // TODO remove the hash map and get location straight from config
-    private static HashMap<Player, Location> lastLocation = new HashMap<>();
 
     // Teleport()
+    // TODO replace player with UUID to save space?
     private Player client;
     private Player target;
     private TeleportType tpType;
-    private static int id;
+    private static transient int id;
 
     Teleport() {}
     public Teleport(Player client, Player target, TeleportType tpType) {
@@ -38,29 +38,14 @@ public class Teleport {
     /**
      * Teleportation event start. If Vault is active withdraw from balance
      * and initiate requested tp.
-     * // TODO add vault dependency stuff to Lemonaid.java
      * @param tp Teleportation request object
      */
     public static void teleportEvent(Teleport tp) {
 //        Economy economy = Lemonaid.getEconomy();
 //        if (economy.isEnabled()) {
 //            // Attempt to charge the client for the teleport
-//            String path = "";
-//            switch (tp.tpType) {
-//                case TPA:
-//                case TPAHERE:
-//                    path = "teleport.tpa.cost";
-//                    break;
-//                case PTP:
-//                case PTPHERE:
-//                    path = "teleport.ptp.cost";
-//                    break;
-//                case BACK:
-//                    path = "teleport.back.cost";
-//                    break;
-//            }
-//
-//            EconomyResponse response = economy.withdrawPlayer(tp.client, plugin.getConfig().getDouble(path));
+//            EconomyResponse response = economy.withdrawPlayer(tp.client,
+//                    plugin.getConfig().getDouble("teleport." + tp.tpType.name + ".cost"));
 //            if (!response.transactionSuccess()) {
 //                tp.client.sendMessage(Utils.color("&cBalance too low! Teleportation request canceled!"));
 //                return;
@@ -68,22 +53,6 @@ public class Teleport {
 //        }
 
         activateTp(tp);
-    }
-
-    private static void setLastLocation(Player player, Location location) {
-        lastLocation.put(player, location);
-        // TODO save to config
-    }
-
-    private static Location getLastLocation(Player player) {
-        if (lastLocation.containsKey(player)) {
-            // TODO get from config
-            return lastLocation.get(player);
-        } else {
-            // save and return this location
-            setLastLocation(player, player.getLocation());
-            return player.getLocation();
-        }
     }
 
     public static boolean addRequest(Teleport tp) {
@@ -109,9 +78,14 @@ public class Teleport {
                 return false; }
         }
 
-        int delay = plugin.getConfig().getInt("teleport.available-timer");
+        // Check for cross-world and if it's allowed
+        if (!plugin.getConfig().getBoolean("teleport." + tp.tpType.name + ".cross-world")) {
+            tp.client.sendMessage(Utils.color("You cannot teleport between worlds. Request canceled."));
+            return false;
+        }
+
+        int delay = plugin.getConfig().getInt("teleport.request-timer");
         String request = "";
-        // TODO genders?
         switch (tp.tpType) {
             case TPA: case PTP:
                 request = tp.client.getDisplayName() + " wants to teleport to you."; break;
@@ -121,15 +95,16 @@ public class Teleport {
                 plugin.getLogger().warning("Unexpected TeleportType tried to get listed in pending teleport requests!");
                 return false;
         }
+
         tp.target.sendMessage(Utils.color("&6" + request));
         tp.client.sendMessage(Utils.color("&6Request sent to " + tp.target.getName()));
         pendingRequests.add(tp);
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            removeRequest(tp);
-        }, delay * 20L);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> removeRequest(tp), delay * 20L);
         return true;
     }
+
+    public static void removeRequest(Teleport tp) { pendingRequests.remove(tp); }
 
     public static HashSet<Teleport> retrieveRequest(Player target) {
         HashSet<Teleport> requests = new HashSet<>();
@@ -149,60 +124,14 @@ public class Teleport {
         return requests;
     }
 
-
-    public static void removeRequest(Teleport tp) {
-        pendingRequests.remove(tp);
-    }
-
     private static void activateTp(Teleport tp) {
         removeRequest(tp);
-        switch (tp.tpType) {
-            // client -> target
-            case TPA: case PTP:
-                teleportTask(tp.client, tp.target, plugin.getConfig().getInt("teleport.tpa.timer")); break;
-            // target -> client
-            case TPAHERE: case PTPHERE:
-                teleportTask(tp.target, tp.client, plugin.getConfig().getInt("teleport.tpa.timer")); break;
-            // client -> lastLocation
-            case BACK: default:
-                // Basically teleportTask but just different enough to not warrant an overloaded method
-                // TODO if I set the target to location instead of a player I can combine this
-                tp.client.sendMessage(Utils.color("&6Teleportation commencing in &5" +
-                        plugin.getConfig().getInt("teleport.back.timer") + "&6 seconds! Do not move!"));
-                id = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-                    Location location = tp.client.getLocation();
-                    int x = location.getBlockX();
-                    int y = location.getBlockY();
-                    int z = location.getBlockZ();
-                    int counter = plugin.getConfig().getInt("teleport.back.timer");
-                    // Check if the player hasn't moved from x/y/z
-                    if (counter == 0) {
-                        // teleport client & update lastLocation / teleports / task
-                        tp.client.teleport(getLastLocation(tp.client));
-                        setLastLocation(tp.client, location);
-                        Bukkit.getScheduler().cancelTask(id);
-                    } else if ((x == tp.client.getLocation().getBlockX()) &&
-                            (y == tp.client.getLocation().getBlockY()) &&
-                            (z == tp.client.getLocation().getBlockZ())) {
-                        // client has not moved
-                        counter--;
-                        // send client countdown messages
-                        if (counter == 10) {
-                            tp.target.sendMessage(Utils.color("&5" + counter + "&6 seconds until teleport!"));
-                        } else if (counter <= 5) {
-                            tp.target.sendMessage(Utils.color("&5"+ counter + "&6!"));
-                        }
-                    } else {
-                        // client has moved! cancel task!
-                        tp.client.sendMessage(Utils.color("&cTeleportation canceled!"));
-                        Bukkit.getScheduler().cancelTask(id);
-                    }
-                }, 0L, 20L);
-        }
+        teleportTask(tp.client, tp.target, plugin.getConfig().getInt("teleport." + tp.tpType.name + ".timer"));
     }
 
     private static void teleportTask(Player player, Player target, int timer) {
         // player -> target
+        // TODO replace with non bukkit task scheduler
         id = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             Location location = player.getLocation();
             int x = location.getBlockX();
@@ -212,8 +141,14 @@ public class Teleport {
             player.sendMessage(Utils.color("&6Teleportation commencing in &6" + counter + "&6 seconds! Do not move!"));
             if (counter == 0) {
                 // teleport client & update lastLocation / teleports / task
-                player.teleport(target.getLocation());
-                setLastLocation(player, location);
+                Lemon user = plugin.getUser(player.getUniqueId());
+                if (target != null)
+                    player.teleport(target.getLocation());
+                else {
+                    player.teleport(user.getLastLocation());
+                }
+                user.setLastLocation(location);
+                user.updateUser();
                 Bukkit.getScheduler().cancelTask(id);
             } else if ((x == player.getLocation().getBlockX()) &&
                     (y == player.getLocation().getBlockY()) &&
@@ -235,7 +170,7 @@ public class Teleport {
     }
 
     public static boolean isConsole(CommandSender sender) {
-        sender.sendMessage(Utils.console());
+        sender.sendMessage(Utils.playerOnly());
         return true;
     }
 }
