@@ -23,10 +23,12 @@ commands:
   mute:
     description: Mute a bothersome player
     usage: |
-      /<command> list - Recap the last 10 mute events
-      /<command> help - Get help applying mutes
-      /<command> [player] - Apply a permanent (un)mute to your target
-      /<command> [player] [time] [reason] - Apply a mute with more info
+      /<command> - Display last 10 mute logs
+      /<command> [target] - Mute player indefinitely, apply again to unmute
+      /<command> [target] [time] - Mute a player for a specific amount of time
+      (0 = indefinite | number + time: s = seconds, m = minutes, h = hours, d = days, w = weeks, y = years, "10m = 10minutes")
+      /<command> [target] [time] [reason] - Mute a player for a specific amount of time and log the reason
+      /<command> [target] 0 [reason] - Mute a player indefinitely for a specific reason
     permission: lemonaid.admin.mute
     permission-message: You do not have permission to do this
   broadcast:

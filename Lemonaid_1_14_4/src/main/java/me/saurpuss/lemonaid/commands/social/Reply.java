@@ -1,11 +1,13 @@
-package me.saurpuss.lemonaid.commands.social.whisper;
+package me.saurpuss.lemonaid.commands.social;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.users.Lemon;
 import me.saurpuss.lemonaid.utils.Utils;
+import me.saurpuss.lemonaid.utils.users.Lemon;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class Reply implements CommandExecutor {

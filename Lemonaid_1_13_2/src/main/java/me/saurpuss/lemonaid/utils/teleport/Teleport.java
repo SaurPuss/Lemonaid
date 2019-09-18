@@ -6,7 +6,6 @@ import me.saurpuss.lemonaid.utils.Utils;
 import net.milkbowl.vault.economy.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.*;

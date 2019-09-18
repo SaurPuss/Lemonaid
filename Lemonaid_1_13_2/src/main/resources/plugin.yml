@@ -136,11 +136,6 @@ commands:
       /<command> [target] [time] [reason] - Cuff a player for an amount of time and log the reason
     default: OP
     permission: lemonaid.admin.cuff
-  jail:
-    description: Send a player to a jail defined by a World Guard region
-    usage: /<command> [target]
-    default: OP
-    permission: lemonaid.admin.jail
   mute:
     description: Prevent a player from speaking
     usage: |
@@ -150,7 +145,6 @@ commands:
       (0 = indefinite | number + time: s = seconds, m = minutes, h = hours, d = days, w = weeks, y = years, "10m = 10minutes")
       /<command> [target] [time] [reason] - Mute a player for a specific amount of time and log the reason
       /<command> [target] 0 [reason] - Mute a player indefinitely for a specific reason
-    default: OP
     permission: lemonaid.admin.mute
   slowchat:
     description: Toggle slow chat for all players

@@ -14,6 +14,8 @@ import java.util.*;
 
 public class Cuff implements CommandExecutor {
 
+    // TODO REPLACE ENTIRE THING BASED ON MUTE STRUCTURE
+
     static Lemonaid plugin = Lemonaid.plugin;
     // TODO save and retrieve log from file instead of arraylist
     public static ArrayList<CuffLog> cuffLog = new ArrayList<>();

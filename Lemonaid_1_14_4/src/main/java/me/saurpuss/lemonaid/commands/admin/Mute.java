@@ -6,7 +6,6 @@ import me.saurpuss.lemonaid.utils.users.Lemon;
 import org.apache.commons.lang.StringUtils;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -72,7 +71,7 @@ public class Mute implements CommandExecutor {
 
             // Check if args[0] is a player or offline player that requires an infinite mute
             else {
-                target = getPlayer(args[0]);
+                target = Utils.getPlayer(args[0]);
                 if (target == null) {
                     sender.sendMessage(Utils.color("&cUsage: /mute <player> <time> <reason>, use /mute help for more information."));
                     return true;
@@ -121,7 +120,7 @@ public class Mute implements CommandExecutor {
             }
 
             // Try to retrieve an online or offline player from the first argument
-            target = getPlayer(args[0]);
+            target = Utils.getPlayer(args[0]);
             if (target == null) {
                 sender.sendMessage(Utils.color("Usage: /mute <player> <time> <reason>, use /mute help for more information."));
                 return true;
@@ -275,28 +274,6 @@ public class Mute implements CommandExecutor {
         } catch (IOException e) {
             plugin.getLogger().warning("Error while creating mutes.txt!");
         }
-    }
-
-    /**
-     * Convenience method to look for a viable payer to mute. If there is no online player
-     * check if the name matches an offline player
-     * @param name player IGN to check against
-     * @return player object that matches the name
-     */
-    private Player getPlayer(String name) {
-        Player player = Bukkit.getPlayer(name);
-        if (player != null) {
-            return player;
-        }
-
-        // Try to get an offline player
-        for (OfflinePlayer p : Bukkit.getOfflinePlayers()) {
-            if (p.getName().equalsIgnoreCase(name)) {
-                player = p.getPlayer();
-                return player;
-            }
-        }
-        return null;
     }
 
     /**

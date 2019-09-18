@@ -3,7 +3,6 @@ package me.saurpuss.lemonaid;
 import me.saurpuss.lemonaid.commands.admin.*;
 import me.saurpuss.lemonaid.commands.social.*;
 import me.saurpuss.lemonaid.commands.social.channels.*;
-import me.saurpuss.lemonaid.commands.social.whisper.*;
 import me.saurpuss.lemonaid.commands.teleport.*;
 import me.saurpuss.lemonaid.events.*;
 import me.saurpuss.lemonaid.utils.users.Lemon;
@@ -109,7 +108,7 @@ public final class Lemonaid extends JavaPlugin {
 
         // TODO Set up WorldGuard if available
         if (getServer().getPluginManager().getPlugin("WorldGuard") != null) {
-            getCommand("jail").setExecutor(new Jail());
+//            getCommand("jail").setExecutor(new Jail());
         } else {
             getLogger().warning("No World Guard found! Disabling related functionality!");
         }
