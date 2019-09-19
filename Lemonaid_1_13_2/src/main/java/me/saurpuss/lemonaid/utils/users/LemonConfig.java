@@ -59,12 +59,13 @@ public class LemonConfig {
         Location lastLocation = new Location(world, x, y, z);
         UUID lastMessage = UUID.fromString(config.getString(".last-message"));
         boolean busy = config.getBoolean(".busy");
+        boolean cuffed = config.getBoolean(".cuffed");
         HashMap<String, Location> homes = new HashMap<>();
         int maxHomes = config.getInt(".maxHomes");
         HashSet<UUID> ignored = new HashSet<>();
 
         return new Lemon(uuid, muteEnd, nickname, lastLocation, lastMessage,
-                busy, homes, maxHomes, ignored);
+                busy, cuffed, homes, maxHomes, ignored);
     }
 
     static boolean saveUser(Lemon user) {
@@ -82,6 +83,7 @@ public class LemonConfig {
         get().set(config + ".last-location.z", lastLoc.getZ());
         get().set(config + ".last-message", user.getLastMessage().toString());
         get().set(config + ".busy", user.isBusy());
+        get().set(config + ".cuffed", user.isCuffed());
         user.getHomes().forEach((home, location) -> {
             get().set(config + "." + home + ".world", location.getWorld().getName());
             get().set(config + "." + home + ".x", location.getX());

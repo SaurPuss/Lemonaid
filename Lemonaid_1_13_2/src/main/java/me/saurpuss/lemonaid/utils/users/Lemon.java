@@ -12,7 +12,7 @@ public class Lemon {
     private long muteEnd;
     private String nickname;
     private Location lastLocation;
-    private boolean busy;
+    private boolean busy, cuffed;
     private HashMap<String, Location> homes;
     private int maxHomes; // TODO make this based on perm groups instead
     private HashSet<UUID> ignored;
@@ -24,19 +24,21 @@ public class Lemon {
         lastLocation = null;
         lastMessage = null;
         busy = false;
+        cuffed = false;
         homes = new HashMap<>();
         maxHomes = 3;
         ignored = new HashSet<>();
     }
 
     Lemon(UUID uuid, long muteEnd, String nickname, Location lastLocation, UUID lastMessage,
-          boolean busy, HashMap<String, Location> homes, int maxHomes, HashSet<UUID> ignored) {
+          boolean busy, boolean cuffed, HashMap<String, Location> homes, int maxHomes, HashSet<UUID> ignored) {
         this.uuid = uuid;
         this.muteEnd = muteEnd;
         this.nickname = nickname;
         this.lastLocation = lastLocation;
         this.lastMessage = lastMessage;
         this.busy = busy;
+        this.cuffed = cuffed;
         this.homes = homes;
         this.maxHomes = maxHomes;
         this.ignored = ignored;
@@ -55,6 +57,8 @@ public class Lemon {
     public void setLastMessage(UUID lastMessage) { this.lastMessage = lastMessage; }
     public boolean isBusy() { return busy; }
     public void setBusy(boolean busy) { this.busy = busy; }
+    public boolean isCuffed() { return cuffed; }
+    public void setCuffed(boolean cuffed) { this.cuffed = cuffed; }
     public HashMap<String, Location> getHomes() { return homes; }
     public void setHomes(HashMap<String, Location> homes) { this.homes = homes;}
     public int getMaxHomes() { return maxHomes; }

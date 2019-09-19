@@ -2,245 +2,208 @@ package me.saurpuss.lemonaid.commands.admin;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.Utils;
+import me.saurpuss.lemonaid.utils.users.Lemon;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.time.*;
 import java.util.*;
 
 public class Cuff implements CommandExecutor {
 
-    // TODO REPLACE ENTIRE THING BASED ON MUTE STRUCTURE
+    private Lemonaid plugin;
 
-    static Lemonaid plugin = Lemonaid.plugin;
-    // TODO save and retrieve log from file instead of arraylist
-    public static ArrayList<CuffLog> cuffLog = new ArrayList<>();
-    // TODO save and retrieve map from file
-    private static HashMap<Player, Date> cuffedPlayers = new HashMap<>();
+    /**
+     * Constructor to retrieve the instance of Lemonaid running on the server.
+     * @param plugin Lemonaid instance
+     */
+    public Cuff(Lemonaid plugin) {
+        this.plugin = plugin;
+    }
+
+    // Logging instances of mutes
+    private final File cuffTXT = new File(plugin.getDataFolder(), "cuffs.txt");
+    private Deque<String> recap = getRecap();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if ((!(sender instanceof Player)) || (sender.hasPermission("lemonaid.admin.cuff"))) {
-            if (args.length == 0) {
-                sender.sendMessage(Utils.color("Usage: /cuff <name> [time] [reason]"));
-                return true;
-            } else {
-                Player target = Bukkit.getPlayer(args[0]);
-                if (target == null) {
-                    // Check if the player is offline
-                    OfflinePlayer[] list = Bukkit.getOfflinePlayers();
-                    for (OfflinePlayer p : list) {
-                        if (p.getPlayer().getName().equalsIgnoreCase(args[0])) {
-                            target = p.getPlayer();
-                        }
-                    }
-                    // The player name was probably a typo
-                    if (target == null) {
-                        sender.sendMessage(Utils.color(args[0] + " not found."));
-                        return true;
-                    }
-                }
-                // target is now defined
-                if (args.length == 1) {
-                    return cuffAction(sender, target, 0, '0', null);
-                } else {
-                    if (args[1].equals("0")) {
-                        String reason = null;
-                        if (args.length >= 3) {
-                            reason = StringUtils.join(args, ' ', 2, args.length);
-                        }
-                        return cuffAction(sender, target, 0, '0', reason);
-                    } else {
-                        if (!Character.isLetter(args[1].charAt(args[1].length() - 1))) {
-                            sender.sendMessage(Utils.color("Usage: /cuff <player> 0, replace 0 with 1m, 10d, etc."));
-                            return true;
-                        } else {
-                            String s = "";
-                            char[] chars = {'s', 'S', 'm', 'M', 'h', 'H', 'd', 'D', 'y', 'Y'};
-                            char time = '0';
-                            // check if last char is s, m, d, y
-                            for (char c = 0; c < args[1].length(); c++) {
-                                if (Character.isDigit(c)) {
-                                    s += c;
-                                } else if (Character.isLetter(c)) {
-                                    for (char x : chars)
-                                        if (c == x)
-                                            time = c;
-                                    break;
-                                } else {
-                                    sender.sendMessage(Utils.color("Usage: /cuff <player> t, replace t with 0, 1m, 10d, etc."));
-                                    return true;
-                                }
-                            }
-
-                            // TODO check if correct
-                            String reason = null;
-                            if (args.length >= 3) {
-                                reason = StringUtils.join(args, ' ', 2, args.length);
-                            }
-                            return cuffAction(sender, target, Integer.valueOf(s), time, reason);
-                        }
-                    }
-                }
-            }
-        } else {
+        if (!sender.hasPermission("lemonaid.admin.cuff")) {
             sender.sendMessage(Utils.noPermission());
+            return true;
+        }
+
+        // Not enough arguments
+        if (args.length == 0) {
+            // TODO add colors to all messages
+            sender.sendMessage(Utils.color("Use: /cuff list, or /cuff <player> <reason>"));
+            return true;
+        }
+
+        // /mute + subcommand
+        else if (args.length == 1) {
+            // Retrieve a recap of the last 10 mutes
+            if (args[0].equalsIgnoreCase("list")) {
+                for (String s : recap)
+                    sender.sendMessage(Utils.color(" - " + s));
+                return true;
+            }
+
+            // Retrieve mute help instructions
+            if ((args[0].equalsIgnoreCase("help")) || (args[0].equalsIgnoreCase("?"))) {
+                cuffHelp(sender, 0);
+                return true;
+            }
+
+            // Check if args[0] is a player or offline player that requires an infinite mute
+            Player target = Utils.getPlayer(args[0]);
+            if (target == null) {
+                sender.sendMessage(Utils.color("&cUsage: /cuff <player> <reason>, use /cuff help for more information."));
+                return true;
+            }
+
+            // Toggle cuff on the target
+            cuff(sender, target, "");
+            return true;
+        }
+
+        // Multiple arguments detected
+        else {
+            // Get a specific page from /cuff help X, assuming it's a valid number
+            if ((args[0].equalsIgnoreCase("help")) || (args[0].equalsIgnoreCase("?"))) {
+                try {
+                    cuffHelp(sender, Integer.parseInt(args[1]));
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(Utils.color("&c" + args[1] + " is not a valid number"));
+                }
+                return true;
+            }
+
+            // Try to retrieve an online or offline player from the first argument
+            Player target = Utils.getPlayer(args[0]);
+            if (target == null) {
+                sender.sendMessage(Utils.color("Usage: /cuff <player> <reason>, use /cuff help for more information."));
+                return true;
+            }
+
+            // Compile the rest of the arguments into a message and log
+            String reason = StringUtils.join(args, ' ', 2, args.length);
+            cuff(sender, target, reason);
             return true;
         }
     }
 
-    private boolean cuff(Player player, Date date) {
-        if (!cuffedPlayers.containsKey(player)) {
-            cuffedPlayers.put(player, date);
+    /**
+     * Cuff action to be implemented on a target
+     *
+     * @param sender user implementing the cuff
+     * @param target target to be cuffed
+     * @param reason additional arguments for logging purposes
+     */
+    private void cuff(CommandSender sender, Player target, String reason) {
+        // Log the occurrence
+        Lemon user = new Lemon(target.getUniqueId()).getUser();
+        String log = sender.getName() + (user.isCuffed() ? " uncuffed" : " cuffed ")
+                + target.getName() + (reason.equals("") ? "." : (", reason: " + reason));
 
-            if (date == null) {
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (p.hasPermission("lemonaid.admin.notify.cuff"))
-                        p.sendMessage(Utils.color(player.getName() + " is cuffed."));
-                }
-                plugin.getLogger().info(player.getName() + " is cuffed.");
-            } else {
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (p.hasPermission("lemonaid.admin.notify.cuff"))
-                        p.sendMessage(Utils.color(player.getName() + " cuffed until " + date.toString() + "."));
-                }
-                plugin.getLogger().info(player.getName() + " cuffed until " + date.toString() + ".");
-            }
-        } else {
-            cuffedPlayers.remove(player);
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (p.hasPermission("lemonaid.admin.notify.cuff"))
-                    p.sendMessage(Utils.color(player.getName() + " is uncuffed."));
-            }
-            plugin.getLogger().info(player.getName() + " is uncuffed.");
-        }
-        return true;
-    }
+        addRecap(Utils.dateToString(LocalDate.now()) + " " + log);
 
-    private boolean cuffAction(CommandSender sender, Player player, int n, char amount, String reason) {
-        if (n == 0) {
-            CuffLog log = new CuffLog(player, new Date(), null, (Player) sender, reason);
-            log.saveLog();
-            return cuff(player, null);
-        }
-
-        long multiplier = 0;
-        boolean date = false;
-        switch (amount) {
-            case 'm': case 'M': multiplier = 60; break;
-            case 'h': case 'H': multiplier = 3600; break;
-            case 's': case 'S': multiplier = 1; break;
-            case 'd': case 'D': multiplier = 86400; date = true; break;
-            case 'y': case 'Y': multiplier = 31536000; date = true; break;
-            default: return cuff(player, null);
-        }
-
-        // Schedule release
-        long addition = n * multiplier;
-        if (!date) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                cuffedPlayers.remove(player);
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (p.hasPermission("lemonaid.admin.notify.cuff"))
-                        p.sendMessage(Utils.color(player.getName() + " is uncuffed."));
-                }
-            }, 20 * multiplier * n);
-        }
-        Date temp = new Date(System.currentTimeMillis() + (addition * 1000));
-        cuff(player, temp);
-
-        CuffLog log = new CuffLog(player, new Date(), temp, (Player)sender, reason);
-        log.saveLog();
-
-
-        return true;
-    }
-
-    public static void cleanCuffList() {
-        for (Map.Entry<Player, Date> entry : cuffedPlayers.entrySet()) {
-            if ((entry.getValue() != null) && (entry.getValue().compareTo(new Date()) <= 0)) {
-                cuffedPlayers.remove(entry.getKey());
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (p.hasPermission("lemonaid.admin.notify.cuff"))
-                        p.sendMessage(Utils.color(entry.getKey().getName() + " is uncuffed."));
-                }
-                plugin.getLogger().info(entry.getKey().getName() + " is cuffed.");
+        // Notify online players with the right permission
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p.hasPermission("lemonaid.admin.notify.mute")) {
+                p.sendMessage(Utils.color("&c" + log));
             }
         }
+
+        // Update and notify the target
+        user.setCuffed(!user.isCuffed());
+        user.updateUser();
+        target.sendMessage(Utils.color("&cYou are now " + (user.isCuffed() ? "cuffed!" : "uncuffed!") +
+                (reason.equals("") ? "" : "Reason: &r" + reason)));
     }
 
-    public static void saveCuffList() {
-        // TODO save current cuff list to file
-    }
-    public static void loadCuffList() {
-        // TODO get cuffs from the cuff log and slap them in the cuff list
+    private void cuffHelp(CommandSender sender, int pageNumber) {
+        // TODO get help from file and send it back to the sender
 
-        // TODO fallback, if the list is empty rebuild from viable log entries
+        sender.sendMessage(Utils.color("There is no help file right now, lol!"));
     }
 
-    class CuffLog implements Serializable {
-        // TODO make an abstract parent so that MuteLog will be the same scheme
+    /**
+     * Add a recap to the Deque and cuffs.txt for logging purposes
+     *
+     * @param message log of the cuff event
+     */
+    private void addRecap(String message) {
+        // Make space if the limit is reached
+        if (recap.size() == 10)
+            recap.removeLast();
 
-        private Player player;
-        private Date date;
-        private Date end;
-        private Player actor;
-        private String reason;
+        // log as the most recent entry and try to write to the file
+        recap.addFirst(message);
 
-        CuffLog() {}
-        CuffLog(Player player, Date date, Date end, Player actor, String reason) {
-            this.player = player;
-            this.date = date;
-            this.end = end;
-            this.actor = actor;
-            this.reason = reason;
+        if (!cuffTXT.exists())
+            makeLog();
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(cuffTXT, true), true)) {
+            writer.println(message);
+        } catch (IOException e) {
+            plugin.getLogger().warning("Failed to write to the new cuffs.txt!");
+        }
+    }
+
+    /**
+     * Retrieve the last 10 mute events from cuffs.txt
+     *
+     * @return Linked list with the last 10 cuffs logged
+     */
+    private LinkedList<String> getRecap() {
+        // Check for file
+        if (!cuffTXT.exists())
+            makeLog();
+
+        // Read file into an ArrayList
+        List<String> log = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(cuffTXT), Charset.defaultCharset()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                log.add(line);
+            }
+        } catch (IOException e) {
+            plugin.getLogger().warning("Failed to read cuffs.txt");
+            return null;
         }
 
-        private String toString(CuffLog c){
-            SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yy");
-            StringBuilder s = new StringBuilder();
-            s.append(c.player.getName() + " from: " + sdf.format(c.date));
-            if (c.end != null)
-                s.append(" until " + sdf.format(c.end));
-            s.append(" by " + c.actor.getName());
-            if (c.reason != null)
-                s.append(": " + c.reason);
-
-            return s.toString();
+        // Get the last 10 entries from the list in reverse order
+        LinkedList<String> list = new LinkedList<>();
+        for (int i = log.size() - 1; i > log.size() - 11; i--) {
+            list.add(log.get(i));
         }
 
-        private void saveLog() {
-            // TODO try catch to properties file
+        return list;
+    }
 
+    /**
+     * Create a logging file in the plugin folder.
+     */
+    private void makeLog() {
+        try {
+            // Make file and directories
+            plugin.getLogger().info("Creating new cuffs.txt!");
+            cuffTXT.getParentFile().mkdirs();
+            cuffTXT.createNewFile();
 
-
-
-        }
-
-        public ArrayList<String> getLog() {
-            ArrayList<String> list = new ArrayList<>();
-            // TODO deserialize cufflogs and put in list
-
-            // TODO sort from newest to oldest
-            Collections.sort(list);
-
-            return list;
-        }
-
-        public ArrayList<String> getLog(int size) {
-            ArrayList<String> list = new ArrayList<>();
-            // TODO deserialize cufflogs and put in list
-
-            // TODO sort from newest to oldest
-            Collections.sort(list);
-
-            // TODO crop to size
-
-            return list;
+            // Try to write to the file
+            PrintWriter writer = new PrintWriter(new FileWriter(cuffTXT, true), true);
+            writer.println("&c" + Utils.dateToString(LocalDate.now())
+                    + ": &fUse &d/cuff <player> <message> &fto cuff someone");
+        } catch (IOException e) {
+            plugin.getLogger().warning("Error while creating cuffs.txt!");
         }
     }
 }

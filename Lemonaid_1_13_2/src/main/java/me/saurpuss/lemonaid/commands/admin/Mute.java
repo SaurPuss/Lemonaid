@@ -194,6 +194,11 @@ public class Mute implements CommandExecutor {
                 p.sendMessage(Utils.color("&c" + log));
             }
         }
+
+        // Notify the target
+        target.sendMessage("&cYou are muted until " +
+                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(date) +
+                (reason.equals("") ? "!" : ("! Reason: " + reason)));
     }
 
     private void muteHelp(CommandSender sender, int pageNumber) {
@@ -213,6 +218,10 @@ public class Mute implements CommandExecutor {
 
         // log as the most recent entry and try to write to the file
         recap.addFirst(message);
+
+        if (!mutesTXT.exists())
+            makeLog();
+
         try (PrintWriter writer = new PrintWriter(new FileWriter(mutesTXT, true), true)) {
             writer.println(message);
         } catch (IOException e) {
