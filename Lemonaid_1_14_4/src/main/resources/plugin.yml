@@ -98,6 +98,10 @@ commands:
       /<command> [target] [time] [reason] - Mute a player for a specific amount of time and log the reason
       /<command> [target] 0 [reason] - Mute a player indefinitely for a specific reason
     permission: lemonaid.admin.mute
+  globalmute:
+    description: Toggle a non-persistent mute to all online players
+    usage: /<command>
+    permission: lemonaid.admin.globalmute
   recap:
     description: Log quick recaps for information hand-off
     usage: |
@@ -117,6 +121,7 @@ permissions:
       lemonaid.admin.reload: true
       lemonaid.admin.notify: true
       lemonaid.admin.mute: true
+      lemonaid.admin.globalmute: true
       lemonaid.admin.recap: true
       lemonaid.admin.setignore: true
       lemonaid.admin.cuff: true
@@ -133,6 +138,7 @@ permissions:
       lemonaid.admin.notify.logout: true
       lemonaid.admin.notify.kick: true
       lemonaid.admin.notify.mute: true
+      lemonaid.admin.notify.globalmute: true
       lemonaid.admin.notify.ignore: true
       lemonaid.admin.notify.cuff: true
       lemonaid.admin.notify.mastercuff: true

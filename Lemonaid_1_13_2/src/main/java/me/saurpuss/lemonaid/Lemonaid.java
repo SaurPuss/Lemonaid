@@ -20,7 +20,8 @@ public final class Lemonaid extends JavaPlugin {
     private static Economy economy;
     private HashMap<UUID, Lemon> userManager;
 
-    private static boolean mastercuff = false;
+    private static boolean masterCuff = false;
+    private static boolean globalMute = false;
 
     @Override
     public void onEnable() {
@@ -52,7 +53,7 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("mute").setExecutor(new Mute(this));
         getCommand("cuff").setExecutor(new Cuff());
         getCommand("mastercuff").setExecutor(new MasterCuff());
-
+        getCommand("globalmute").setExecutor(new GlobalMute());
 
         // Social commands
         getCommand("msg").setExecutor(new Msg(this));
@@ -119,8 +120,10 @@ public final class Lemonaid extends JavaPlugin {
     }
 
     // Admin level stuff
-    public static void toggleMasterCuff() { mastercuff = !mastercuff; }
-    public static boolean isMasterCuff() { return mastercuff; }
+    public static void toggleMasterCuff() { masterCuff = !masterCuff; }
+    public static boolean isMasterCuff() { return masterCuff; }
+    public static void toggleGlobalMute() { globalMute = !globalMute; }
+    public static boolean isGlobalMute() { return globalMute; }
 
     // Keep track of Lemons
     public void mapPlayer(UUID uuid, Lemon user) { userManager.put(uuid, user); }

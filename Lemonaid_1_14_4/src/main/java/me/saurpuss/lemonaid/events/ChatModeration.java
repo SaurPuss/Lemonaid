@@ -33,6 +33,14 @@ public class ChatModeration implements Listener {
             }
         }
 
+        if (Lemonaid.isGlobalMute()) {
+            if (!player.hasPermission("lemonaid.admin.globalmute") ||
+                    !player.hasPermission("lemonaid.admin.notify.globalmute")) {
+                e.setCancelled(true);
+                return;
+            }
+        }
+
         Lemon user = new Lemon(player.getUniqueId()).getUser();
         // This player is not allowed to talk
         if (user.isMuted() || user.isCuffed()) {

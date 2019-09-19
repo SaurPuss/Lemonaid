@@ -29,6 +29,13 @@ public class ChatModeration implements Listener {
                 return;
             }
         }
+        if (Lemonaid.isGlobalMute()) {
+            if (!player.hasPermission("lemonaid.admin.globalmute") ||
+                    !player.hasPermission("lemonaid.admin.notify.globalmute")) {
+                e.setCancelled(true);
+                return;
+            }
+        }
 
         Lemon user = new Lemon(player.getUniqueId()).getUser();
         // This player is not allowed to talk
@@ -52,6 +59,13 @@ public class ChatModeration implements Listener {
         if (Lemonaid.isMasterCuff()) {
             if (!player.hasPermission("lemonaid.admin.mastercuff") ||
                     !player.hasPermission("lemonaid.admin.notify.mastercuff")) {
+                e.setCancelled(true);
+                return;
+            }
+        }
+        if (Lemonaid.isGlobalMute()) {
+            if (!player.hasPermission("lemonaid.admin.globalmute") ||
+                    !player.hasPermission("lemonaid.admin.notify.globalmute")) {
                 e.setCancelled(true);
                 return;
             }
