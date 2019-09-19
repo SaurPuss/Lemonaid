@@ -1,24 +1,107 @@
-# Use {name} to use a player's display name
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Database Options -
+# If you set mysql to false, user data will be saved to a config
+# file. Which is slower and can cause lag if used at scale!!
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+mysql: false
+  address: ''
+  port: ''
+  user: ''
+  password: ''
+  database: ''
+  table-prefix: 'lemonaid_'
 
-motd:
-  - &d%name%&c, aw man!
-  - &cHold your titties! &6%name% &chas arrived!
-motd-first:
-  - &5Hide yo kids! Hide yo wife! &c%name% &5has arrived!
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Custom Server List Options -
+# You can use '&' for color codes.
+# Use - to indicate a new line with another option.
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+server-motd:
+  - &cSexy Minecraft Server Here
+server-motd-hover:
+  - Website&#59; https://voxmc.com
+  - Reddit%3B https://reddit/com/r/voxmc
+  - Discord&#59; https://discord.gg/BCBMZTs
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Player join messages -
+# You can use '&' for color codes.
+# Use - to indicate a new line with another motd option.
+# Use %player% to stub in the joining player's display name.
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+message-of-the-day:
+  - &eWelcome back %player%!
+  - &eHey %player%! Enjoy your stay!
+  - &eDon't forget to read the &6/rules&e!
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Joining the server for the first time -
+# The announcement is a list of options, one will be used at random.
+# You can use '&' for color codes.
+# This is also where you set up the first join spawn and items
+# to be added to the player's inventory.
+# Use %player% to stub in the joining player's display name.
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+first-join-announcements:
+  - Welcome %player% to the server!
+  - Never gonna give %player% up, never gonna let %player% down
+  - Say hello to %player%!
+first-join-message:
+  - Hello %player%! Welcome to the Server!
+  - Please read the /rules and have a great time!
+first-join-spawn:
+  world: 'world'
+  x: 0
+  y: ~
+  z: 0
+  yaw: 0
+  pitch: 0
 
+#first-join-items:
+#  - item: 'COOKED_BEEF'
+#    item-slot: 0
+#    item-amount: 1
+#    item-title: '&5Welcome to the server!'
+#    item-description: >-
+#      Please read &c/rules&r for more information.
+#      Assholes will be yeeted!
+#  - item: 'WOODEN_AXE'
+#      item-slot: 1
+#      item-amount: 1
+#      item-title: 'Chop chop!'
+#      item-description: >-
+#        Use /help to find out more about the server
+
+
+
+
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Teleportation -
+# All times are in seconds
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 teleport:
-  # number of  seconds a tp request remains active
-  available-timer: 30
-  # number of seconds a player has to stand still before tp activate
-  tpa: 3
-  back: 3
+  request-timer: 30
+  tpa:
+    timer: 3
+    cost: 100
+    cross-world: false
+  tpahere:
+    timer: 3
+    cost: 100
+    cross-world: false
+  back:
+    timer: 3
+    cost: 10
+    cross-world: true
+  ptp:
+    timer: 15
+    cost: 500
+    cross-world: true
+  ptphere:
+    timer: 15
+    cost: 500
+    cross-world: true
 
-home-limit:
-  default: 3
-  rank: 5
-  hundred: 100
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Social Settings -
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+local-chat-radius: 80
 
-monitor-bad-words: true
-bad-words:
-  - quili
-  - sex

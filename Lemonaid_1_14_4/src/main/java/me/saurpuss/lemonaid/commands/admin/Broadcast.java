@@ -1,11 +1,11 @@
 package me.saurpuss.lemonaid.commands.admin;
 
 import me.saurpuss.lemonaid.utils.Utils;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.Bukkit;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Bring the message of the gods to all who can hear

@@ -1,111 +1,178 @@
 name: Lemonaid
 version: ${project.version}
 main: me.saurpuss.lemonaid.Lemonaid
-api-version: 1.14.4
-softdepend: [VaultAPI, WorldGuard]
 authors: [SaurPuss]
-description: Basically Essentials for practice purposes
-website: https://github.com/SaurPuss
-commands:
-  # Operator Commands
-  fly:
-    description: Toggle fly mode on yourself or a player
-    usage: |
-      /<command> - Toggle fly on yourself
-      /<command> [target] - Toggle fly on a target
-    permission: lemonaid.admin.fly
-    permission-message: You do not have permission to do this
-  recap:
-    description: Leave a message for other permission holders
-    usage: /<command> <message>
-    permission: lemonaid.admin.recap
-    permission-message: You do not have permission to do this
-  mute:
-    description: Mute a bothersome player
-    usage: |
-      /<command> - Display last 10 mute logs
-      /<command> [target] - Mute player indefinitely, apply again to unmute
-      /<command> [target] [time] - Mute a player for a specific amount of time
-      (0 = indefinite | number + time: s = seconds, m = minutes, h = hours, d = days, w = weeks, y = years, "10m = 10minutes")
-      /<command> [target] [time] [reason] - Mute a player for a specific amount of time and log the reason
-      /<command> [target] 0 [reason] - Mute a player indefinitely for a specific reason
-    permission: lemonaid.admin.mute
-    permission-message: You do not have permission to do this
-  broadcast:
-    description: Broadcast a message to the entire server
-    usage: /<command> <message>
-    aliases: [bc]
-    permission: lemonaid.admin.broadcast
-    permission-message: You do not have permission to do this
+description: Lots of basic commands put together in one plugin
+website: https://voxmc.com
+softdepend: [Vault, WorldGuard]
 
-  # Teleport commands
+commands:
+  # Plugin specific commands
+  lemonaid:
+    description: Lemonaid specific commands
+    usage: |
+      /<command> info - Plugin information
+      /<command> reload - Reload the plugin configs
+      /<command> ?|help - Plugin help file
+    default: OP
+    aliases: [lemon]
+    permission: lemonaid.admin.reload
+    permission-message: You do not have permission to do this
+  # Chat commands
+  msg:
+    description: Whisper to another player
+    usage: /<command> [target] [message]
+    aliases: [tell, whisper]
+    permission: lemonaid.chat.private
+  reply:
+    description: Reply to a whispered message
+    usage: /<command> [message]
+    aliases: [r]
+    permission: lemonaid.chat.private
+  busy:
+    description: Prevent incoming whispers and tp requests
+    usage: /<command>
+    aliases: [dnd]
+    permission: lemonaid.chat.busy
+  ignore:
+    description: Ignore all messages and tp requests from another player
+    usage: |
+      /<command> - Display your ignored list
+      /<command> [target] - Add or remove your target from your ignore list
+    permission: lemonaid.chat.ignore
+  # Teleportation commands
   tpa:
     description: Send a teleportation request to another player
     usage: /<command> [target]
-    default: true
     permission: lemonaid.teleport.tpa
-    permission-message: You do not have permission to do this
   tpahere:
     description: Request another player teleport to your location
     usage: /<command> [target]
     permission: lemonaid.teleport.tpahere
-    permission-message: You do not have permission to do this
   tpaccept:
     description: Accept a teleportation request from another player
     usage: /<command>
     permission: lemonaid.teleport.tpaccept
-    permission-message: You do not have permission to do this
   tpdeny:
     description: Deny or cancel a pending teleportation request
     usage: /<command>
     aliases: [tpacancel, tpcancel]
     permission: lemonaid.teleport.tpadeny
-    permission-message: You do not have permission to do this
   back:
-    description: Return to your last teleport location
+    description: Return to your last saved location
     usage: /<command>
-    permisson: lemonaid.teleport.back
-    permission-message: You do not have permission to do this
-  # Home commands
-  home:
-    description: Teleport to a home location
+    permission: lemonaid.teleport.back
+  # OP/Admin level commands
+  fly:
+    description: Toggle fly mode
+    usage: /<command>
+    permission: lemonaid.admin.fly
+  broadcast:
+    description: Broadcast a message across the server
+    usage: /<command> [message]
+    aliases: [bc]
+    permission: lemonaid.admin.broadcast
+  # OP/Moderation commands
+  cuff:
+    description: Lock an offending player in place and prevent them from using chat.
     usage: |
-      /<command> - Return to a single home, or list available homes
-      /<command> [home] - Return to your specific home
-      /<command> list - List your available homes
-      /<command> limit - Show your home limit
-      /<command> set [home] - Set a specific home
-      /<command> del [home] - Delete a specific home
-    aliases: [sethome, delhome]
-    permission: lemonaid.teleport.home.*
-    permission-message: You do not have permission to do this
+      /<command> list - Display last 10 cuff logs
+      /<command> help|? [#] - Display cuff help (page number optional)
+      /<command> [target] - Toggle cuff on and off for your target
+      /<command> [target] [reason] - Toggle cuff on a player and log a reason
+    permission: lemonaid.admin.cuff
+  mute:
+    description: Prevent a player from speaking
+    usage: |
+      /<command> list - Display last 10 mute logs
+      /<command> help|? [#] - Display mute help (page number optional)
+      /<command> [target] - Mute player indefinitely, apply again to unmute
+      /<command> [target] [time] - Mute a player for a specific amount of time
+      (0 = forever | number + time: s = seconds, m = minutes, h = hours, d = days, w = weeks, y = years, "10m = 10minutes")
+      /<command> [target] [time] [reason] - Mute a player for a specific amount of time and log the reason
+      /<command> [target] 0 [reason] - Mute a player indefinitely for a specific reason
+    permission: lemonaid.admin.mute
+  recap:
+    description: Log quick recaps for information hand-off
+    usage: |
+      /<command> - Display last 10 recaps
+      /<command> [message] - Add recap
+    permission: lemonaid.admin.recap
+
 
 
 permissions:
   lemonaid.admin.*:
-    description: Moderation permissions
+    description: Admin level permissions for Lemonaid
     default: op
     children:
-      lemonaid.admin.notify.*: true
-      lemonaid.admin.recap: true
-      lemonaid.admin.broadcast: true
       lemonaid.admin.fly: true
+      lemonaid.admin.broadcast: true
+      lemonaid.admin.reload: true
+      lemonaid.admin.notify: true
       lemonaid.admin.mute: true
+      lemonaid.admin.recap: true
+      lemonaid.admin.setignore: true
+      lemonaid.admin.cuff: true
+      lemonaid.admin.jail: true
+      lemonaid.admin.slow: true
+      lemonaid.admin.clearchat: true
   lemonaid.admin.notify.*:
-    description: Moderation notification permissions
+    description: Notifications for moderators on specific event
     default: op
     children:
+      lemonaid.admin.notify.toggle: true
+      lemonaid.admin.notify.login: true
+      lemonaid.admin.notify.logout: true
+      lemonaid.admin.notify.kick: true
       lemonaid.admin.notify.mute: true
+      lemonaid.admin.notify.ignore: true
+      lemonaid.admin.notify.cuff: true
+      lemonaid.admin.notify.jail: true
+      lemonaid.admin.slow.exempt: true
+      lemonaid.admin.clearchat.exempt: true
+  lemonaid.chat.*:
+    description: |
+      Permissions for different chats. Toggle if you prefer to
+      set them differently for groups or players.
+    default: true
+    children:
+      lemonaid.chat.local: true
+      lemonaid.chat.private: true
+      lemonaid.chat.colors: true
+      lemonaid.chat.busy: true
+      lemonaid.chat.ignore: true
+#      lemonaid.chat.party: true
   lemonaid.teleport.*:
-    description: Teleportation permissions
+    description: Permissions for teleportation
     default: true
     children:
       lemonaid.teleport.tpa: true
       lemonaid.teleport.tpahere: true
       lemonaid.teleport.tpaccept: true
-      lemonaid.teleport.tpadeny: true
-      lemonaid.teleport.back: true
-      lemonaid.teleport.home: true
-  lemonaid.teleport.home.default:
-    description: Manage maximum amount of homes
+      lemonaid.teleport.tpdeny: true
+  lemonaid.party.*:
+    description: Permission to form, join, and edit parties
     default: true
+    children:
+      lemonaid.party.create: true
+      lemonaid.party.join: true
+      lemonaid.party.leave: true
+      lemonaid.party.leader: false
+      lemonaid.party.temporary: false
+      lemonaid.party.assistant: false
+  lemonaid.party.leader.*:
+    description: |
+      Permission added to a party creator setting their edit
+      and remove permissions to true.
+    default: false
+    children:
+      lemonaid.party.leader.remove: true
+      lemonaid.party.leader.edit: true
+      lemonaid.party.leader.share: true
+  lemonaid.party.assistant:
+    description: Give permission to edit the party as an assistant.
+    default: false
+  lemonaid.party.temporary:
+    description: Create temporary parties.
+    default: false

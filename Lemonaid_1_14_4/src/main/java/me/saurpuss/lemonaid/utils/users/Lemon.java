@@ -3,22 +3,21 @@ package me.saurpuss.lemonaid.utils.users;
 import me.saurpuss.lemonaid.Lemonaid;
 import org.bukkit.Location;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.UUID;
 
 public class Lemon {
-    private static Lemonaid plugin = Lemonaid.getInstance();
-    private final static boolean DB_SQL = plugin.getConfig().getBoolean("mysql");
+    private final static boolean DB_SQL = Lemonaid.plugin.getConfig().getBoolean("mysql");
 
     private UUID uuid, lastMessage;
     private long muteEnd;
     private String nickname;
     private Location lastLocation;
-    private boolean busy;
+    private boolean busy, cuffed;
     private HashMap<String, Location> homes;
     private int maxHomes; // TODO make this based on perm groups instead
     private HashSet<UUID> ignored;
-
-    Lemon() {} // TODO replace
 
     public Lemon(UUID uuid) {
         this.uuid = uuid;
@@ -27,19 +26,21 @@ public class Lemon {
         lastLocation = null;
         lastMessage = null;
         busy = false;
+        cuffed = false;
         homes = new HashMap<>();
         maxHomes = 3;
         ignored = new HashSet<>();
     }
 
     Lemon(UUID uuid, long muteEnd, String nickname, Location lastLocation, UUID lastMessage,
-          boolean busy, HashMap<String, Location> homes, int maxHomes, HashSet<UUID> ignored) {
+          boolean busy, boolean cuffed, HashMap<String, Location> homes, int maxHomes, HashSet<UUID> ignored) {
         this.uuid = uuid;
         this.muteEnd = muteEnd;
         this.nickname = nickname;
         this.lastLocation = lastLocation;
         this.lastMessage = lastMessage;
         this.busy = busy;
+        this.cuffed = cuffed;
         this.homes = homes;
         this.maxHomes = maxHomes;
         this.ignored = ignored;
@@ -58,6 +59,8 @@ public class Lemon {
     public void setLastMessage(UUID lastMessage) { this.lastMessage = lastMessage; }
     public boolean isBusy() { return busy; }
     public void setBusy(boolean busy) { this.busy = busy; }
+    public boolean isCuffed() { return cuffed; }
+    public void setCuffed(boolean cuffed) { this.cuffed = cuffed; }
     public HashMap<String, Location> getHomes() { return homes; }
     public void setHomes(HashMap<String, Location> homes) { this.homes = homes;}
     public int getMaxHomes() { return maxHomes; }
@@ -86,7 +89,7 @@ public class Lemon {
         return s.toString();
     }
     public boolean isIgnored(UUID uuid) { return ignored.contains(uuid); }
-    public boolean setIgnore(UUID uuid) {
+    public boolean toggleIgnore(UUID uuid) {
         if (ignored.contains(uuid)) {
             ignored.remove(uuid);
             return false; // Player is no longer ignored
@@ -99,17 +102,18 @@ public class Lemon {
 
 
     public Lemon getUser() {
-        // TODO make this a thing
         if (DB_SQL) {
 //            return MySQLDatabase.getUser(uuid);
         } else {
 //            return LemonConfig.getUser(uuid);
         }
-        return new Lemon();
+
+        // TODO FIX THIS
+
+        return new Lemon(new UUID(1,3));
     }
 
     private void saveUser() {
-        // TOD make this a thing
         if (DB_SQL) {
 //            MySQLDatabase.saveUser(this);
         } else {
@@ -119,6 +123,6 @@ public class Lemon {
 
     public void updateUser() {
         this.saveUser();
-        plugin.mapPlayer(uuid, this);
+        Lemonaid.plugin.mapPlayer(uuid, this);
     }
 }

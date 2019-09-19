@@ -1,13 +1,15 @@
 package me.saurpuss.lemonaid.utils.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.users.Lemon;
 import me.saurpuss.lemonaid.utils.Utils;
+import me.saurpuss.lemonaid.utils.users.Lemon;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.HashSet;
 
 public class Teleport {
     private static Lemonaid plugin = Lemonaid.getPlugin(Lemonaid.class);
@@ -39,16 +41,16 @@ public class Teleport {
      * @param tp Teleportation request object
      */
     public static void teleportEvent(Teleport tp) {
-//        Economy economy = Lemonaid.getEconomy();
-//        if (economy.isEnabled()) {
-//            // Attempt to charge the client for the teleport
-//            EconomyResponse response = economy.withdrawPlayer(tp.client,
-//                    plugin.getConfig().getDouble("teleport." + tp.tpType.name + ".cost"));
-//            if (!response.transactionSuccess()) {
-//                tp.client.sendMessage(Utils.color("&cBalance too low! Teleportation request canceled!"));
-//                return;
-//            }
-//        }
+        Economy economy = Lemonaid.getEconomy();
+        if (economy.isEnabled()) {
+            // Attempt to charge the client for the teleport
+            EconomyResponse response = economy.withdrawPlayer(tp.client,
+                    plugin.getConfig().getDouble("teleport." + tp.tpType.name + ".cost"));
+            if (!response.transactionSuccess()) {
+                tp.client.sendMessage(Utils.color("&cBalance too low! Teleportation request canceled!"));
+                return;
+            }
+        }
 
         activateTp(tp);
     }
