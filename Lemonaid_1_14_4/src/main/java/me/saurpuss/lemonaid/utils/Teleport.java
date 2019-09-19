@@ -1,7 +1,6 @@
-package me.saurpuss.lemonaid.utils.teleport;
+package me.saurpuss.lemonaid.utils;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.Utils;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;

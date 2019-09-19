@@ -1,6 +1,7 @@
-package me.saurpuss.lemonaid.utils.users;
+package me.saurpuss.lemonaid.utils.sql;
 
 import me.saurpuss.lemonaid.Lemonaid;
+import me.saurpuss.lemonaid.utils.users.Lemon;
 
 import java.util.UUID;
 
@@ -41,7 +42,7 @@ public class MySQLDatabase {
         return new Lemon(uuid);
     }
 
-    static boolean saveUser(Lemon user) {
+    public static boolean saveUser(Lemon user) {
 
         return true;
     }

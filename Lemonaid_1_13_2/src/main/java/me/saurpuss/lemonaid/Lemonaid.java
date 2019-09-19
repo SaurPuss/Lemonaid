@@ -1,13 +1,14 @@
 package me.saurpuss.lemonaid;
 
 import me.saurpuss.lemonaid.commands.admin.*;
+import me.saurpuss.lemonaid.commands.admin.MasterCuff;
 import me.saurpuss.lemonaid.commands.social.*;
 import me.saurpuss.lemonaid.commands.social.channels.*;
 import me.saurpuss.lemonaid.commands.teleport.*;
 import me.saurpuss.lemonaid.events.*;
 import me.saurpuss.lemonaid.utils.users.Lemon;
-import me.saurpuss.lemonaid.utils.users.LemonConfig;
-import me.saurpuss.lemonaid.utils.users.MySQLDatabase;
+import me.saurpuss.lemonaid.utils.config.LemonConfig;
+import me.saurpuss.lemonaid.utils.sql.MySQLDatabase;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -47,7 +48,8 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("broadcast").setExecutor(new Broadcast());
         getCommand("recap").setExecutor(new Recap(this));
         getCommand("mute").setExecutor(new Mute(this));
-        getCommand("cuff").setExecutor(new Cuff(this));
+        getCommand("cuff").setExecutor(new Cuff());
+        getCommand("mastercuff").setExecutor(new MasterCuff());
 
 
         // Social commands

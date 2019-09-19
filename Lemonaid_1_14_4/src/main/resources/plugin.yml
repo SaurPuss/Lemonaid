@@ -81,6 +81,10 @@ commands:
       /<command> [target] - Toggle cuff on and off for your target
       /<command> [target] [reason] - Toggle cuff on a player and log a reason
     permission: lemonaid.admin.cuff
+    mastercuff:
+      description: Lock every player without the mastercuff (notify) permission in place and prevent them from using chat.
+      usage: /<command> on|off - Toggle cuff on or off for all online players
+      permission: lemonaid.admin.mastercuff
   mute:
     description: Prevent a player from speaking
     usage: |
@@ -114,11 +118,12 @@ permissions:
       lemonaid.admin.recap: true
       lemonaid.admin.setignore: true
       lemonaid.admin.cuff: true
+      lemonaid.admin.mastercuff: true
       lemonaid.admin.jail: true
       lemonaid.admin.slow: true
       lemonaid.admin.clearchat: true
   lemonaid.admin.notify.*:
-    description: Notifications for moderators on specific event
+    description: Notifications for moderators on specific event, this will also create an exemption to the mastercuff, clearchat, and slow commands
     default: op
     children:
       lemonaid.admin.notify.toggle: true
@@ -128,9 +133,10 @@ permissions:
       lemonaid.admin.notify.mute: true
       lemonaid.admin.notify.ignore: true
       lemonaid.admin.notify.cuff: true
+      lemonaid.admin.notify.mastercuff: true
       lemonaid.admin.notify.jail: true
-      lemonaid.admin.slow.exempt: true
-      lemonaid.admin.clearchat.exempt: true
+      lemonaid.admin.notify.slow: true
+      lemonaid.admin.notify.clearchat: true
   lemonaid.chat.*:
     description: |
       Permissions for different chats. Toggle if you prefer to

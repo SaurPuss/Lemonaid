@@ -1,6 +1,6 @@
 package me.saurpuss.lemonaid.commands;
 
-import org.bukkit.Bukkit;
+import me.saurpuss.lemonaid.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,22 +14,23 @@ public class Home implements CommandExecutor {
             Player player = (Player) sender;
 
 
-
-
-
-
+            return true;
         } else {
             if (args.length == 0) {
                 sender.sendMessage("Only players can use this command, use /home <name> to see the homes of a player.");
+                return true;
             } else {
-                Player target = Bukkit.getPlayer(args[0]);
+                Player target = Utils.getPlayer(args[0]);
+                if (target == null) {
+                    sender.sendMessage("Can't find " + args[0]);
+                    return true;
+                }
 
                 // TODO show homes list for that player
+
+
+                return true;
             }
         }
-
-
-
-        return false;
     }
 }

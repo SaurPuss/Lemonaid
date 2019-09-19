@@ -1,9 +1,13 @@
-package me.saurpuss.lemonaid.utils.users;
+package me.saurpuss.lemonaid.utils.config;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import org.bukkit.*;
+import me.saurpuss.lemonaid.utils.users.Lemon;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.*;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.*;
@@ -62,13 +66,15 @@ public class LemonConfig {
         boolean cuffed = config.getBoolean(".cuffed");
         HashMap<String, Location> homes = new HashMap<>();
         int maxHomes = config.getInt(".maxHomes");
+        // set ignored
+
         HashSet<UUID> ignored = new HashSet<>();
 
         return new Lemon(uuid, muteEnd, nickname, lastLocation, lastMessage,
                 busy, cuffed, homes, maxHomes, ignored);
     }
 
-    static boolean saveUser(Lemon user) {
+    public static boolean saveUser(Lemon user) {
         ConfigurationSection config = get().getConfigurationSection("users." + user.getUuid().toString());
         if (!get().getConfigurationSection("users.").contains(user.getUuid().toString())) {
             get().createSection(get().getConfigurationSection("users.") + user.getUuid().toString());

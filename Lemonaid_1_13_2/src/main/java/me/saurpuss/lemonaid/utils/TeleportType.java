@@ -1,4 +1,4 @@
-package me.saurpuss.lemonaid.utils.teleport;
+package me.saurpuss.lemonaid.utils;
 
 public enum TeleportType {
     TPA("tpa"), TPAHERE("tpahere"), PTP("ptp"), PTPHERE("ptphere"), BACK("back");

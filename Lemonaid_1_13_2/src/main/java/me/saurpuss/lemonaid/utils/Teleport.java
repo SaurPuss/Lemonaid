@@ -1,8 +1,7 @@
-package me.saurpuss.lemonaid.utils.teleport;
+package me.saurpuss.lemonaid.utils;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.users.Lemon;
-import me.saurpuss.lemonaid.utils.Utils;
 import net.milkbowl.vault.economy.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

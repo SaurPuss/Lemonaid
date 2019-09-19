@@ -51,7 +51,8 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("broadcast").setExecutor(new Broadcast());
         getCommand("recap").setExecutor(new Recap(this));
         getCommand("mute").setExecutor(new Mute(this));
-        getCommand("cuff").setExecutor(new Cuff(this));
+        getCommand("cuff").setExecutor(new Cuff());
+        getCommand("mastercuff").setExecutor(new MasterCuff());
 
 
         // Social commands
@@ -68,7 +69,6 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("tpaccept").setExecutor(new TpAccept());
         getCommand("tpdeny").setExecutor(new TpDeny()); // also tpacancel
         getCommand("back").setExecutor(new Back());
-
     }
 
     private void registerEvents() {

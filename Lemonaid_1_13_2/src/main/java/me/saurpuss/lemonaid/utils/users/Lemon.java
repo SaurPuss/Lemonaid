@@ -1,6 +1,8 @@
 package me.saurpuss.lemonaid.utils.users;
 
 import me.saurpuss.lemonaid.Lemonaid;
+import me.saurpuss.lemonaid.utils.config.LemonConfig;
+import me.saurpuss.lemonaid.utils.sql.MySQLDatabase;
 import org.bukkit.Location;
 
 import java.util.*;
@@ -30,8 +32,9 @@ public class Lemon {
         ignored = new HashSet<>();
     }
 
-    Lemon(UUID uuid, long muteEnd, String nickname, Location lastLocation, UUID lastMessage,
-          boolean busy, boolean cuffed, HashMap<String, Location> homes, int maxHomes, HashSet<UUID> ignored) {
+    public Lemon(UUID uuid, long muteEnd, String nickname, Location lastLocation,
+                 UUID lastMessage, boolean busy, boolean cuffed,
+                 HashMap<String, Location> homes, int maxHomes, HashSet<UUID> ignored) {
         this.uuid = uuid;
         this.muteEnd = muteEnd;
         this.nickname = nickname;
@@ -96,8 +99,6 @@ public class Lemon {
             return true; // Player is now ignored
         }
     }
-
-
 
     public Lemon getUser() {
         if (DB_SQL) {

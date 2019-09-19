@@ -20,19 +20,9 @@ import java.util.List;
 
 public class Cuff implements CommandExecutor {
 
-    private Lemonaid plugin;
-
-    /**
-     * Constructor to retrieve the instance of Lemonaid running on the server.
-     * @param plugin Lemonaid instance
-     */
-    public Cuff(Lemonaid plugin) {
-        this.plugin = plugin;
-    }
-
-    // Logging instances of mutes
-    private final File cuffTXT = new File(plugin.getDataFolder(), "cuffs.txt");
-    private Deque<String> recap = getRecap();
+    private final static Lemonaid plugin = Lemonaid.plugin;
+    private final static File cuffTXT = new File(plugin.getDataFolder(), "cuffs.txt");
+    private static Deque<String> recap = getRecap();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -118,7 +108,7 @@ public class Cuff implements CommandExecutor {
 
         // Notify online players with the right permission
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.hasPermission("lemonaid.admin.notify.mute")) {
+            if (p.hasPermission("lemonaid.admin.notify.cuff")) {
                 p.sendMessage(Utils.color("&c" + log));
             }
         }
@@ -128,6 +118,35 @@ public class Cuff implements CommandExecutor {
         user.updateUser();
         target.sendMessage(Utils.color("&cYou are now " + (user.isCuffed() ? "cuffed!" : "uncuffed!") +
                 (reason.equals("") ? "" : "Reason: &r" + reason)));
+    }
+
+    static void masterCuff(Player target, boolean on) {
+        // Log the occurrence
+        Lemon user = new Lemon(target.getUniqueId()).getUser();
+        // Update and notify the target
+        user.setCuffed(on);
+        user.updateUser();
+        target.sendMessage(Utils.color("&cYou are now cuffed!"));
+    }
+
+
+    static void masterCuff(CommandSender sender) {
+        // Make space if the limit is reached
+        if (recap.size() == 10)
+            recap.removeLast();
+
+        String log = Utils.dateToString(LocalDate.now()) + " " + sender.getName() + " used MasterCuff!";
+        // log as the most recent entry and try to write to the file
+        recap.addFirst(log);
+
+        if (!cuffTXT.exists())
+            makeLog();
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(cuffTXT, true), true)) {
+            writer.println(log);
+        } catch (IOException e) {
+            plugin.getLogger().warning("Failed to write to the new cuffs.txt!");
+        }
     }
 
     private void cuffHelp(CommandSender sender, int pageNumber) {
@@ -164,7 +183,7 @@ public class Cuff implements CommandExecutor {
      *
      * @return Linked list with the last 10 cuffs logged
      */
-    private LinkedList<String> getRecap() {
+    private static LinkedList<String> getRecap() {
         // Check for file
         if (!cuffTXT.exists())
             makeLog();
@@ -194,7 +213,7 @@ public class Cuff implements CommandExecutor {
     /**
      * Create a logging file in the plugin folder.
      */
-    private void makeLog() {
+    private static void makeLog() {
         try {
             // Make file and directories
             plugin.getLogger().info("Creating new cuffs.txt!");
