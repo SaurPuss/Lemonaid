@@ -20,6 +20,8 @@ public final class Lemonaid extends JavaPlugin {
     private static Economy economy;
     private HashMap<UUID, Lemon> userManager;
 
+    private static boolean mastercuff = false;
+
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -115,6 +117,10 @@ public final class Lemonaid extends JavaPlugin {
             getLogger().warning("No World Guard found! Disabling related functionality!");
         }
     }
+
+    // Admin level stuff
+    public static void toggleMasterCuff() { mastercuff = !mastercuff; }
+    public static boolean isMasterCuff() { return mastercuff; }
 
     // Keep track of Lemons
     public void mapPlayer(UUID uuid, Lemon user) { userManager.put(uuid, user); }

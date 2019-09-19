@@ -22,8 +22,15 @@ public class ChatModeration implements Listener {
     @EventHandler
     public void chatEvent(AsyncPlayerChatEvent e) {
         Player player = e.getPlayer();
-        Lemon user = new Lemon(player.getUniqueId()).getUser();
+        if (Lemonaid.isMasterCuff()) {
+            if (!player.hasPermission("lemonaid.admin.mastercuff") ||
+                    !player.hasPermission("lemonaid.admin.notify.mastercuff")) {
+                e.setCancelled(true);
+                return;
+            }
+        }
 
+        Lemon user = new Lemon(player.getUniqueId()).getUser();
         // This player is not allowed to talk
         if (user.isMuted() || user.isCuffed()) {
             player.sendMessage(Utils.noPermission());
@@ -42,8 +49,15 @@ public class ChatModeration implements Listener {
     @EventHandler
     public void commandEvent(PlayerCommandPreprocessEvent e) {
         Player player = e.getPlayer();
-        Lemon user = new Lemon(player.getUniqueId()).getUser();
+        if (Lemonaid.isMasterCuff()) {
+            if (!player.hasPermission("lemonaid.admin.mastercuff") ||
+                    !player.hasPermission("lemonaid.admin.notify.mastercuff")) {
+                e.setCancelled(true);
+                return;
+            }
+        }
 
+        Lemon user = new Lemon(player.getUniqueId()).getUser();
         if (user.isCuffed()) {
             player.sendMessage(Utils.noPermission());
             e.setCancelled(true);

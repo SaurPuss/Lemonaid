@@ -1,5 +1,6 @@
 package me.saurpuss.lemonaid.commands.admin;
 
+import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -11,7 +12,19 @@ public class MasterCuff implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender.hasPermission("lemonaid.admin.mastercuff")) {
-            if ((args.length == 1) &&
+            if (args.length == 0) {
+                sender.sendMessage("&cApplying mastercuff to all players until next restart!" );
+                Lemonaid.toggleMasterCuff();
+
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (player.hasPermission("lemonaid.admin.mastercuff") ||
+                            (player.hasPermission("lemonaid.admin.notify.mastercuff")))
+                        player.sendMessage(Utils.color("&c" + sender.getName() + " used MasterCuff!"));
+                }
+
+                return true;
+            }
+            else if ((args.length == 1) &&
                     ((args[0].equalsIgnoreCase("on")) ||
                     (args[0].equalsIgnoreCase("off")))) {
                 boolean on = args[0].equalsIgnoreCase("on"); // on == true, off == false

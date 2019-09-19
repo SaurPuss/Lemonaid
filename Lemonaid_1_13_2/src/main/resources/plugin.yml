@@ -125,7 +125,9 @@ commands:
     permission: lemonaid.admin.cuff
   mastercuff:
     description: Lock every player without the mastercuff (notify) permission in place and prevent them from using chat.
-    usage: /<command> on|off - Toggle cuff on or off for all online players
+    usage: |
+      /<command> - Non-persistent cuff for all online players
+      /<command> on|off - Toggle cuff on or off for all online players
     permission: lemonaid.admin.mastercuff
   mute:
     description: Prevent a player from speaking

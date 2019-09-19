@@ -81,10 +81,12 @@ commands:
       /<command> [target] - Toggle cuff on and off for your target
       /<command> [target] [reason] - Toggle cuff on a player and log a reason
     permission: lemonaid.admin.cuff
-    mastercuff:
-      description: Lock every player without the mastercuff (notify) permission in place and prevent them from using chat.
-      usage: /<command> on|off - Toggle cuff on or off for all online players
-      permission: lemonaid.admin.mastercuff
+  mastercuff:
+    description: Lock every player without the mastercuff (notify) permission in place and prevent them from using chat.
+    usage: |
+      /<command> - Non-persistent cuff for all online players
+      /<command> on|off - Toggle cuff on or off for all online players
+    permission: lemonaid.admin.mastercuff
   mute:
     description: Prevent a player from speaking
     usage: |
