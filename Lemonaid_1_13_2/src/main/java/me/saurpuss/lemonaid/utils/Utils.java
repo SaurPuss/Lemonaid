@@ -29,9 +29,8 @@ public class Utils {
     // Get an online player, or offline if necessary
     public static Player getPlayer(String name) {
         Player player = Bukkit.getPlayer(name);
-        if (player != null) {
+        if (player != null)
             return player;
-        }
 
         // Try to get an offline player
         for (OfflinePlayer p : Bukkit.getOfflinePlayers()) {
@@ -40,6 +39,7 @@ public class Utils {
                 return player;
             }
         }
+
         return null;
     }
 }

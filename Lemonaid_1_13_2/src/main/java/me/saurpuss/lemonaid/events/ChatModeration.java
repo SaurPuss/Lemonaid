@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.player.*;
 
-
 public class ChatModeration implements Listener {
     private Lemonaid plugin;
     public ChatModeration(Lemonaid plugin) {
@@ -51,6 +50,12 @@ public class ChatModeration implements Listener {
             if (u.isIgnored(player.getUniqueId()))
                 e.getRecipients().remove(p);
         }
+
+        // Translate chat colors for those with the permission
+        if (player.hasPermission("lemonaid.chat.colors")) {
+            String message = e.getMessage();
+            e.setMessage(Utils.color(message));
+        }
     }
 
     @EventHandler
@@ -78,7 +83,4 @@ public class ChatModeration implements Listener {
         }
 
     }
-
-
-
 }
