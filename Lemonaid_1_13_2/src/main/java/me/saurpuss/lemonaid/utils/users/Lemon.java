@@ -87,7 +87,7 @@ public class Lemon {
         return s.toString();
     }
     public boolean isIgnored(UUID uuid) { return ignored.contains(uuid); }
-    public boolean setIgnore(UUID uuid) {
+    public boolean toggleIgnore(UUID uuid) {
         if (ignored.contains(uuid)) {
             ignored.remove(uuid);
             return false; // Player is no longer ignored
