@@ -22,29 +22,28 @@ commands:
   # Chat commands
   msg:
     description: Whisper to another player
-    usage: /<command> [target] message
+    usage: /<command> [target] [message]
     aliases: [tell, whisper]
     permission: lemonaid.chat.private
-    permission-message: You do not have permission to do this
   reply:
     description: Reply to a whispered message
-    usage: /<command> message
+    usage: /<command> [message]
     aliases: [r]
     permission: lemonaid.chat.private
-    permission-message: You do not have permission to do this
   busy:
     description: Prevent incoming whispers and tp requests
     usage: /<command>
     aliases: [dnd]
     permission: lemonaid.chat.busy
-    permission-message: You do not have permission to do this
+
+
+
   ignore:
     description: Ignore all messages and tp requests from another player
     usage: |
       /<command> - Display your ignored list
       /<command> [target] - Add or remove your target from your ignore list
     permission: lemonaid.chat.ignore
-    permission-message: You do not have permission to do this
   localchat:
     description: Talk to the players within earshot
     usage: |
@@ -52,7 +51,6 @@ commands:
       /<command> message - Send a message in the local chat channel
     aliases: [l, lc, local]
     permission: lemonaid.chat.local
-    permission-message: You do not have permission to do this
 
   # Party commands
   party:
@@ -86,66 +84,65 @@ commands:
   tpa:
     description: Send a teleportation request to another player
     usage: /<command> [target]
-    default: true
     permission: lemonaid.teleport.tpa
-    permission-message: You do not have permission to do this
   tpahere:
     description: Request another player teleport to your location
     usage: /<command> [target]
     permission: lemonaid.teleport.tpahere
-    permission-message: You do not have permission to do this
   tpaccept:
     description: Accept a teleportation request from another player
     usage: /<command>
     permission: lemonaid.teleport.tpaccept
-    permission-message: You do not have permission to do this
   tpdeny:
     description: Deny or cancel a pending teleportation request
     usage: /<command>
     aliases: [tpacancel, tpcancel]
     permission: lemonaid.teleport.tpadeny
-    permission-message: You do not have permission to do this
   back:
     description: Return to your last saved location
     usage: /<command>
     permission: lemonaid.teleport.back
-    permission-message: You do not have permission to do this
 
-  # OP level commands
+  # OP/Admin level commands
   fly:
     description: Toggle fly mode
     usage: /<command>
-    default: OP
     permission: lemonaid.admin.fly
-    permission-message: You do not have permission to do this
   broadcast:
     description: Broadcast a message across the server
-    usage: /<command> message
-    default: OP
+    usage: /<command> [message]
     aliases: [bc]
     permission: lemonaid.admin.broadcast
+
+  # OP/Moderation commands
   cuff:
     description: Lock an offending player in place and prevent them from using chat.
     usage: |
-      /<command> log - Show a log of cuffs
-      /<command> list - Show a list of currently cuffed online players
-      /<command> list all - Show a list of currently cuffed online and offline players
+      /<command> list - Display last 10 cuff logs
+      /<command> help|? [#] - Display cuff help (page number optional)
       /<command> [target] - Toggle cuff on and off for your target
-      /<command> [target] offline - Cuff an offline player
-      /<command> [target] [time] - Cuff a player for an amount of time
-      /<command> [target] [time] [reason] - Cuff a player for an amount of time and log the reason
-    default: OP
+      /<command> [target] [reason] - Toggle cuff on a player and log a reason
     permission: lemonaid.admin.cuff
   mute:
     description: Prevent a player from speaking
     usage: |
-      /<command> - Display last 10 mute logs
+      /<command> list - Display last 10 mute logs
+      /<command> help|? [#] - Display mute help (page number optional)
       /<command> [target] - Mute player indefinitely, apply again to unmute
       /<command> [target] [time] - Mute a player for a specific amount of time
-      (0 = indefinite | number + time: s = seconds, m = minutes, h = hours, d = days, w = weeks, y = years, "10m = 10minutes")
+      (0 = forever | number + time: s = seconds, m = minutes, h = hours, d = days, w = weeks, y = years, "10m = 10minutes")
       /<command> [target] [time] [reason] - Mute a player for a specific amount of time and log the reason
       /<command> [target] 0 [reason] - Mute a player indefinitely for a specific reason
     permission: lemonaid.admin.mute
+  recap:
+    description: Log quick recaps for information hand-off
+    usage: |
+      /<command> - Display last 10 recaps
+      /<command> [message] - Add recap
+    permission: lemonaid.admin.recap
+
+
+
   slowchat:
     description: Toggle slow chat for all players
     usage: /<command>
@@ -158,13 +155,7 @@ commands:
     default: OP
     aliases: [cc]
     permission: lemonaid.admin.clearchat
-  recap:
-    description: Log quick recaps for information hand-off
-    usage: |
-      /<command> - Display last 10 recaps
-      /<command> [message] - Add recap
-    default: OP
-    permission: lemonaid.admin.recap
+
 
 
 

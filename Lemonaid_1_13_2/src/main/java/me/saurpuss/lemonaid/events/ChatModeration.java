@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.player.*;
 
-import java.util.Date;
 
 public class ChatModeration implements Listener {
     private Lemonaid plugin;
@@ -26,9 +25,10 @@ public class ChatModeration implements Listener {
         Lemon user = new Lemon(player.getUniqueId()).getUser();
 
         // This player is not allowed to talk
-        if (user.isMuted()) {
-            player.sendMessage(Utils.color("c&You are muted! You can't speak until " + new Date(user.getMuteEnd()).toString()));
+        if (user.isMuted() || user.isCuffed()) {
+            player.sendMessage(Utils.noPermission());
             e.setCancelled(true);
+            return;
         }
 
         // Remove this message from chat for players that have this person ignored
@@ -40,13 +40,17 @@ public class ChatModeration implements Listener {
     }
 
     @EventHandler
-    public void commandEvent(PlayerCommandSendEvent e) {
+    public void commandEvent(PlayerCommandPreprocessEvent e) {
+        Player player = e.getPlayer();
+        Lemon user = new Lemon(player.getUniqueId()).getUser();
+
+        if (user.isCuffed()) {
+            player.sendMessage(Utils.noPermission());
+            e.setCancelled(true);
+        }
 
     }
 
-    @EventHandler
-    public void swapItemsEvent(PlayerSwapHandItemsEvent e) {
 
-    }
 
 }

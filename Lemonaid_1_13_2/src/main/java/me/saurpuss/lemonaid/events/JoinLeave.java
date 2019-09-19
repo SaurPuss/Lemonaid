@@ -24,11 +24,7 @@ public class JoinLeave implements Listener {
         plugin.mapPlayer(player.getUniqueId(), new Lemon(player.getUniqueId()).getUser());
 
 
-
-
-
-        // TODO add to wrapper in map and retrieve custom attributes
-
+        // TODO renew this
         if (player.hasPlayedBefore()) {
             // Welcome to the server MOTD
             List<String> motdList = plugin.getConfig().getStringList("message-of-the-day");

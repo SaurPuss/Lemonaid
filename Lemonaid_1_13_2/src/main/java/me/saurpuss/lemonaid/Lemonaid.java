@@ -47,8 +47,7 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("broadcast").setExecutor(new Broadcast());
         getCommand("recap").setExecutor(new Recap(this));
         getCommand("mute").setExecutor(new Mute(this));
-
-        getCommand("cuff").setExecutor(new Cuff());
+        getCommand("cuff").setExecutor(new Cuff(this));
 
 
         // Social commands
@@ -73,6 +72,7 @@ public final class Lemonaid extends JavaPlugin {
 
         pm.registerEvents(new JoinLeave(this), this);
         pm.registerEvents(new ChatModeration(this), this);
+        pm.registerEvents(new ActionEvents(), this);
     }
 
     private void registerConfigs() {
