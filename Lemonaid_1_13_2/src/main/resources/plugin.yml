@@ -128,28 +128,28 @@ commands:
   tpa:
     description: Send a teleportation request to another player
     usage: /<command> [target]
-    permission: lemonaid.teleport
+    permission: lemonaid.teleport.tpa
     permission-message: *noperms
   tpahere:
     description: Request another player teleport to your location
     usage: /<command> [target]
-    permission: lemonaid.teleport
+    permission: lemonaid.teleport.tpahere
     permission-message: *noperms
   tpaccept:
     description: Accept a teleportation request from another player
     usage: /<command>
-    permission: lemonaid.teleport
+    permission: lemonaid.teleport.tpacccept
     permission-message: *noperms
   tpdeny:
     description: Deny or cancel a pending teleportation request
     usage: /<command>
     aliases: [tpacancel, tpcancel]
-    permission: lemonaid.teleport
+    permission: lemonaid.teleport.tpaccept
     permission-message: *noperms
   back:
     description: Return to your last saved location
     usage: /<command>
-    permission: lemonaid.teleport
+    permission: lemonaid.teleport.back
     permission-message: *noperms
 
 
@@ -166,7 +166,16 @@ commands:
 
 
 
-
+  home:
+    description: Allow players to set and teleport to personal homes
+    usage: |
+      /<command> - Go to your singular home, or display all homes
+      /<command> set [name] - Set a new home, if [name] is not used
+       it will default to home.
+      /<command> delete|remove <name> - Remove a homeset
+      /<command> list - Display all your homesets
+    permission: lemonaid.teleport.home
+    permission-message: *noperms
 
   localchat:
     description: Talk to the players within earshot
@@ -262,7 +271,15 @@ permissions:
       lemonaid.chat.ignore: true
       lemonaid.teleport: true
       lemonaid.home: true
-
+  lemonaid.teleport:
+    description: Basic perm nodes for teleportation
+    default: true
+    children:
+      lemonaid.teleport.tpa: true
+      lemonaid.teleport.tpahere: true
+      lemonaid.teleport.tpaccept: true
+      lemonaid.teleport.back: true
+      lemonaid.teleport.home: true
   lemonaid.chat.color:
     description: Allow the use of colors with & color codes
     default: op
