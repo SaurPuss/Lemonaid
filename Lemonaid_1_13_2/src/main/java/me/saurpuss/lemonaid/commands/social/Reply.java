@@ -24,23 +24,30 @@ public class Reply implements CommandExecutor {
 
             // Get the player from the last incoming message
             Lemon p = plugin.getUser(player.getUniqueId());
+            if (p.isBusy()) {
+                player.sendMessage("§cYou can't send whispers while §5/busy!§c");
+                return true;
+            }
+
             Player target = Bukkit.getPlayer(p.getLastMessage());
             // Only works for online players
             if (target == null) {
-                player.sendMessage(Utils.color("&cCan't find " + args[0] + "."));
+                player.sendMessage("§cCan't find " + args[0] + ".");
                 return true;
             }
 
             Lemon t = plugin.getUser(target.getUniqueId());
             if (t.isBusy()) {
-                player.sendMessage(Utils.color("&c" + args[0] + " is unavailable right now."));
+                player.sendMessage("§c" + args[0] + " is unavailable right now.");
                 return true;
             }
 
             // Compile the message and update users
             String message = StringUtils.join(args, ' ', 0, args.length);
-            target.sendMessage(Utils.color("&6[MSG]&c[&6" + player.getName() + "&c >> &6me&c]&f " + message));
-            player.sendMessage(Utils.color("&6[MSG]&c[&6me &c >> &6" + target.getName() + "&c]&f " + message));
+            target.sendMessage("§6[MSG]§c[§6" + player.getName() + "§c >> §6me§c]§f " +
+                    (player.hasPermission("lemonaid.chat.color") ? Utils.color(message) : message));
+            player.sendMessage("§6[MSG]§c[§6me §c >> §6" + target.getName() + "§c]§f " +
+                    (player.hasPermission("lemonaid.chat.color") ? Utils.color(message) : message));
             t.setLastMessage(player.getUniqueId());
             t.updateUser();
             return true;

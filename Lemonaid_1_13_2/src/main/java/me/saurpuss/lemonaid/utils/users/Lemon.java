@@ -114,7 +114,7 @@ public class Lemon {
     }
 
     public void updateUser() {
-        this.saveUser();
+        saveUser();
         plugin.mapPlayer(uuid, this);
     }
 }

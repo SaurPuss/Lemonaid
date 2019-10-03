@@ -26,19 +26,22 @@ public class Busy implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
-            Lemon user = plugin.getUser(((Player) sender).getUniqueId());
+            Player player = (Player) sender;
+            // Retrieve matching user from userManager
+            Lemon user = plugin.getUser(player.getUniqueId());
             if (user.isBusy()) {
                 user.setBusy(false);
-                sender.sendMessage("You are no longer set to Do Not Disturb.");
+                sender.sendMessage("§dYou are no longer set to Do Not Disturb.");
             } else {
                 user.setBusy(true);
-                sender.sendMessage("You are set to Do Not Disturb. You will no longer receive whispers and teleport requests.");
+                sender.sendMessage("§5You are now set to Do Not Disturb!");
             }
+
             user.updateUser();
             return true;
-        } else {
-            sender.sendMessage(Utils.playerOnly());
-            return true;
         }
+
+        sender.sendMessage(Utils.playerOnly());
+        return true;
     }
 }

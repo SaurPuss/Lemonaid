@@ -33,36 +33,35 @@ public class Msg implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             // Not enough arguments
-            if (args.length <= 1) {
-                player.sendMessage(Utils.color("&cType: /msg <player> <message>"));
-                return true;
-            }
+            if (args.length <= 1) return false;
 
             // If sender is set to busy they are not allowed to send a dm
             Lemon p = plugin.getUser(player.getUniqueId());
             if (p.isBusy()) {
-                player.sendMessage(Utils.color("&cYou can't send whispers while busy!"));
+                player.sendMessage("§cYou can't send whispers while §5/busy!§c");
                 return true;
             }
 
             // See if the intended target is online
             Player target = Bukkit.getPlayer(args[0]);
             if (target == null) {
-                player.sendMessage(Utils.color("&cCan't find " + args[0] + "."));
+                player.sendMessage("§cCan't find " + args[0] + "!");
                 return true;
             }
 
             // Check if the user is set to busy
             Lemon user = plugin.getUser(target.getUniqueId());
             if (user.isBusy()) {
-                player.sendMessage(Utils.color("&c" + args[0] + " is unavailable."));
+                player.sendMessage("§c" + args[0] + " is currently unavailable.");
                 return true;
             }
 
             // Compile and send the message
             String message = StringUtils.join(args, ' ', 1, args.length);
-            target.sendMessage(Utils.color("&6[MSG]&c[&6" + player.getName() + "&c >> &6me&c]&f " + message));
-            player.sendMessage(Utils.color("&6[MSG]&c[&6me &c >> &6" + target.getName() + "&c]&f " + message));
+            target.sendMessage("§6[MSG]§c[§6" + player.getName() + "§c >> §6me§c]§f " +
+                    (player.hasPermission("lemonaid.chat.color") ? Utils.color(message) : message));
+            player.sendMessage("§6[MSG]§c[§6me §c >> §6" + target.getName() + "§c]§f " +
+                    (player.hasPermission("lemonaid.chat.color") ? Utils.color(message) : message));
             user.setLastMessage(player.getUniqueId());
             user.updateUser();
 
@@ -74,17 +73,17 @@ public class Msg implements CommandExecutor {
         // The sender is the console
         else {
             if (args.length <= 1) {
-                sender.sendMessage("Usage: /msg <player> <message>");
+                sender.sendMessage("§cUsage: §5/msg <player> <message>");
                 return true;
             } else {
                 Player target = Bukkit.getPlayer(args[0]);
                 if (target == null) {
-                    sender.sendMessage("&cCan't find " + args[0] + ".");
+                    sender.sendMessage("§cCan't find " + args[0] + ".");
                     return true;
                 }
 
                 String message = StringUtils.join(args, ' ', 1, args.length);
-                target.sendMessage(Utils.color("&e[MSG] >> &6 " + message));
+                target.sendMessage("§e[MSG] >> §6 " + Utils.color(message));
                 sender.sendMessage("[MSG] >> "+ target.getName() + ": " + message);
                 return true;
             }
