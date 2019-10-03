@@ -1,15 +1,14 @@
 package me.saurpuss.lemonaid.utils.users;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.config.LemonConfig;
 import me.saurpuss.lemonaid.utils.sql.MySQLDatabase;
 import org.bukkit.Location;
 
 import java.util.*;
 
 public class Lemon {
-    private final static boolean DB_SQL = Lemonaid.plugin.getConfig().getBoolean("mysql");
 
+    private static transient Lemonaid plugin = Lemonaid.getPlugin(Lemonaid.class); // TODO check if correct usage
     private UUID uuid, lastMessage;
     private long muteEnd;
     private String nickname;
@@ -30,6 +29,8 @@ public class Lemon {
         homes = new HashMap<>();
         maxHomes = 3;
         ignored = new HashSet<>();
+
+        // TODO save to database, this is triggered on first join event
     }
 
     public Lemon(UUID uuid, long muteEnd, String nickname, Location lastLocation,
@@ -101,23 +102,19 @@ public class Lemon {
     }
 
     public Lemon getUser() {
-        if (DB_SQL) {
-            return MySQLDatabase.getUser(uuid);
-        } else {
-            return LemonConfig.getUser(uuid);
-        }
+        Lemon user = plugin.getUser(uuid);
+        if (user == null)
+            user = MySQLDatabase.getUser(uuid);
+
+        return user;
     }
 
     private void saveUser() {
-        if (DB_SQL) {
-            MySQLDatabase.saveUser(this);
-        } else {
-            LemonConfig.saveUser(this);
-        }
+        MySQLDatabase.saveUser(this);
     }
 
     public void updateUser() {
         this.saveUser();
-        Lemonaid.plugin.mapPlayer(uuid, this);
+        plugin.mapPlayer(uuid, this);
     }
 }

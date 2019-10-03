@@ -3,38 +3,49 @@ package me.saurpuss.lemonaid.utils.sql;
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.UUID;
 
 public class MySQLDatabase {
 
     private static Lemonaid plugin = Lemonaid.plugin;
-    private static String prefix = plugin.getConfig().getString("mysql.table-prefix");
-    private static String lemonTable = "users";
-    private static String partyTable = "party";
+    private static Connection connection;
+    private static final String dbUrl =
+            "jdbc:msql://" + plugin.getConfig().getString("sql.host") +
+            ":" + plugin.getConfig().getString("sql.port") +
+            "/" + plugin.getConfig().getString("sql.database");
+    private static final String user = plugin.getConfig().getString("sql.user");
+    private static final String pass = plugin.getConfig().getString("sql.password");
+
+    private static String lemonTable = "lemonaid_users";
+    private static String partyTable = "lemonaid_party";
+
+    private static Connection getConnection() {
+        try {
+            if (connection != null || !connection.isClosed()) {
+                return connection;
+            }
+
+
+
+            DriverManager.getConnection(dbUrl, user, pass);
+
+        } catch (SQLException e) {
+            plugin.getLogger().warning("SQL exception while trying to connect to the database!");
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     private static void createTable(String table) {
-        plugin.getLogger().info("Setting up Database table " + prefix + "-" + table);
 
     }
 
 
 
-    public static void pingTables() {
-        if (!pingTable(lemonTable)) {
-            createTable(lemonTable);
-        }
-
-        if (!pingTable(partyTable)) {
-            createTable(partyTable);
-        }
-
-    }
-
-    private static boolean pingTable(String table) {
-        plugin.getLogger().info("Checking connection to " + table);
-
-        return true;
-    }
 
     public static Lemon getUser(UUID uuid) {
         // TODO connect and use prepared statement to retrieve a Lemon

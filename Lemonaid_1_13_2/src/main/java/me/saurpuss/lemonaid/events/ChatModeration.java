@@ -15,28 +15,17 @@ public class ChatModeration implements Listener {
     }
 
     @EventHandler
-    public void channelEvent(PlayerChannelEvent e) {
-    }
-
-    @EventHandler
     public void chatEvent(AsyncPlayerChatEvent e) {
         Player player = e.getPlayer();
-        if (Lemonaid.isMasterCuff()) {
-            if (!player.hasPermission("lemonaid.admin.mastercuff") ||
-                    !player.hasPermission("lemonaid.admin.notify.mastercuff")) {
-                e.setCancelled(true);
-                return;
-            }
-        }
-        if (Lemonaid.isGlobalMute()) {
-            if (!player.hasPermission("lemonaid.admin.globalmute") ||
-                    !player.hasPermission("lemonaid.admin.notify.globalmute")) {
-                e.setCancelled(true);
-                return;
-            }
+        // Check if global mute or master cuff is true
+        if ((plugin.isMasterCuff() || plugin.isGlobalMute()) &&
+                !player.hasPermission("lemonaid.exempt")) {
+            e.setCancelled(true);
+            return;
         }
 
-        Lemon user = new Lemon(player.getUniqueId()).getUser();
+        // Get player from userManager
+        Lemon user = plugin.getUser(player.getUniqueId());
         // This player is not allowed to talk
         if (user.isMuted() || user.isCuffed()) {
             player.sendMessage(Utils.noPermission());
@@ -52,7 +41,7 @@ public class ChatModeration implements Listener {
         }
 
         // Translate chat colors for those with the permission
-        if (player.hasPermission("lemonaid.chat.colors")) {
+        if (player.hasPermission("lemonaid.chat.color")) {
             String message = e.getMessage();
             e.setMessage(Utils.color(message));
         }
@@ -61,26 +50,18 @@ public class ChatModeration implements Listener {
     @EventHandler
     public void commandEvent(PlayerCommandPreprocessEvent e) {
         Player player = e.getPlayer();
-        if (Lemonaid.isMasterCuff()) {
-            if (!player.hasPermission("lemonaid.admin.mastercuff") ||
-                    !player.hasPermission("lemonaid.admin.notify.mastercuff")) {
-                e.setCancelled(true);
-                return;
-            }
-        }
-        if (Lemonaid.isGlobalMute()) {
-            if (!player.hasPermission("lemonaid.admin.globalmute") ||
-                    !player.hasPermission("lemonaid.admin.notify.globalmute")) {
-                e.setCancelled(true);
-                return;
-            }
+        // Check if global mute or master cuff is true
+        if ((plugin.isMasterCuff() || plugin.isGlobalMute()) &&
+                !player.hasPermission("lemonaid.exempt")) {
+            e.setCancelled(true);
+            return;
         }
 
-        Lemon user = new Lemon(player.getUniqueId()).getUser();
+        // Get player from userManager
+        Lemon user = plugin.getUser(player.getUniqueId());
         if (user.isCuffed()) {
             player.sendMessage(Utils.noPermission());
             e.setCancelled(true);
         }
-
     }
 }

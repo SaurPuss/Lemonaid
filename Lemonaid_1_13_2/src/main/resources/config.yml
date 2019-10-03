@@ -1,15 +1,14 @@
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-#   - Database Options -
-# If you set mysql to false, user data will be saved to a config
-# file. Which is slower and can cause lag if used at scale!!
+#   - Database Settings -
+# This plugin requires an MySQL database to store information about the
+# users. Fill out the information below to make the plugin functional.
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-mysql: false
-  address: ''
+mysql:
+  host: ''
   port: ''
-  user: ''
-  password: ''
   database: ''
-  table-prefix: 'lemonaid_'
+  username: ''
+  password: ''
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 #   - Custom Server List Options -

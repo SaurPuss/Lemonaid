@@ -1,11 +1,19 @@
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   Plugin information
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 name: Lemonaid
 version: ${project.version}
 main: me.saurpuss.lemonaid.Lemonaid
 authors: [SaurPuss]
 description: Lots of basic commands put together in one plugin
+database: true
 website: https://voxmc.com
 softdepend: [Vault, WorldGuard]
+permission-message: &noperms "§cYou don't have permission to do this!"
 
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   Commands
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 commands:
   # Plugin specific commands
   lemonaid:
@@ -14,10 +22,74 @@ commands:
       /<command> info - Plugin information
       /<command> reload - Reload the plugin configs
       /<command> ?|help - Plugin help file
-    default: OP
     aliases: [lemon]
-    permission: lemonaid.admin.reload
-    permission-message: You do not have permission to do this
+
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  #   Administrator commands
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  broadcast:
+    description: Broadcast a message across the server
+    usage: /<command> [message...]
+    aliases: [bc]
+    permission: lemonaid.broadcast
+    permission-message: *noperms
+  fly:
+    description: Toggle fly mode
+    usage: |
+      /<command> - Toggle fly on yourself
+      /<command> [target] - Toggle fly on a valid target
+    permission: lemonaid.fly
+    permission-message: *noperms
+  mastercuff:
+    description: |
+      Lock every player without the mastercuff or exempt permission in place and
+      prevent them from using chat. Does not persist through restart.
+    usage: |
+      /<command> - Toggle mastercuff for all online players
+      /<command> on|off - Toggle mastercuff on or off for all online players
+    permission: lemonaid.mastercuff
+    permission-message: *noperms
+  globalmute:
+    description: Toggle a non-persistent mute to all online players
+    usage: /<command>
+    aliases: [silence]
+    permission: lemonaid.globalmute
+    permission-message: *noperms
+
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  #   Moderation commands
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  cuff:
+    description: Lock an offending player in place and prevent them from using chat.
+    usage: |
+      /<command> list - Display last 10 cuff logs
+      /<command> help|? [#] - Display cuff help (page number optional)
+      /<command> [target] - Toggle cuff on|off for your target
+      /<command> [target] [reason...] - Toggle cuff on a player and log a reason
+    permission: lemonaid.cuff
+    permission-message: *noperms
+  mute:
+    description: Prevent a player from speaking
+    usage: |
+      /<command> list - Display last 10 mute logs
+      /<command> help|? [#] - Display mute help (page number optional)
+      /<command> [target] - Mute player indefinitely, apply again to unmute
+      /<command> [target] [time] - Mute a player for a specific amount of time
+      (0 = forever | number + time: s = seconds, m = minutes, h = hours, d = days, w = weeks, y = years, "10m = 10minutes")
+      /<command> [target] [time] [reason] - Mute a player for a specific amount of time and log the reason
+      /<command> [target] 0 [reason] - Mute a player indefinitely for a specific reason
+    permission: lemonaid.mute
+    permission-message: *noperms
+  recap:
+    description: Log quick recaps for information hand-off
+    usage: |
+      /<command> - Display last 10 recaps
+      /<command> [message...] - Add recap
+    permission: lemonaid.recap
+    permission-message: *noperms
+
+
+
 
   # Chat commands
   msg:
@@ -25,25 +97,28 @@ commands:
     usage: /<command> [target] [message]
     aliases: [tell, whisper]
     permission: lemonaid.chat.private
+    permission-message: *noperms
   reply:
     description: Reply to a whispered message
     usage: /<command> [message]
     aliases: [r]
     permission: lemonaid.chat.private
+    permission-message: *noperms
   busy:
     description: Prevent incoming whispers and tp requests
     usage: /<command>
     aliases: [dnd]
     permission: lemonaid.chat.busy
-
-
-
+    permission-message: *noperms
   ignore:
     description: Ignore all messages and tp requests from another player
     usage: |
       /<command> - Display your ignored list
       /<command> [target] - Add or remove your target from your ignore list
     permission: lemonaid.chat.ignore
+    permission-message: *noperms
+
+
   localchat:
     description: Talk to the players within earshot
     usage: |
@@ -51,6 +126,7 @@ commands:
       /<command> message - Send a message in the local chat channel
     aliases: [l, lc, local]
     permission: lemonaid.chat.local
+    permission-message: *noperms
 
   # Party commands
   party:
@@ -70,7 +146,7 @@ commands:
       are giving this player permission to modify your party settings
     #      /<command> accept [player_name] - Accept an request to join your party
     permission: lemonaid.party.*
-    permission-message: You do not have permission to do this
+    permission-message: *noperms
 
 #  partychat:
 #    description: Talk to online members of your party
@@ -85,72 +161,35 @@ commands:
     description: Send a teleportation request to another player
     usage: /<command> [target]
     permission: lemonaid.teleport.tpa
+    permission-message: *noperms
   tpahere:
     description: Request another player teleport to your location
     usage: /<command> [target]
     permission: lemonaid.teleport.tpahere
+    permission-message: *noperms
   tpaccept:
     description: Accept a teleportation request from another player
     usage: /<command>
     permission: lemonaid.teleport.tpaccept
+    permission-message: *noperms
   tpdeny:
     description: Deny or cancel a pending teleportation request
     usage: /<command>
     aliases: [tpacancel, tpcancel]
     permission: lemonaid.teleport.tpadeny
+    permission-message: *noperms
   back:
     description: Return to your last saved location
     usage: /<command>
     permission: lemonaid.teleport.back
+    permission-message: *noperms
 
   # OP/Admin level commands
-  fly:
-    description: Toggle fly mode
-    usage: /<command>
-    permission: lemonaid.admin.fly
-  broadcast:
-    description: Broadcast a message across the server
-    usage: /<command> [message]
-    aliases: [bc]
-    permission: lemonaid.admin.broadcast
 
-  # OP/Moderation commands
-  cuff:
-    description: Lock an offending player in place and prevent them from using chat.
-    usage: |
-      /<command> list - Display last 10 cuff logs
-      /<command> help|? [#] - Display cuff help (page number optional)
-      /<command> [target] - Toggle cuff on and off for your target
-      /<command> [target] [reason] - Toggle cuff on a player and log a reason
-    permission: lemonaid.admin.cuff
-  mastercuff:
-    description: Lock every player without the mastercuff (notify) permission in place and prevent them from using chat.
-    usage: |
-      /<command> - Non-persistent cuff for all online players
-      /<command> on|off - Toggle cuff on or off for all online players
-    permission: lemonaid.admin.mastercuff
-  mute:
-    description: Prevent a player from speaking
-    usage: |
-      /<command> list - Display last 10 mute logs
-      /<command> help|? [#] - Display mute help (page number optional)
-      /<command> [target] - Mute player indefinitely, apply again to unmute
-      /<command> [target] [time] - Mute a player for a specific amount of time
-      (0 = forever | number + time: s = seconds, m = minutes, h = hours, d = days, w = weeks, y = years, "10m = 10minutes")
-      /<command> [target] [time] [reason] - Mute a player for a specific amount of time and log the reason
-      /<command> [target] 0 [reason] - Mute a player indefinitely for a specific reason
-    permission: lemonaid.admin.mute
-  globalmute:
-    description: Toggle a non-persistent mute to all online players
-    usage: /<command>
-    aliases: [silence]
-    permission: lemonaid.admin.globalmute
-  recap:
-    description: Log quick recaps for information hand-off
-    usage: |
-      /<command> - Display last 10 recaps
-      /<command> [message] - Add recap
-    permission: lemonaid.admin.recap
+
+
+
+
 
 
 
@@ -159,94 +198,71 @@ commands:
     usage: /<command>
     default: OP
     aliases: [slow]
-    permission: lemonaid.admin.slow
+    permission: lemonaid.slow
+    permission-message: *noperms
   clearchat:
     description: Push that pesky chat out of scroll range
     usage: /<command>
     default: OP
     aliases: [cc]
-    permission: lemonaid.admin.clearchat
+    permission: lemonaid.clearchat
+    permission-message: *noperms
 
 
 
-
-
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   Permissions
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 permissions:
-  lemonaid.admin.*:
+  lemonaid.admin:
     description: Admin level permissions for Lemonaid
     default: op
     children:
-      lemonaid.admin.fly: true
-      lemonaid.admin.broadcast: true
-      lemonaid.admin.reload: true
-      lemonaid.admin.notify: true
-      lemonaid.admin.mute: true
-      lemonaid.admin.globalmute: true
-      lemonaid.admin.recap: true
-      lemonaid.admin.setignore: true
-      lemonaid.admin.cuff: true
-      lemonaid.admin.mastercuff: true
-      lemonaid.admin.jail: true
-      lemonaid.admin.slow: true
-      lemonaid.admin.clearchat: true
-  lemonaid.admin.notify.*:
-    description: Notifications for moderators on specific event
-    default: op
-    children:
-      lemonaid.admin.notify.toggle: true
-      lemonaid.admin.notify.login: true
-      lemonaid.admin.notify.logout: true
-      lemonaid.admin.notify.kick: true
-      lemonaid.admin.notify.mute: true
-      lemonaid.admin.notify.globalmute: true
-      lemonaid.admin.notify.ignore: true
-      lemonaid.admin.notify.cuff: true
-      lemonaid.admin.notify.mastercuff: true
-      lemonaid.admin.notify.jail: true
-      lemonaid.admin.slow.exempt: true
-      lemonaid.admin.notify.clearchat: true # TODO maybe just auto exempt everyone who has the cc perm?
-  lemonaid.chat.*:
+      lemonaid.fly: true
+      lemonaid.broadcast: true
+      lemonaid.mute: true
+      lemonaid.exempt: true
+      lemonaid.globalmute: true
+      lemonaid.recap: true
+      lemonaid.setignore: true
+      lemonaid.cuff: true
+      lemonaid.mastercuff: true
+      lemonaid.jail: true
+      lemonaid.slow: true
+      lemonaid.clearchat: true
+  lemonaid.exempt:
     description: |
-      Permissions for different chats. Toggle if you prefer to
-      set them differently for groups or players.
+      Moderation permission to be notified of moderation events and
+      creates exemption from global moderation effects
+    default: false
+    children:
+      lemonaid.notify: true
+  lemonaid.moderation:
+    description: Moderation permissions for non-admins
+    default: false
+    children:
+      lemonaid.exempt: true
+      lemonaid.mute: true
+      lemonaid.cuff: true
+      lemonaid.clearchat: true
+      lemonaid.chat.color: true
+  lemonaid.reload:
+    description: Reload plugin configuration files
+    default: false
+
+  lemonaid.basic:
+    description: Basic perm nodes that are on by default
     default: true
     children:
-      lemonaid.chat.local: true
       lemonaid.chat.private: true
-      lemonaid.chat.colors: true
       lemonaid.chat.busy: true
       lemonaid.chat.ignore: true
-#      lemonaid.chat.party: true
-  lemonaid.teleport.*:
-    description: Permissions for teleportation
-    default: true
-    children:
       lemonaid.teleport.tpa: true
       lemonaid.teleport.tpahere: true
       lemonaid.teleport.tpaccept: true
       lemonaid.teleport.tpdeny: true
-  lemonaid.party.*:
-    description: Permission to form, join, and edit parties
-    default: true
-    children:
-      lemonaid.party.create: true
-      lemonaid.party.join: true
-      lemonaid.party.leave: true
-      lemonaid.party.leader: false
-      lemonaid.party.temporary: false
-      lemonaid.party.assistant: false
-  lemonaid.party.leader.*:
-    description: |
-      Permission added to a party creator setting their edit
-      and remove permissions to true.
-    default: false
-    children:
-      lemonaid.party.leader.remove: true
-      lemonaid.party.leader.edit: true
-      lemonaid.party.leader.share: true
-  lemonaid.party.assistant:
-    description: Give permission to edit the party as an assistant.
-    default: false
-  lemonaid.party.temporary:
-    description: Create temporary parties.
-    default: false
+
+  lemonaid.chat.color:
+    description: Allow the use of colors with & color codes
+    default: op
+

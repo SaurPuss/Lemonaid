@@ -1,8 +1,8 @@
-package me.saurpuss.lemonaid.commands.lemonaid;
+package me.saurpuss.lemonaid.commands;
 
 import org.bukkit.command.*;
 
-public class LemonaidCommand implements CommandExecutor {
+public class Lemonaid implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 

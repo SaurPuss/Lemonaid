@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -39,10 +40,7 @@ public class Recap implements CommandExecutor {
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("lemonaid.admin.recap")) {
-            sender.sendMessage(Utils.noPermission());
-            return true;
-        }
+        if (!sender.hasPermission("lemonaid.recap")) return true;
 
         // print last 10 recaps
         if (args.length == 0) {
@@ -102,8 +100,7 @@ public class Recap implements CommandExecutor {
             recap.removeLast();
 
         // Add today to the recap before processing
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
-        String s = "&c" + sdf.format(new Date()) + "&f: " + message;
+        String s = "§c" + Utils.dateToString(LocalDate.now()) + "§f: " + Utils.color(message);
 
         // Add recap to deque and recap.txt
         recap.addFirst(s);
@@ -129,9 +126,8 @@ public class Recap implements CommandExecutor {
             file.createNewFile();
 
             // Try to write to the newly created file
-            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
             PrintWriter writer = new PrintWriter(new FileWriter(file, true), true);
-            writer.println("&c" + sdf.format(new Date()) + "&f: Use &d/recap <message> &fto add a recap");
+            writer.println("§c" + Utils.dateToString(LocalDate.now()) + "§f: Use §d/recap <message> §fto add a recap");
         } catch (IOException e) {
             plugin.getLogger().warning("Error while creating recap.txt!!");
         }

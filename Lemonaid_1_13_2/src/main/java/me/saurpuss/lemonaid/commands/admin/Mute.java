@@ -22,10 +22,6 @@ import java.util.*;
 public class Mute implements CommandExecutor {
 
     private Lemonaid plugin;
-    /**
-     * Constructor to retrieve the instance of Lemonaid running on the server.
-     * @param plugin Lemonaid instance
-     */
     public Mute(Lemonaid plugin) {
         this.plugin = plugin;
     }
@@ -36,45 +32,46 @@ public class Mute implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("lemonaid.admin.mute")) {
-            sender.sendMessage(Utils.noPermission());
-            return true;
-        }
+        // Permission check
+        if (!sender.hasPermission("lemonaid.mute")) return true;
 
         // Not enough arguments
-        if (args.length == 0) {
-            // TODO add colors to all messages
-            sender.sendMessage(Utils.color("Use: /mute list, or /mute <player> <time> <reason>"));
-            return true;
-        }
+        if (args.length == 0) return false;
 
         // /mute + subcommand
         else if (args.length == 1) {
             // Retrieve a recap of the last 10 mutes
             if (args[0].equalsIgnoreCase("list")) {
+                sender.sendMessage("§6Listing last 10 mute events:");
                 for (String s : recap)
                     sender.sendMessage(Utils.color(" - " + s));
                 return true;
             }
 
             // Retrieve mute help instructions
-            else if ((args[0].equalsIgnoreCase("help")) || (args[0].equalsIgnoreCase("?"))) {
+            else if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) {
                 muteHelp(sender, 0);
                 return true;
             }
 
-            // Check if args[0] is a player or offline player that requires an infinite mute
             else {
+                // Attempt to get a valid user for muting
                 Player target = Utils.getPlayer(args[0]);
                 if (target == null) {
-                    sender.sendMessage(Utils.color("&cUsage: /mute <player> <time> <reason>, use /mute help for more information."));
+                    sender.sendMessage("§c" + args[0] + " not found!");
                     return true;
                 }
 
-                // get the user wrapper
-                Lemon user = new Lemon(target.getUniqueId()).getUser();
+                // target is exempt
+                if (target.hasPermission("lemonaid.exempt")) {
+                    sender.sendMessage("§cYou don't have permission to mute " + target.getName());
+                    return true;
+                }
+
+                Lemon user = plugin.getUser(target.getUniqueId());
+
+                // update mute status
                 if (user.isMuted()) {
-                    // Update existing mute status
                     user.setMuteEnd(0);
                     user.updateUser();
 
@@ -84,13 +81,13 @@ public class Mute implements CommandExecutor {
 
                     // Notify online users of the action
                     for (Player p : Bukkit.getOnlinePlayers()) {
-                        if (p.hasPermission("lemonaid.admin.notify.mute")) {
+                        if (p.hasPermission("lemonaid.notify")) {
                             p.sendMessage(Utils.color("&c" + log));
                         }
                     }
 
                     // Notify target
-                    target.sendMessage(Utils.color("&6Your mute has been lifted! Chat away!"));
+                    target.sendMessage("§6Your mute has been lifted! Chat away!");
                     return true;
                 }
 
@@ -104,19 +101,25 @@ public class Mute implements CommandExecutor {
         // Multiple arguments detected
         else {
             // Get a specific page from /mute help X, assuming it's a valid number
-            if ((args[0].equalsIgnoreCase("help")) || (args[0].equalsIgnoreCase("?"))) {
+            if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) {
                 try {
                     muteHelp(sender, Integer.parseInt(args[1]));
                 } catch (NumberFormatException e) {
-                    sender.sendMessage(Utils.color("&c" + args[1] + " is not a valid number"));
+                    sender.sendMessage("§c" + args[1] + " is not a valid number");
                 }
                 return true;
             }
 
-            // Try to retrieve an online or offline player from the first argument
+            // Try to retrieve a valid player from the first argument
             Player target = Utils.getPlayer(args[0]);
             if (target == null) {
-                sender.sendMessage(Utils.color("Usage: /mute <player> <time> <reason>, use /mute help for more information."));
+                sender.sendMessage("§c" + args[0] + " not found!");
+                return true;
+            }
+
+            // Target is exempt
+            if (target.hasPermission("lemonaid.exempt")) {
+                sender.sendMessage("§cYou don't have permission to mute " + target.getName());
                 return true;
             }
 
@@ -127,11 +130,8 @@ public class Mute implements CommandExecutor {
                 return true;
             }
 
-            // Check if the second argument is an invalid option
-            else if ((args[1].length() < 2) || (!Character.isLetter(args[1].charAt(args[1].length() - 1)))) {
-                sender.sendMessage(Utils.color("Usage: /mute <player> <time> <reason>, use /mute help for more information."));
-                return true;
-            }
+            // Check if the second argument is a valid option
+            else if (args[1].length() < 2 || !Character.isLetter(args[1].charAt(args[1].length() - 1))) return false;
 
             // Try to parse the arguments to a valid mute
             else {
@@ -148,15 +148,14 @@ public class Mute implements CommandExecutor {
                         time = getUnit(c);
                         break;
                     }
-                    // Invalid character, return to break the loop
+                    // Invalid character: break the loop
                     else {
-                        sender.sendMessage(Utils.color("Usage: /mute <player> <time> <reason>, use /mute help for more information."));
-                        return true;
+                        return false;
                     }
                 }
 
                 // Set up the variables for the mute and implement
-                Duration duration = Duration.of(Integer.valueOf(s), time);
+                Duration duration = Duration.of(Integer.parseInt(s), time);
                 long endMute = System.currentTimeMillis() + duration.toMillis();
                 String reason = StringUtils.join(args, ' ', 2, args.length);
 
@@ -175,7 +174,7 @@ public class Mute implements CommandExecutor {
      */
     private void mute(CommandSender sender, Player target, long endMute, String reason) {
         // Get a user wrapper for the target
-        Lemon user = new Lemon(target.getUniqueId()).getUser();
+        Lemon user = plugin.getUser(target.getUniqueId());
         user.setMuteEnd(endMute);
         user.updateUser();
 
@@ -190,13 +189,13 @@ public class Mute implements CommandExecutor {
 
         // Notify online players with the right permission
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.hasPermission("lemonaid.admin.notify.mute")) {
+            if (p.hasPermission("lemonaid.notify")) {
                 p.sendMessage(Utils.color("&c" + log));
             }
         }
 
         // Notify the target
-        target.sendMessage("&cYou are muted until " +
+        target.sendMessage("§cYou are muted until " +
                 DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(date) +
                 (reason.equals("") ? "!" : ("! Reason: " + reason)));
     }
@@ -204,7 +203,7 @@ public class Mute implements CommandExecutor {
     private void muteHelp(CommandSender sender, int pageNumber) {
         // TODO get help from file and send it back to the sender
 
-        sender.sendMessage(Utils.color("There is no help file right now, lol!"));
+        sender.sendMessage("§cThere is no help file right now, lol!");
     }
 
     /**
@@ -224,6 +223,7 @@ public class Mute implements CommandExecutor {
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(mutesTXT, true), true)) {
             writer.println(message);
+            plugin.getLogger().info("[MUTE] " + message);
         } catch (IOException e) {
             plugin.getLogger().warning("Failed to write to the new mutes.txt!");
         }
@@ -272,8 +272,8 @@ public class Mute implements CommandExecutor {
 
             // Try to write to the file
             PrintWriter writer = new PrintWriter(new FileWriter(mutesTXT, true), true);
-            writer.println("&c" + Utils.dateToString(LocalDate.now())
-                    + ": &fUse &d/mute <player> <time> <message> &fto mute someone");
+            writer.println("§c" + Utils.dateToString(LocalDate.now())
+                    + ": §fUse §d/mute <player> <time> <message> §fto mute someone");
         } catch (IOException e) {
             plugin.getLogger().warning("Error while creating mutes.txt!");
         }

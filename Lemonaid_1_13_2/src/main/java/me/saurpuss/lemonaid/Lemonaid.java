@@ -7,8 +7,6 @@ import me.saurpuss.lemonaid.commands.social.channels.*;
 import me.saurpuss.lemonaid.commands.teleport.*;
 import me.saurpuss.lemonaid.events.*;
 import me.saurpuss.lemonaid.utils.users.Lemon;
-import me.saurpuss.lemonaid.utils.config.LemonConfig;
-import me.saurpuss.lemonaid.utils.sql.MySQLDatabase;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -51,9 +49,10 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("broadcast").setExecutor(new Broadcast());
         getCommand("recap").setExecutor(new Recap(this));
         getCommand("mute").setExecutor(new Mute(this));
-        getCommand("cuff").setExecutor(new Cuff());
-        getCommand("mastercuff").setExecutor(new MasterCuff());
-        getCommand("globalmute").setExecutor(new GlobalMute());
+        getCommand("cuff").setExecutor(new Cuff(this));
+        // TODO create a log of the mastercuff  & globalmute usage
+        getCommand("mastercuff").setExecutor(new MasterCuff(this));
+        getCommand("globalmute").setExecutor(new GlobalMute(this));
 
         // Social commands
         getCommand("msg").setExecutor(new Msg(this));
@@ -77,7 +76,7 @@ public final class Lemonaid extends JavaPlugin {
 
         pm.registerEvents(new JoinLeave(this), this);
         pm.registerEvents(new ChatModeration(this), this);
-        pm.registerEvents(new ActionEvents(), this);
+        pm.registerEvents(new ActionEvents(this), this);
     }
 
     private void registerConfigs() {
@@ -86,14 +85,7 @@ public final class Lemonaid extends JavaPlugin {
         saveDefaultConfig();
 
         // Save user data in SQL or Config
-        if (getConfig().getBoolean("mysql")) {
-            MySQLDatabase.pingTables();
-        } else {
-            LemonConfig.setup();
-            LemonConfig.get().createSection("users");
-            LemonConfig.get().options().copyDefaults(true);
-            LemonConfig.save();
-        }
+
 
         // TODO add this for the parties bits too
 
@@ -120,10 +112,11 @@ public final class Lemonaid extends JavaPlugin {
     }
 
     // Admin level stuff
-    public static void toggleMasterCuff() { masterCuff = !masterCuff; }
-    public static boolean isMasterCuff() { return masterCuff; }
-    public static void toggleGlobalMute() { globalMute = !globalMute; }
-    public static boolean isGlobalMute() { return globalMute; }
+    public void toggleMasterCuff() { masterCuff = !masterCuff; }
+    public void toggleMasterCuff(boolean isOn) { masterCuff = isOn; }
+    public boolean isMasterCuff() { return masterCuff; }
+    public void toggleGlobalMute() { globalMute = !globalMute; }
+    public boolean isGlobalMute() { return globalMute; }
 
     // Keep track of Lemons
     public void mapPlayer(UUID uuid, Lemon user) { userManager.put(uuid, user); }

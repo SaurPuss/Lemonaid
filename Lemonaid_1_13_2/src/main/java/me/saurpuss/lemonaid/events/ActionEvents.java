@@ -12,19 +12,20 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
 public class ActionEvents implements Listener {
 
+    private Lemonaid plugin;
+    public ActionEvents(Lemonaid plugin) { this.plugin = plugin; }
+
     @EventHandler
     public void playerMove(PlayerMoveEvent e) {
         Player player = e.getPlayer();
-        if (Lemonaid.isMasterCuff()) {
-            if (!player.hasPermission("lemonaid.admin.mastercuff") ||
-                    !player.hasPermission("lemonaid.admin.notify.mastercuff")) {
-                e.setCancelled(true);
-                return;
-            }
+        // Check if master cuff is true
+        if (plugin.isMasterCuff() && !player.hasPermission("lemonaid.exempt")) {
+            e.setCancelled(true);
+            return;
         }
 
-
-        Lemon user = new Lemon(player.getUniqueId()).getUser();
+        // Get player from userManager
+        Lemon user = plugin.getUser(player.getUniqueId());
         if (user.isCuffed()) {
             player.sendMessage(Utils.noPermission());
             e.setCancelled(true);
@@ -34,15 +35,14 @@ public class ActionEvents implements Listener {
     @EventHandler
     public void swapItemsEvent(PlayerSwapHandItemsEvent e) {
         Player player = e.getPlayer();
-        if (Lemonaid.isMasterCuff()) {
-            if (!player.hasPermission("lemonaid.admin.mastercuff") ||
-                    !player.hasPermission("lemonaid.admin.notify.mastercuff")) {
-                e.setCancelled(true);
-                return;
-            }
+        // Check if master cuff is true
+        if (plugin.isMasterCuff() && !player.hasPermission("lemonaid.exempt")) {
+            e.setCancelled(true);
+            return;
         }
 
-        Lemon user = new Lemon(player.getUniqueId()).getUser();
+        // Get player from userManager
+        Lemon user = plugin.getUser(player.getUniqueId());
         if (user.isCuffed()) {
             player.sendMessage(Utils.noPermission());
             e.setCancelled(true);
@@ -53,15 +53,14 @@ public class ActionEvents implements Listener {
     @EventHandler
     public void playerInteractEvent(PlayerInteractEvent e) {
         Player player = e.getPlayer();
-        if (Lemonaid.isMasterCuff()) {
-            if (!player.hasPermission("lemonaid.admin.mastercuff") ||
-                    !player.hasPermission("lemonaid.admin.notify.mastercuff")) {
-                e.setCancelled(true);
-                return;
-            }
+        // Check if master cuff is true
+        if (plugin.isMasterCuff() && !player.hasPermission("lemonaid.exempt")) {
+            e.setCancelled(true);
+            return;
         }
 
-        Lemon user = new Lemon(player.getUniqueId()).getUser();
+        // Get player from userManager
+        Lemon user = plugin.getUser(player.getUniqueId());
         if (user.isCuffed()) {
             player.sendMessage(Utils.noPermission());
             e.setCancelled(true);
