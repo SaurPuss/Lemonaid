@@ -2,7 +2,9 @@ package me.saurpuss.lemonaid.commands.teleport;
 
 import me.saurpuss.lemonaid.utils.Teleport;
 import me.saurpuss.lemonaid.utils.Utils;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -10,125 +12,151 @@ import java.util.HashSet;
 public class TpDeny implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player) {
-            Player target = (Player) sender;
-            HashSet<Teleport> incoming = Teleport.retrieveRequest(target);
-            HashSet<Teleport> outgoing = Teleport.outgoingRequests(target);
-
-            // There are both incoming and outgoing requests
-            if ((!incoming.isEmpty()) && (!outgoing.isEmpty())) {
-                if (args.length == 0) {
-                    StringBuilder s = new StringBuilder();
-                    // TODO add colors
-                    s.append("\nYou have incoming teleport requests from: \n");
-                    for (Teleport tp : incoming)
-                        s.append("- " + tp.getClient().getName() + "\n");
-
-                    s.append("You have outgoing teleport requests to: \n");
-                    for (Teleport tp : outgoing)
-                        s.append("- " + tp.getTarget().getName() + "\n");
-                    s.append("Use /tpacancel <name>, or /tpacancel all to cancel requests.");
-
-                    target.sendMessage(Utils.color(s.toString()));
-                } else {
-                    if (args[0].equalsIgnoreCase("all")) {
-                        incoming.addAll(outgoing);
-                        for (Teleport tp : incoming) {
-                            Teleport.removeRequest(tp);
-                        }
-
-                        target.sendMessage(Utils.color("&5All pending teleport requests canceled!"));
-                    } else {
-                        // Check all arguments for incoming and outgoing requests
-                        for (String arg : args) {
-                            for (Teleport tp : incoming) {
-                                if (arg.equalsIgnoreCase(tp.getClient().getName())) {
-                                    Teleport.removeRequest(tp);
-                                    incoming.remove(tp);
-                                }
-                            }
-                            for (Teleport tp : outgoing) {
-                                if (arg.equalsIgnoreCase(tp.getTarget().getName())) {
-                                    Teleport.removeRequest(tp);
-                                    outgoing.remove(tp);
-                                }
-                            }
-                        }
-                        target.sendMessage(Utils.color("&6Requests canceled."));
-                    }
-                }
-            }
-            // There are incoming requests
-            else if (!incoming.isEmpty()) {
-                if (incoming.size() == 1) {
-                    for (Teleport tp : incoming) {
-                        Teleport.removeRequest(tp);
-                    }
-                    target.sendMessage(Utils.color("&6Incoming teleport request canceled."));
-                }
-                // There are multiple incoming requests
-                else {
-                    if (args.length == 0) {
-                        StringBuilder s = new StringBuilder();
-                        // TODO add colors
-                        s.append("You have incoming teleport requests from: \n");
-                        for (Teleport tp : incoming)
-                            s.append("- " + tp.getClient().getName() + "\n");
-                        s.append("Use /tpdeny <name> to deny a request.");
-
-                        target.sendMessage(Utils.color(s.toString()));
-                    } else if (args[0].equalsIgnoreCase("all")) {
-                        for (Teleport tp : incoming)
-                            Teleport.removeRequest(tp);
-                        target.sendMessage(Utils.color("Denied all incoming teleport requests"));
-                    } else {
-                        for (String arg : args)
-                            for (Teleport tp : incoming)
-                                if (arg.equalsIgnoreCase(tp.getClient().getDisplayName())) {
-                                    Teleport.removeRequest(tp);
-                                    incoming.remove(tp);
-                                }
-                        target.sendMessage(Utils.color("Denied all valid teleport requests."));
-                    }
-                }
-            }
-            // There are outgoing requests
-            else if (!outgoing.isEmpty()) {
-                if (outgoing.size() == 1) {
-                    for (Teleport tp : outgoing) {
-                        Teleport.removeRequest(tp);
-                    }
-                    target.sendMessage(Utils.color("&6Your pending teleport request has been canceled."));
-                } else {
-                    if (args.length == 0) {
-                        StringBuilder s = new StringBuilder();
-                        // TODO add color
-                        s.append("You have outgoing teleport requests to: \n");
-                        for (Teleport tp : outgoing)
-                            s.append("- " + tp.getTarget().getName() + "\n");
-                        s.append("Use /tpacancel <name>, or /tpacancel all to cancel a request.");
-
-                        target.sendMessage(Utils.color(s.toString()));
-                    } else if (args[0].equalsIgnoreCase("all")) {
-                        for (Teleport tp : outgoing)
-                            Teleport.removeRequest(tp);
-                    } else {
-                        // deny all valid arguments
-                        for (String arg : args)
-                            for (Teleport tp : outgoing)
-                                if (arg.equalsIgnoreCase(tp.getTarget().getDisplayName())) {
-                                    Teleport.removeRequest(tp);
-                                    outgoing.remove(tp);
-                                }
-                    }
-                }
-            }
-            // Incoming and outgoing are both empty
-            else
-                target.sendMessage(Utils.color("&cYou have no pending teleport requests."));
-        } else {
+        if (!(sender instanceof Player)) {
             sender.sendMessage(Utils.playerOnly());
+            return true;
         }
+
+        Player target = (Player) sender;
+        HashSet<Teleport> incoming = Teleport.retrieveRequest(target);
+        HashSet<Teleport> outgoing = Teleport.outgoingRequests(target);
+
+        // There are both incoming and outgoing requests
+        if (!incoming.isEmpty() && !outgoing.isEmpty()) {
+            // display available requests
+            if (args.length == 0) {
+                StringBuilder s = new StringBuilder();
+                s.append("§6You have incoming teleport requests from: \n");
+                for (Teleport tp : incoming)
+                    s.append("- " + tp.getClient().getName() + "\n");
+
+                s.append("§6You have outgoing teleport requests to: \n");
+                for (Teleport tp : outgoing)
+                    s.append("- " + tp.getTarget().getName() + "\n");
+                s.append("§6Use §d/tpacancel §5<§dname§5>§6, or §d/tpacancel all §6to cancel requests.");
+
+                target.sendMessage(s.toString());
+                return true;
+            }
+
+            // deny all requests
+            if (args[0].equalsIgnoreCase("all")) {
+                incoming.addAll(outgoing);
+                for (Teleport tp : incoming) {
+                    Teleport.removeRequest(tp);
+                }
+
+                target.sendMessage("§6All pending teleport requests canceled!");
+                return true;
+            }
+
+            // Check all arguments for incoming and outgoing requests
+            for (String arg : args) {
+                for (Teleport tp : incoming) {
+                    if (arg.equalsIgnoreCase(tp.getClient().getName())) {
+                        Teleport.removeRequest(tp);
+                        incoming.remove(tp);
+                    }
+                }
+                for (Teleport tp : outgoing) {
+                    if (arg.equalsIgnoreCase(tp.getTarget().getName())) {
+                        Teleport.removeRequest(tp);
+                        outgoing.remove(tp);
+                    }
+                }
+            }
+
+            target.sendMessage("§6Requests canceled.");
+            return true;
+        }
+
+        // There are only incoming requests
+        if (!incoming.isEmpty()) {
+            // There is only 1 incoming request
+            if (incoming.size() == 1) {
+                for (Teleport tp : incoming) {
+                    Teleport.removeRequest(tp);
+                }
+                target.sendMessage("§6Incoming teleport request canceled.");
+                return true;
+            }
+
+            // There are multiple incoming requests
+            if (args.length == 0) {
+                StringBuilder s = new StringBuilder();
+                s.append("§6You have incoming teleport requests from: \n");
+                for (Teleport tp : incoming)
+                    s.append("- " + tp.getClient().getName() + "\n");
+                s.append("§6Use §d/tpdeny §5<§dname§5> §6to deny a request.");
+
+                target.sendMessage(s.toString());
+                return true;
+            }
+            // Deny all incoming requests
+            if (args[0].equalsIgnoreCase("all")) {
+                for (Teleport tp : incoming)
+                    Teleport.removeRequest(tp);
+                target.sendMessage("§6Denied all incoming teleport requests");
+                return true;
+            }
+
+            // deny request matching args
+            for (String arg : args)
+                for (Teleport tp : incoming)
+                    if (arg.equalsIgnoreCase(tp.getClient().getDisplayName())) {
+                        Teleport.removeRequest(tp);
+                        incoming.remove(tp);
+                    }
+            target.sendMessage("§6Denied all valid teleport requests.");
+            return true;
+        }
+
+        // There are only outgoing requests
+        if (!outgoing.isEmpty()) {
+            // There is only 1 outgoing request
+            if (outgoing.size() == 1) {
+                for (Teleport tp : outgoing) {
+                    Teleport.removeRequest(tp);
+                }
+                target.sendMessage("§6Your pending teleport request has been canceled.");
+                return true;
+            }
+            // Display outgoing requests
+            if (args.length == 0) {
+                StringBuilder s = new StringBuilder();
+                s.append("§6You have outgoing teleport requests to: \n");
+                for (Teleport tp : outgoing)
+                    s.append("- " + tp.getTarget().getName() + "\n");
+                s.append("§6Use §d/tpacancel §5<§dname§5>§6, or §d/tpacancel all §6to cancel a request.");
+
+                target.sendMessage(s.toString());
+                return true;
+            }
+
+            // Cancel all outgoing requests
+            if (args[0].equalsIgnoreCase("all")) {
+                for (Teleport tp : outgoing)
+                    Teleport.removeRequest(tp);
+
+                target.sendMessage("§6Your outgoing teleport requests have been canceled.");
+                return true;
+            }
+
+            // deny all valid arguments
+            for (String arg : args) {
+                for (Teleport tp : outgoing) {
+                    if (arg.equalsIgnoreCase(tp.getTarget().getDisplayName())) {
+                        Teleport.removeRequest(tp);
+                        outgoing.remove(tp);
+                    }
+                }
+            }
+            target.sendMessage("§All valid outgoing teleport requests have been canceled.");
+            return true;
+        }
+
+        // There are no pending requests
+        target.sendMessage("§6You have no pending teleport requests.");
         return true;
     }
 }

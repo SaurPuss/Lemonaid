@@ -39,13 +39,13 @@ public class Teleport {
      * @param tp Teleportation request object
      */
     public static void teleportEvent(Teleport tp) {
-        Economy economy = Lemonaid.getEconomy();
+        Economy economy = plugin.getEconomy();
         if (economy.isEnabled()) {
             // Attempt to charge the client for the teleport
             EconomyResponse response = economy.withdrawPlayer(tp.client,
                     plugin.getConfig().getDouble("teleport." + tp.tpType.name + ".cost"));
             if (!response.transactionSuccess()) {
-                tp.client.sendMessage(Utils.color("&cBalance too low! Teleportation request canceled!"));
+                tp.client.sendMessage("§cBalance too low! Teleportation request canceled!");
                 return;
             }
         }
@@ -64,21 +64,21 @@ public class Teleport {
             // requester already has an outgoing request
             // if requester already has incoming requests -> do nothing it will expire if ignored
             if ((t.client == tp.client) && ((tp.tpType == TeleportType.TPA)) || (tp.tpType == TeleportType.PTP)) {
-                tp.client.sendMessage(Utils.color("&cYou have a teleport request pending. Type: /tpacancel remove it."));
+                tp.client.sendMessage("§cYou already have a teleport request pending. Type: /tpacancel remove it.");
                 return false; }
             // target already has an outgoing request
             if (((t.client == tp.target) && ((t.tpType == TeleportType.TPA)) || (t.tpType == TeleportType.PTP))) {
-                tp.client.sendMessage(Utils.color("&c" + tp.target.getName() + " already has a pending teleport request."));
+                tp.client.sendMessage("§c" + tp.target.getName() + " already has a pending teleport request.");
                 return false; }
             // target already has an incoming request
             if ((t.target == tp.target) && ((tp.tpType == TeleportType.TPAHERE)) || (tp.tpType == TeleportType.PTPHERE)) {
-                tp.client.sendMessage(Utils.color("&c" + tp.target.getName() + " already has a pending teleport request."));
+                tp.client.sendMessage("§c" + tp.target.getName() + " already has a pending teleport request.");
                 return false; }
         }
 
         // Check for cross-world and if it's allowed
         if (!plugin.getConfig().getBoolean("teleport." + tp.tpType.name + ".cross-world")) {
-            tp.client.sendMessage(Utils.color("You cannot teleport between worlds. Request canceled."));
+            tp.client.sendMessage("§cYou cannot teleport between worlds! Request canceled.");
             return false;
         }
 
@@ -94,8 +94,8 @@ public class Teleport {
                 return false;
         }
 
-        tp.target.sendMessage(Utils.color("&6" + request));
-        tp.client.sendMessage(Utils.color("&6Request sent to " + tp.target.getName()));
+        tp.target.sendMessage("§6" + request);
+        tp.client.sendMessage("§6Request sent to " + tp.target.getName());
         pendingRequests.add(tp);
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> removeRequest(tp), delay * 20L);
@@ -129,21 +129,20 @@ public class Teleport {
 
     private static void teleportTask(Player player, Player target, int timer) {
         // player -> target
-        // TODO replace with non bukkit task scheduler
         id = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             Location location = player.getLocation();
             int x = location.getBlockX();
             int y = location.getBlockY();
             int z = location.getBlockZ();
             int counter = timer;
-            player.sendMessage(Utils.color("&6Teleportation commencing in &6" + counter + "&6 seconds! Do not move!"));
+            player.sendMessage("§6Teleportation commencing in §e" + counter + "§6 seconds! Do not move!");
             if (counter == 0) {
                 // teleport client & update lastLocation / teleports / task
                 Lemon user = plugin.getUser(player.getUniqueId());
                 if (target != null)
-                    player.teleport(target.getLocation());
+                    player.teleport(target.getLocation()); // this is a P2P tp type
                 else {
-                    player.teleport(user.getLastLocation());
+                    player.teleport(user.getLastLocation()); // this is a BACK tp type
                 }
                 user.setLastLocation(location);
                 user.updateUser();
@@ -155,13 +154,13 @@ public class Teleport {
                 counter--;
                 // send client countdown messages
                 if (counter == 10) {
-                    player.sendMessage(Utils.color("&5" + counter + "&6 seconds until teleport!"));
+                    player.sendMessage("§e" + counter + "§6 seconds until teleport!");
                 } else if (counter <= 5) {
-                    player.sendMessage(Utils.color("&5" + counter + "&6!"));
+                    player.sendMessage("§e" + counter + "§6!");
                 }
             } else {
                 // client has moved! cancel task!
-                player.sendMessage(Utils.color("&cTeleportation canceled!"));
+                player.sendMessage("§cTeleportation canceled!");
                 Bukkit.getScheduler().cancelTask(id);
             }
         }, 0L, 20L);

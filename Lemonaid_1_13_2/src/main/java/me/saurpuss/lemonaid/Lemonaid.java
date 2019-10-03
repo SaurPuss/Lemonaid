@@ -123,7 +123,7 @@ public final class Lemonaid extends JavaPlugin {
     public void unmapPlayer(UUID uuid) { userManager.remove(uuid); }
     public Lemon getUser(UUID uuid) { return userManager.get(uuid); }
 
-    public static Economy getEconomy() { return economy; }
+    public Economy getEconomy() { return economy; }
 
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null)
