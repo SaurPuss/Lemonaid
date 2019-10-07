@@ -1,6 +1,6 @@
 package me.saurpuss.lemonaid.commands.teleport;
 
-import me.saurpuss.lemonaid.utils.Teleport;
+import me.saurpuss.lemonaid.utils.tp.Teleport;
 import me.saurpuss.lemonaid.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

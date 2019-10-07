@@ -28,6 +28,8 @@ public final class Lemonaid extends JavaPlugin {
         plugin = this;
         userManager = new HashMap<>();
 
+        // TODO test connection to DB and set up tables etc
+
         registerConfigs();
         registerCommands();
         registerEvents();
@@ -50,9 +52,9 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("recap").setExecutor(new Recap(this));
         getCommand("mute").setExecutor(new Mute(this));
         getCommand("cuff").setExecutor(new Cuff(this));
-        // TODO create a log of the mastercuff  & globalmute usage
         getCommand("mastercuff").setExecutor(new MasterCuff(this));
         getCommand("globalmute").setExecutor(new GlobalMute(this));
+        getCommand("forceignore").setExecutor(new ForceIgnore(this));
 
         // Social commands
         getCommand("msg").setExecutor(new Msg(this));
@@ -83,16 +85,6 @@ public final class Lemonaid extends JavaPlugin {
         // Default config
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
-
-        // Save user data in SQL or Config
-
-
-        // TODO add this for the parties bits too
-
-        // Party make-up config
-//        PartiesConfig.setup();
-//        PartiesConfig.get().options().copyDefaults(true);
-//        PartiesConfig.save();
 
     }
 

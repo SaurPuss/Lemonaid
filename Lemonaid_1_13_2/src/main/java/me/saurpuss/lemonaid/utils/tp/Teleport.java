@@ -1,4 +1,4 @@
-package me.saurpuss.lemonaid.utils;
+package me.saurpuss.lemonaid.utils.tp;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.users.Lemon;

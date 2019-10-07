@@ -21,39 +21,6 @@ public class Ignore implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // Admin command to force an addition to a player's ignored list
-        if (sender.hasPermission("lemonaid.setignore") && (args.length == 2)) {
-            Player player = Utils.getPlayer(args[0]);
-            if (player == null) {
-                sender.sendMessage("§cCan't find " + args[0]);
-                return true;
-            }
-
-            Player target = Utils.getPlayer(args[1]);
-            if (target == null) {
-                sender.sendMessage("§cCan't find " + args[1]);
-                return true;
-            }
-
-            Lemon user = plugin.getUser(player.getUniqueId());
-            user.toggleIgnore(target.getUniqueId());
-            user.updateUser();
-
-            // Notify moderators
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (p.hasPermission("lemonaid.notify")) {
-                    p.sendMessage("§e" + sender.getName() + " forced " + player.getName() + " to " +
-                            (user.isIgnored(target.getUniqueId()) ? "§cignore" : "§aunignore") +
-                            "§e " + target.getName());
-                }
-            }
-
-            plugin.getLogger().info("§e" + sender.getName() + " forced " + player.getName() +
-                    " to " + (user.isIgnored(target.getUniqueId()) ? "§cignore" : "§aunignore") +
-                    "§e " + target.getName());
-            return true;
-        }
-
         // Player wants to (un)ignore another player
         if (sender instanceof Player) {
             Player player = (Player) sender;

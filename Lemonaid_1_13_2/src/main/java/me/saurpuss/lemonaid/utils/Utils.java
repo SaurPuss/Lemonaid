@@ -2,11 +2,14 @@ package me.saurpuss.lemonaid.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+import java.util.StringJoiner;
 
 public class Utils {
 
@@ -41,5 +44,21 @@ public class Utils {
         }
 
         return null;
+    }
+
+    // Location from String for database usage
+    public static Location locationFromString(String s) {
+        String[] loc = s.split("\\|");
+        return new Location(Bukkit.getWorld(loc[0]), Double.parseDouble(loc[1]),
+                Double.parseDouble(loc[2]), Double.parseDouble(loc[3]));
+    }
+    public static String stringToLocation(Location location) {
+        StringJoiner string = new StringJoiner("|");
+        string.add(Objects.requireNonNull(location.getWorld()).toString());
+        string.add(String.valueOf(location.getBlockX()));
+        string.add(String.valueOf(location.getBlockY()));
+        string.add(String.valueOf(location.getBlockZ()));
+
+        return string.toString();
     }
 }

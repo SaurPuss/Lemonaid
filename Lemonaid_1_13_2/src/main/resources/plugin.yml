@@ -57,6 +57,11 @@ commands:
       /<command> on|off - Toggle mastercuff on or off for all online players
     permission: lemonaid.mastercuff
     permission-message: *noperms
+  forceignore:
+    description: Force a player onto another player's ignore list
+    usage: /<command> <player> <target to ignore>
+    permission: lemonaid.forceignore
+    permission-message: *noperms
 
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
   #   Moderation commands
@@ -237,7 +242,7 @@ permissions:
       lemonaid.exempt: true
       lemonaid.globalmute: true
       lemonaid.recap: true
-      lemonaid.setignore: true
+      lemonaid.forceignore: true
       lemonaid.cuff: true
       lemonaid.mastercuff: true
       lemonaid.jail: true
@@ -259,6 +264,9 @@ permissions:
     default: false
     children:
       lemonaid.notify: true
+  lemonaid.notify:
+    description: Permission required to be notified of moderation commands
+    default: false
   lemonaid.reload:
     description: Reload plugin configuration files
     default: false

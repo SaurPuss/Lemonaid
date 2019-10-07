@@ -22,17 +22,11 @@ public class Broadcast implements CommandExecutor {
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender.hasPermission("lemonaid.broadcast")) {
-            if (args.length == 0) {
-                sender.sendMessage(Utils.color("&cUsage: /bc <message>"));
-                return true;
-            }
+        if (args.length == 0) return false;
 
-            // Broadcast the message to all players and the console
-            String message = StringUtils.join(args, ' ', 0, args.length);
-            Bukkit.broadcastMessage(Utils.color("&c[&eBROADCAST&c]&b " + message));
-        }
-
+        // Broadcast the message to all players and the console
+        String message = StringUtils.join(args, ' ', 0, args.length);
+        Bukkit.broadcastMessage("§c[§eBROADCAST§c]§6 " + Utils.color(message));
         return true;
     }
 }

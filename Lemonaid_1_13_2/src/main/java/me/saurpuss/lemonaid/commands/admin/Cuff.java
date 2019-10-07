@@ -25,7 +25,7 @@ public class Cuff implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // Permission check
+        // Permission check TODO is this not handled by plugin.yml?
         if (!sender.hasPermission("lemonaid.cuff")) return true;
 
         // Not enough arguments
@@ -137,7 +137,7 @@ public class Cuff implements CommandExecutor {
     private void cuffHelp(CommandSender sender, int pageNumber) {
         // TODO get help from file and send it back to the sender
 
-        sender.sendMessage(Utils.color("There is no help file right now, lol!"));
+        sender.sendMessage("There is no help file right now, lol!");
     }
 
     /**
