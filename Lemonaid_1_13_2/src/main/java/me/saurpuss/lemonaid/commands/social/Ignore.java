@@ -4,6 +4,7 @@ import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import me.saurpuss.lemonaid.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,9 +29,9 @@ public class Ignore implements CommandExecutor {
             // Display ignored list
             if (args.length == 0) {
                 if (user.getIgnored().size() == 0) {
-                    player.sendMessage("§aThere are currently no players on your ignored list!");
+                    player.sendMessage(ChatColor.GREEN + "There are currently no players on your ignored list!");
                 } else {
-                    player.sendMessage("§cPlayers you current have ignored:");
+                    player.sendMessage(ChatColor.RED + "Players you current have ignored:");
                     for (UUID uuid : user.getIgnored()) {
                         player.sendMessage("- " + Bukkit.getOfflinePlayer(uuid).getName());
                     }
@@ -41,29 +42,27 @@ public class Ignore implements CommandExecutor {
             // Try to retrieve a target player to ignore
             Player target = Utils.getPlayer(args[0]);
             if (target == null) {
-                player.sendMessage("§cCan't find " + args[0]);
+                player.sendMessage(ChatColor.RED + args[0] + " not found!");
                 return true;
             }
 
             // Toggle ignore on retrieved player
             user.toggleIgnore(target.getUniqueId());
             user.updateUser();
-            player.sendMessage("§eYou have " + (user.isIgnored(target.getUniqueId()) ?
-                    "§cignored" : "§aunignored") + "§e " + target.getName());
+            player.sendMessage(ChatColor.YELLOW + "You have " + (user.isIgnored(target.getUniqueId()) ?
+                    ChatColor.RED + "ignored" : ChatColor.GREEN + "unignored") + ChatColor.YELLOW + target.getName());
 
             // Notify admins
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (p.hasPermission("lemonaid.notify")) {
-                    p.sendMessage("§e" + player.getName() + (user.isIgnored(target.getUniqueId()) ?
-                            "§cignored" : "§unignored") + "§e " + target.getName());
+                    p.sendMessage(ChatColor.YELLOW + player.getName() + (user.isIgnored(target.getUniqueId()) ?
+                            ChatColor.RED + "ignored" : ChatColor.GREEN + "unignored") + ChatColor.YELLOW + target.getName());
                 }
             }
 
             return true;
-        } else {
-            // The console can only force real players to ignore each other
-            sender.sendMessage("Usage: §3/ignore <player1> <player2>");
-            return true;
         }
+
+        return false;
     }
 }

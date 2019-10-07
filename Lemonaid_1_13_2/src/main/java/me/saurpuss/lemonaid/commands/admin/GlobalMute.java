@@ -3,6 +3,7 @@ package me.saurpuss.lemonaid.commands.admin;
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,16 +25,16 @@ public class GlobalMute implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         // Permission check
         if (sender.hasPermission("lemonaid.globalmute")) {
-            sender.sendMessage("§cApplying GlobalMute to all players until next restart!");
+            sender.sendMessage(ChatColor.RED + "Applying GlobalMute to all players until next restart!");
 
 
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.hasPermission("lemonaid.notify"))
-                    player.sendMessage("§c" + sender.getName() + " used GlobalMute!");
+                    player.sendMessage(ChatColor.RED + sender.getName() + " used GlobalMute!");
             }
 
             plugin.toggleGlobalMute();
-            addRecap("§c" + Utils.dateToString(LocalDate.now()) + ": " +
+            addRecap(ChatColor.RED + Utils.dateToString(LocalDate.now()) + ": " +
                     sender.getName() + " used GlobalMute!");
         }
 
@@ -62,7 +63,7 @@ public class GlobalMute implements CommandExecutor {
 
             // Try to write to the file
             PrintWriter writer = new PrintWriter(new FileWriter(mutesTXT, true), true);
-            writer.println("§c" + Utils.dateToString(LocalDate.now())
+            writer.println(ChatColor.RED + Utils.dateToString(LocalDate.now())
                     + ": §fUse §d/mute <player> <time> <message> §fto mute a player");
         } catch (IOException e) {
             plugin.getLogger().warning("Error while creating mutes.txt!");

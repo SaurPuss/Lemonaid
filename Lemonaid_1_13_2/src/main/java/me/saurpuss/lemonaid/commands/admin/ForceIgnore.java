@@ -4,6 +4,7 @@ import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.Utils;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,13 +21,13 @@ public class ForceIgnore implements CommandExecutor {
         if (args.length == 2) {
             Player player = Utils.getPlayer(args[0]);
             if (player == null) {
-                sender.sendMessage("§cCan't find " + args[0]);
+                sender.sendMessage(ChatColor.RED + "Can't find " + args[0]);
                 return true;
             }
 
             Player target = Utils.getPlayer(args[1]);
             if (target == null) {
-                sender.sendMessage("§cCan't find " + args[1]);
+                sender.sendMessage(ChatColor.RED + "Can't find " + args[1]);
                 return true;
             }
 
@@ -37,15 +38,15 @@ public class ForceIgnore implements CommandExecutor {
             // Notify moderators
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (p.hasPermission("lemonaid.notify")) {
-                    p.sendMessage("§e" + sender.getName() + " forced " + player.getName() + " to " +
-                            (user.isIgnored(target.getUniqueId()) ? "§cignore" : "§aunignore") +
-                            "§e " + target.getName());
+                    p.sendMessage(ChatColor.YELLOW + sender.getName() + " forced " + player.getName() +
+                            " to " + (user.isIgnored(target.getUniqueId()) ? ChatColor.RED + "ignore" :
+                            ChatColor.GREEN + "unignore") + ChatColor.YELLOW + target.getName());
                 }
             }
 
-            plugin.getLogger().info("§e" + sender.getName() + " forced " + player.getName() +
-                    " to " + (user.isIgnored(target.getUniqueId()) ? "§cignore" : "§aunignore") +
-                    "§e " + target.getName());
+            plugin.getLogger().info(ChatColor.YELLOW + sender.getName() + " forced " + player.getName() +
+                    " to " + (user.isIgnored(target.getUniqueId()) ? ChatColor.RED + "ignore" :
+                    ChatColor.GREEN + "unignore") + ChatColor.YELLOW + target.getName());
             return true;
         }
 

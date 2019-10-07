@@ -3,6 +3,7 @@ package me.saurpuss.lemonaid.commands.admin;
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,11 +32,11 @@ public class MasterCuff implements CommandExecutor {
             sender.sendMessage("&cApplying MasterCuff to all players until next restart!");
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.hasPermission("lemonaid.notify"))
-                    player.sendMessage("§c" + sender.getName() + " used MasterCuff!");
+                    player.sendMessage(ChatColor.RED + sender.getName() + " used MasterCuff!");
             }
 
             plugin.toggleMasterCuff();
-            addRecap("§c" + Utils.dateToString(LocalDate.now()) + ": " +
+            addRecap(ChatColor.RED + Utils.dateToString(LocalDate.now()) + ": " +
                     sender.getName() + " used MasterCuff!");
             return true;
         }
@@ -45,7 +46,7 @@ public class MasterCuff implements CommandExecutor {
                 args[0].equalsIgnoreCase("off")) {
             boolean on = args[0].equalsIgnoreCase("on"); // on == true, off == false
             // Notify all relevant parties
-            sender.sendMessage("§c" + (on ? "Cuffed" : "Uncuffed") + " all online players!!!");
+            sender.sendMessage(ChatColor.RED + (on ? "Cuffed" : "Uncuffed") + " all online players!!!");
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.hasPermission("lemonaid.notify"))
                     player.sendMessage("§c" + sender.getName() + " used MasterCuff " + args[0] + "!");
@@ -81,7 +82,7 @@ public class MasterCuff implements CommandExecutor {
 
             // Try to write to the file
             PrintWriter writer = new PrintWriter(new FileWriter(cuffTXT, true), true);
-            writer.println("§c" + Utils.dateToString(LocalDate.now())
+            writer.println(ChatColor.RED + Utils.dateToString(LocalDate.now())
                     + ": §fUse §d/cuff §e<§dplayer§e> <§dmessage§e> §fto cuff someone");
         } catch (IOException e) {
             plugin.getLogger().warning("Error while creating cuffs.txt!");

@@ -5,6 +5,7 @@ import me.saurpuss.lemonaid.utils.Utils;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -35,7 +36,7 @@ public class Cuff implements CommandExecutor {
         else if (args.length == 1) {
             // Retrieve a recap of the last 10 cuffs
             if (args[0].equalsIgnoreCase("list")) {
-                sender.sendMessage("§6Listing last 10 cuff events:");
+                sender.sendMessage(ChatColor.GOLD + "Listing last 10 cuff events:");
                 for (String s : recap)
                     sender.sendMessage(Utils.color(" - " + s));
                 return true;
@@ -50,13 +51,14 @@ public class Cuff implements CommandExecutor {
             // Check if args[0] is a player or offline player
             Player target = Utils.getPlayer(args[0]);
             if (target == null) {
-                sender.sendMessage("§cCan't find " + args[0] + "! Use §9/cuff §cto view available command options.");
+                sender.sendMessage(ChatColor.RED + "Can't find " + args[0] + "! Use " +
+                        ChatColor.BLUE + "/cuff"+ ChatColor.RED + " to view available command options.");
                 return true;
             }
 
             // Target is not allowed to be cuffed
             if (target.hasPermission("lemonaid.exempt")) {
-                sender.sendMessage("§c" + target.getName() + " is exempt from being cuffed!");
+                sender.sendMessage(ChatColor.RED + target.getName() + " is exempt from being cuffed!");
                 return true;
             }
 
@@ -72,7 +74,7 @@ public class Cuff implements CommandExecutor {
                 try {
                     cuffHelp(sender, Integer.parseInt(args[1]));
                 } catch (NumberFormatException e) {
-                    sender.sendMessage("§c" + args[1] + " is not a valid number");
+                    sender.sendMessage(ChatColor.RED + args[1] + " is not a valid number");
                 }
                 return true;
             }
@@ -80,13 +82,14 @@ public class Cuff implements CommandExecutor {
             // Try to retrieve an online or offline player from the first argument
             Player target = Utils.getPlayer(args[0]);
             if (target == null) {
-                sender.sendMessage("§cCan't find " + args[0] + "! Use §9/cuff §cto view available command options.");
+                sender.sendMessage(ChatColor.RED + "Can't find " + args[0] + "! Use " +
+                        ChatColor.BLUE + "/cuff"+ ChatColor.RED + " to view available command options.");
                 return true;
             }
 
             // Target is not allowed to be cuffed
             if (target.hasPermission("lemonaid.exempt")) {
-                sender.sendMessage("§c" + target.getName() + " is exempt from being cuffed!");
+                sender.sendMessage(ChatColor.RED + target.getName() + " is exempt from being cuffed!");
                 return true;
             }
 
@@ -108,7 +111,7 @@ public class Cuff implements CommandExecutor {
         // Retrieve user if exists
         Lemon user = plugin.getUser(target.getUniqueId());
         if (user == null) { // This should not happen!
-            sender.sendMessage("§cError: Lemonaid:UserNotFound! Please contact an administrator!");
+            sender.sendMessage(ChatColor.RED + "Error: Lemonaid:UserNotFound! Please contact an administrator!");
             return;
         }
 
@@ -137,7 +140,7 @@ public class Cuff implements CommandExecutor {
     private void cuffHelp(CommandSender sender, int pageNumber) {
         // TODO get help from file and send it back to the sender
 
-        sender.sendMessage("There is no help file right now, lol!");
+        sender.sendMessage(ChatColor.RED + "There is no help file right now, lol!");
     }
 
     /**

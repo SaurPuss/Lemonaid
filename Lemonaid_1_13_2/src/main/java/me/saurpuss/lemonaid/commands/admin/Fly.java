@@ -1,6 +1,7 @@
 package me.saurpuss.lemonaid.commands.admin;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,11 +37,11 @@ public class Fly implements CommandExecutor {
             // Toggle fly on a target
             Player target = Bukkit.getPlayer(args[0]);
             if (target == null) {
-                sender.sendMessage("§c" + args[0] + " not found.");
+                sender.sendMessage(ChatColor.RED + args[0] + " not found.");
                 return true;
             }
 
-            sender.sendMessage("§6Toggling fly mode on " + target.getName());
+            sender.sendMessage(ChatColor.GOLD + "Toggling fly mode on " + target.getName());
             fly(target);
         }
         return true;
@@ -54,12 +55,12 @@ public class Fly implements CommandExecutor {
     private void fly(Player player) {
         if (!player.isFlying()) {
             player.setAllowFlight(true);
-            player.sendMessage("§6You can now fly!");
+            player.sendMessage(ChatColor.GOLD + "You can now fly!");
             return;
         }
 
         player.setAllowFlight(false);
         player.setFlying(false);
-        player.sendMessage("§cYou can no longer fly!");
+        player.sendMessage(ChatColor.RED + "You can no longer fly!");
     }
 }

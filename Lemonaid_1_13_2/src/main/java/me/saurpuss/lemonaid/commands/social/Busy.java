@@ -3,6 +3,7 @@ package me.saurpuss.lemonaid.commands.social;
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import me.saurpuss.lemonaid.utils.Utils;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,10 +32,10 @@ public class Busy implements CommandExecutor {
             Lemon user = plugin.getUser(player.getUniqueId());
             if (user.isBusy()) {
                 user.setBusy(false);
-                sender.sendMessage("§dYou are no longer set to Do Not Disturb.");
+                sender.sendMessage(ChatColor.DARK_PURPLE + "You are no longer set to Do Not Disturb.");
             } else {
                 user.setBusy(true);
-                sender.sendMessage("§5You are now set to Do Not Disturb!");
+                sender.sendMessage(ChatColor.LIGHT_PURPLE + "You are now set to Do Not Disturb!");
             }
 
             user.updateUser();

@@ -6,6 +6,7 @@ import me.saurpuss.lemonaid.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -42,7 +43,7 @@ public class Mute implements CommandExecutor {
         else if (args.length == 1) {
             // Retrieve a recap of the last 10 mutes
             if (args[0].equalsIgnoreCase("list")) {
-                sender.sendMessage("§6Listing last 10 mute events:");
+                sender.sendMessage(ChatColor.GOLD + "Listing last 10 mute events:");
                 for (String s : recap)
                     sender.sendMessage(Utils.color(" - " + s));
                 return true;
@@ -58,13 +59,13 @@ public class Mute implements CommandExecutor {
                 // Attempt to get a valid user for muting
                 Player target = Utils.getPlayer(args[0]);
                 if (target == null) {
-                    sender.sendMessage("§c" + args[0] + " not found!");
+                    sender.sendMessage(ChatColor.RED + args[0] + " not found!");
                     return true;
                 }
 
                 // target is exempt
                 if (target.hasPermission("lemonaid.exempt")) {
-                    sender.sendMessage("§cYou don't have permission to mute " + target.getName());
+                    sender.sendMessage(ChatColor.RED + "You don't have permission to mute " + target.getName());
                     return true;
                 }
 
@@ -87,7 +88,7 @@ public class Mute implements CommandExecutor {
                     }
 
                     // Notify target
-                    target.sendMessage("§6Your mute has been lifted! Chat away!");
+                    target.sendMessage(ChatColor.GOLD + "Your mute has been lifted! Chat away!");
                     return true;
                 }
 
@@ -105,7 +106,7 @@ public class Mute implements CommandExecutor {
                 try {
                     muteHelp(sender, Integer.parseInt(args[1]));
                 } catch (NumberFormatException e) {
-                    sender.sendMessage("§c" + args[1] + " is not a valid number");
+                    sender.sendMessage(ChatColor.RED + args[1] + " is not a valid number");
                 }
                 return true;
             }
@@ -113,13 +114,13 @@ public class Mute implements CommandExecutor {
             // Try to retrieve a valid player from the first argument
             Player target = Utils.getPlayer(args[0]);
             if (target == null) {
-                sender.sendMessage("§c" + args[0] + " not found!");
+                sender.sendMessage(ChatColor.RED + args[0] + " not found!");
                 return true;
             }
 
             // Target is exempt
             if (target.hasPermission("lemonaid.exempt")) {
-                sender.sendMessage("§cYou don't have permission to mute " + target.getName());
+                sender.sendMessage(ChatColor.RED + "You don't have permission to mute " + target.getName());
                 return true;
             }
 
@@ -190,7 +191,7 @@ public class Mute implements CommandExecutor {
         // Notify online players with the right permission
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.hasPermission("lemonaid.notify")) {
-                p.sendMessage(Utils.color("&c" + log));
+                p.sendMessage(ChatColor.RED + log);
             }
         }
 
@@ -203,7 +204,7 @@ public class Mute implements CommandExecutor {
     private void muteHelp(CommandSender sender, int pageNumber) {
         // TODO get help from file and send it back to the sender
 
-        sender.sendMessage("§cThere is no help file right now, lol!");
+        sender.sendMessage(ChatColor.RED + "There is no help file right now, lol!");
     }
 
     /**
