@@ -5,6 +5,7 @@ import me.saurpuss.lemonaid.utils.users.Lemon;
 import me.saurpuss.lemonaid.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -38,21 +39,22 @@ public class Msg implements CommandExecutor {
             // If sender is set to busy they are not allowed to send a dm
             Lemon p = plugin.getUser(player.getUniqueId());
             if (p.isBusy()) {
-                player.sendMessage("§cYou can't send whispers while §5/busy!§c");
+                player.sendMessage(ChatColor.RED + "You can't send whispers while " +
+                        ChatColor.DARK_PURPLE + "/busy" + ChatColor.RED + "!");
                 return true;
             }
 
             // See if the intended target is online
             Player target = Bukkit.getPlayer(args[0]);
             if (target == null) {
-                player.sendMessage("§cCan't find " + args[0] + "!");
+                player.sendMessage(ChatColor.RED + "Can't find " + args[0] + "!");
                 return true;
             }
 
             // Check if the user is set to busy
             Lemon user = plugin.getUser(target.getUniqueId());
             if (user.isBusy()) {
-                player.sendMessage("§c" + args[0] + " is currently unavailable.");
+                player.sendMessage(ChatColor.RED + args[0] + " is currently unavailable.");
                 return true;
             }
 
@@ -73,12 +75,12 @@ public class Msg implements CommandExecutor {
         // The sender is the console
         else {
             if (args.length <= 1) {
-                sender.sendMessage("§cUsage: §5/msg <player> <message>");
+                sender.sendMessage(ChatColor.RED + "Usage: " + ChatColor.DARK_PURPLE + "/msg <player> <message>");
                 return true;
             } else {
                 Player target = Bukkit.getPlayer(args[0]);
                 if (target == null) {
-                    sender.sendMessage("§cCan't find " + args[0] + ".");
+                    sender.sendMessage(ChatColor.RED + "Can't find " + args[0] + ".");
                     return true;
                 }
 

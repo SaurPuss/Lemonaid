@@ -5,6 +5,7 @@ import me.saurpuss.lemonaid.utils.Utils;
 import me.saurpuss.lemonaid.utils.sql.MySQLDatabase;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.player.*;
@@ -46,7 +47,7 @@ public class JoinLeave implements Listener {
         // Send a message to online moderators about the login event
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.hasPermission("lemonaid.notify")) {
-                p.sendMessage("§e" + player.getName() + " §6joined the server!");
+                p.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.GOLD + " joined the server!");
             }
         }
 
@@ -63,7 +64,7 @@ public class JoinLeave implements Listener {
         // Send a message to online admins about the quit event
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.hasPermission("lemonaid.notify")) {
-                p.sendMessage("§e" + player.getName() + " §6quit the server!");
+                p.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.GOLD +" quit the server!");
             }
         }
     }
@@ -79,7 +80,7 @@ public class JoinLeave implements Listener {
         // Send a message to online admins about the quit event
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.hasPermission("lemonaid.notify")) {
-                p.sendMessage("§e" + player.getName() + " §cwas kicked from the server!");
+                p.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.RED + " was kicked from the server!");
             }
         }
     }

@@ -5,6 +5,7 @@ import me.saurpuss.lemonaid.utils.users.Lemon;
 import me.saurpuss.lemonaid.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,20 +26,21 @@ public class Reply implements CommandExecutor {
             // Get the player from the last incoming message
             Lemon p = plugin.getUser(player.getUniqueId());
             if (p.isBusy()) {
-                player.sendMessage("§cYou can't send whispers while §5/busy!§c");
+                player.sendMessage(ChatColor.RED + "You can't send whispers while" +
+                        ChatColor.DARK_PURPLE + "/busy" + ChatColor.RED + "!");
                 return true;
             }
 
             Player target = Bukkit.getPlayer(p.getLastMessage());
             // Only works for online players
             if (target == null) {
-                player.sendMessage("§cCan't find " + args[0] + ".");
+                player.sendMessage(ChatColor.RED + "Can't find " + args[0] + ".");
                 return true;
             }
 
             Lemon t = plugin.getUser(target.getUniqueId());
             if (t.isBusy()) {
-                player.sendMessage("§c" + args[0] + " is unavailable right now.");
+                player.sendMessage(ChatColor.RED + args[0] + " is unavailable right now.");
                 return true;
             }
 
