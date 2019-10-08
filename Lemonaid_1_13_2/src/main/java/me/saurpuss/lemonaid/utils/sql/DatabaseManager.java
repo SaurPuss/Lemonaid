@@ -13,6 +13,12 @@ import java.util.UUID;
 
 public class DatabaseManager {
 
+    // Use removal records to delete composite primary keys
+    // Track ignore removals for deletion <User, Target>
+    private static HashMap<UUID, UUID> ignoreRemovals = new HashMap<>();
+    // Track home removals for deletion <User, HomeName>
+    private static HashMap<UUID, String> homeRemovals = new HashMap<>();
+
     private static Lemonaid plugin = Lemonaid.plugin;
     private static Connection conn;
     private static final String DB_URL =
@@ -50,25 +56,25 @@ public class DatabaseManager {
                     " last_message CHAR(36) CHARACTER SET ascii," +
                     " busy BOOLEAN," +
                     " cuffed BOOLEAN," +
-                    " user_id INT SIGNED NOT NULL AUTO_INCREMENT," +
-                    " max_homes INT SIGNED DEFAULT 1," +
+                    " max_homes INT UNSIGNED DEFAULT 1," +
                     " PRIMARY KEY (pk_uuid)" +
                     ");";
             String homes = "CREATE IF NOT EXISTS " + lemonHomes + "(" +
-                    " user_id INT NOT NULL," +
-                    " home_name VARCHAR(20)," +
+                    " user_uuid CHAR(36) NOT NULL," +
+                    " home_name VARCHAR(20) NOT NULL," +
                     " home_world VARCHAR(20) DEFAULT 'world'," +
                     " home_x FLOAT DEFAULT 0," +
                     " home_y FLOAT DEFAULT 0," +
                     " home_z FLOAT DEFAULT 0," +
-                    " PRIMARY KEY (user_id, home_name)," +
-                    " FOREIGN KEY (user_id) REFERENCES "+ lemonTable + "(user_id) ON DELETE CASCADE" +
+                    " PRIMARY KEY (user_uuid, home_name)," +
+                    " FOREIGN KEY (user_uuid) REFERENCES "+ lemonTable + " (pk_uuid) ON DELETE CASCADE" +
                     ");";
+            // What if a player removes an ignored party from their list? On update cascade?
             String ignored = "CREATE IF NOT EXISTS " + lemonIgnored + "(" +
-                    " user_id INT NOT NULL," +
+                    " user_uuid CHAR(36) NOT NULL," +
                     " ignored_player CHAR(36) CHARACTER SET ascii," +
-                    " PRIMARY KEY (user_id, ignored_player)," +
-                    " FOREIGN KEY (user_id) REFERENCES "+ lemonTable + "(user_id) ON DELETE CASCADE" +
+                    " PRIMARY KEY (user_uuid, ignored_player)," +
+                    " FOREIGN KEY (user_uuid) REFERENCES "+ lemonTable + " (pk_uuid) ON DELETE CASCADE" +
                     ");";
 
 
