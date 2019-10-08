@@ -2,7 +2,7 @@ package me.saurpuss.lemonaid.events;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.Utils;
-import me.saurpuss.lemonaid.utils.sql.MySQLDatabase;
+import me.saurpuss.lemonaid.utils.sql.DatabaseManager;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,7 +22,7 @@ public class JoinLeave implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        Lemon user = MySQLDatabase.getUser(player.getUniqueId());
+        Lemon user = DatabaseManager.getUser(player.getUniqueId());
         plugin.mapPlayer(player.getUniqueId(), user);
 
         if (player.hasPlayedBefore()) {

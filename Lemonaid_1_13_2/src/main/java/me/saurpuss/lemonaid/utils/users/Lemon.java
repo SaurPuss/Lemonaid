@@ -1,7 +1,7 @@
 package me.saurpuss.lemonaid.utils.users;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.sql.MySQLDatabase;
+import me.saurpuss.lemonaid.utils.sql.DatabaseManager;
 import org.bukkit.Location;
 
 import java.util.*;
@@ -104,13 +104,13 @@ public class Lemon {
     public Lemon getUser() {
         Lemon user = plugin.getUser(uuid);
         if (user == null)
-            user = MySQLDatabase.getUser(uuid);
+            user = DatabaseManager.getUser(uuid);
 
         return user;
     }
 
     private void saveUser() {
-        MySQLDatabase.saveUser(this);
+        DatabaseManager.saveUser(this);
     }
 
     public void updateUser() {
