@@ -46,7 +46,8 @@ public class Teleport {
             EconomyResponse response = economy.withdrawPlayer(tp.client,
                     plugin.getConfig().getDouble("teleport." + tp.tpType.name + ".cost"));
             if (!response.transactionSuccess()) {
-                tp.client.sendMessage(ChatColor.RED + "Balance too low! Teleportation request canceled!");
+                tp.client.sendMessage(ChatColor.RED + "Balance too low! " +
+                        "Teleportation request canceled!");
                 return;
             }
         }
@@ -67,8 +68,8 @@ public class Teleport {
             if (t.client == tp.client &&
                     (tp.tpType == TeleportType.TPA || tp.tpType == TeleportType.PTP)) {
                 tp.client.sendMessage(ChatColor.RED + "You already have an outgoing " +
-                        "teleport request pending. Type: " + ChatColor.BLUE + "/tpacancel" +
-                        ChatColor.RED + " remove it.");
+                        "teleport request pending. Type: " + ChatColor.DARK_AQUA +
+                        "/tpacancel" + ChatColor.RED + " remove it.");
                 return false; }
             // target already has an outgoing or incoming request
             if ((t.client == tp.target &&
