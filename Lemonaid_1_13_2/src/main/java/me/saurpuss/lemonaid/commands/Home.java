@@ -13,6 +13,10 @@ public class Home implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
+            // TODO if remove home, copy the record into the DB hashmap
+
+
+            // TODO /home player:homename for admins
 
             return true;
         } else {

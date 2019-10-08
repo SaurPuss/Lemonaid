@@ -14,9 +14,9 @@ import java.util.UUID;
 public class DatabaseManager {
 
     // Use removal records to delete composite primary keys
-    // Track ignore removals for deletion <User, Target>
+    // Track ignore pk removals for deletion <User, Target>
     private static HashMap<UUID, UUID> ignoreRemovals = new HashMap<>();
-    // Track home removals for deletion <User, HomeName>
+    // Track home pk removals for deletion <User, HomeName>
     private static HashMap<UUID, String> homeRemovals = new HashMap<>();
 
     private static Lemonaid plugin = Lemonaid.plugin;
