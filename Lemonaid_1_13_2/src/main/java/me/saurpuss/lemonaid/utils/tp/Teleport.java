@@ -4,6 +4,7 @@ import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import net.milkbowl.vault.economy.*;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -45,7 +46,7 @@ public class Teleport {
             EconomyResponse response = economy.withdrawPlayer(tp.client,
                     plugin.getConfig().getDouble("teleport." + tp.tpType.name + ".cost"));
             if (!response.transactionSuccess()) {
-                tp.client.sendMessage("§cBalance too low! Teleportation request canceled!");
+                tp.client.sendMessage(ChatColor.RED + "Balance too low! Teleportation request canceled!");
                 return;
             }
         }
@@ -57,28 +58,31 @@ public class Teleport {
         // Check if there are no conflicting requests
         for (Teleport t : pendingRequests) {
             // requester already has an outgoing request to this specific player regardless of type
-            if ((t.client == tp.client) && (t.target == tp.target)) {
+            if (t.client == tp.client && t.target == tp.target) {
                 // remove existing and break the loop
                 pendingRequests.remove(t);
                 break; }
             // requester already has an outgoing request
             // if requester already has incoming requests -> do nothing it will expire if ignored
-            if ((t.client == tp.client) && ((tp.tpType == TeleportType.TPA)) || (tp.tpType == TeleportType.PTP)) {
-                tp.client.sendMessage("§cYou already have a teleport request pending. Type: /tpacancel remove it.");
+            if (t.client == tp.client &&
+                    (tp.tpType == TeleportType.TPA || tp.tpType == TeleportType.PTP)) {
+                tp.client.sendMessage(ChatColor.RED + "You already have an outgoing " +
+                        "teleport request pending. Type: " + ChatColor.BLUE + "/tpacancel" +
+                        ChatColor.RED + " remove it.");
                 return false; }
-            // target already has an outgoing request
-            if (((t.client == tp.target) && ((t.tpType == TeleportType.TPA)) || (t.tpType == TeleportType.PTP))) {
-                tp.client.sendMessage("§c" + tp.target.getName() + " already has a pending teleport request.");
-                return false; }
-            // target already has an incoming request
-            if ((t.target == tp.target) && ((tp.tpType == TeleportType.TPAHERE)) || (tp.tpType == TeleportType.PTPHERE)) {
-                tp.client.sendMessage("§c" + tp.target.getName() + " already has a pending teleport request.");
+            // target already has an outgoing or incoming request
+            if ((t.client == tp.target &&
+                    (t.tpType == TeleportType.TPA || t.tpType == TeleportType.PTP)) ||
+                (t.target == tp.target &&
+                    (tp.tpType == TeleportType.TPAHERE || tp.tpType == TeleportType.PTPHERE))) {
+                tp.client.sendMessage(ChatColor.RED + tp.target.getName() +
+                        " already has a pending teleport request. Try again later.");
                 return false; }
         }
 
         // Check for cross-world and if it's allowed
         if (!plugin.getConfig().getBoolean("teleport." + tp.tpType.name + ".cross-world")) {
-            tp.client.sendMessage("§cYou cannot teleport between worlds! Request canceled.");
+            tp.client.sendMessage(ChatColor.RED + "You cannot teleport between worlds! Request canceled.");
             return false;
         }
 
@@ -90,12 +94,13 @@ public class Teleport {
             case TPAHERE: case PTPHERE:
                 request = tp.client.getDisplayName() + " wants you to teleport to them."; break;
             case BACK: default:
-                plugin.getLogger().warning("Unexpected TeleportType tried to get listed in pending teleport requests!");
+                plugin.getLogger().warning("Unexpected TeleportType tried to get listed in " +
+                        "pending teleport requests!");
                 return false;
         }
 
-        tp.target.sendMessage("§6" + request);
-        tp.client.sendMessage("§6Request sent to " + tp.target.getName());
+        tp.target.sendMessage(ChatColor.GOLD + request);
+        tp.client.sendMessage(ChatColor.GOLD + "Request sent to " + ChatColor.YELLOW + tp.target.getName());
         pendingRequests.add(tp);
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> removeRequest(tp), delay * 20L);
@@ -135,7 +140,8 @@ public class Teleport {
             int y = location.getBlockY();
             int z = location.getBlockZ();
             int counter = timer;
-            player.sendMessage("§6Teleportation commencing in §e" + counter + "§6 seconds! Do not move!");
+            player.sendMessage(ChatColor.GOLD + "Teleportation commencing in " +
+                    ChatColor.DARK_AQUA + counter + ChatColor.GOLD + " seconds! Do not move!");
             if (counter == 0) {
                 // teleport client & update lastLocation / teleports / task
                 Lemon user = plugin.getUser(player.getUniqueId());
@@ -154,13 +160,13 @@ public class Teleport {
                 counter--;
                 // send client countdown messages
                 if (counter == 10) {
-                    player.sendMessage("§e" + counter + "§6 seconds until teleport!");
+                    player.sendMessage("§3" + counter + ChatColor.GOLD + " seconds until teleport!");
                 } else if (counter <= 5) {
-                    player.sendMessage("§e" + counter + "§6!");
+                    player.sendMessage("§3" + counter + ChatColor.GOLD + "!");
                 }
             } else {
                 // client has moved! cancel task!
-                player.sendMessage("§cTeleportation canceled!");
+                player.sendMessage(ChatColor.RED + "Teleportation canceled!");
                 Bukkit.getScheduler().cancelTask(id);
             }
         }, 0L, 20L);
