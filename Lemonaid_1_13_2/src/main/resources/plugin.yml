@@ -98,6 +98,20 @@ commands:
     permission: lemonaid.recap
     permission-message: *noperms
 
+
+  clearchat:
+    description: Push that pesky chat out of scroll range
+    usage: /<command>
+    aliases: [cc]
+    permission: lemonaid.clearchat
+    permission-message: *noperms
+  socialspy:
+    description: Toggle chat channels for spying on your playerbase
+    usage: /<command>
+    aliases: [spy]
+    permission: lemonaid.socialspy
+    permission-message: *noperms
+
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
   #   Social commands
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -218,13 +232,7 @@ commands:
     aliases: [slow]
     permission: lemonaid.slow
     permission-message: *noperms
-  clearchat:
-    description: Push that pesky chat out of scroll range
-    usage: /<command>
-    default: OP
-    aliases: [cc]
-    permission: lemonaid.clearchat
-    permission-message: *noperms
+
 
 
 
@@ -248,6 +256,10 @@ permissions:
       lemonaid.jail: true
       lemonaid.slow: true
       lemonaid.clearchat: true
+      lemonaid.socialspy: true
+  lemonaid.chat.color:
+    description: Allow the use of colors with & color codes
+    default: op
   lemonaid.moderation:
     description: Moderation permissions for non-admins
     default: false
@@ -277,6 +289,7 @@ permissions:
       lemonaid.chat.private: true
       lemonaid.chat.busy: true
       lemonaid.chat.ignore: true
+      lemonaid.chat.color: false
       lemonaid.teleport: true
       lemonaid.home: true
   lemonaid.teleport:
@@ -288,7 +301,3 @@ permissions:
       lemonaid.teleport.tpaccept: true
       lemonaid.teleport.back: true
       lemonaid.teleport.home: true
-  lemonaid.chat.color:
-    description: Allow the use of colors with & color codes
-    default: op
-
