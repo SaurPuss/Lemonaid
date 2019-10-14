@@ -20,8 +20,8 @@ public class Home implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-
             if (args.length == 1) {
+                // List homes for sender
                 if (args[0].equalsIgnoreCase("list")) {
                     Lemon user = plugin.getUser(player.getUniqueId());
                     String homes = StringUtils.join(user.getHomes().keySet().toArray(), "§6, §e");
@@ -30,6 +30,7 @@ public class Home implements CommandExecutor {
                     return true;
                 }
 
+                // This is an admin checking home info for a player
                 if (player.hasPermission("lemonaid.teleport.admin") && args[0].contains(":")) {
                     String[] subArg = args[0].split(":");
                     // /home list:player
@@ -72,33 +73,60 @@ public class Home implements CommandExecutor {
                     }
                     return true;
                 }
-
-
             }
+
+
+
+            // /home arg[0] <homeName>
             if (args.length == 2) {
-                if (args[0].equalsIgnoreCase("set")) {
-
-
-
-                } else if (args[0].equalsIgnoreCase("update")) {
-
-
-                } else if (args[0].equalsIgnoreCase("del") || args[0].equalsIgnoreCase("delete")) {
-
+                Lemon user = plugin.getUser(player.getUniqueId());
+                // Create a home if there is space
+                if (args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("save")) {
+                    short n = user.addHome(args[1], player.getLocation());
+                    // check space
+                    if (n == 0) {
+                        player.sendMessage(ChatColor.RED + "You don't have any available home slots! " +
+                                ChatColor.GOLD + "(§c" + user.getHomes().size() + "§6/§c" + user.getMaxHomes() + "§6)");
+                    } else if (n == -1) {
+                        player.sendMessage(ChatColor.RED + "Home " + args[1] + " already exists! Use " +
+                                ChatColor.DARK_PURPLE + "/home update " + args[1] + ChatColor.RED +
+                                " to set it to your current location!");
+                    } else if (n == 1) { // redundant, oh well
+                        player.sendMessage(ChatColor.GREEN + "Home " + args[1] + " saved!");
+                    }
                 }
+                // update an existing home if the name matches
+                else if (args[0].equalsIgnoreCase("update") ||
+                        args[0].equalsIgnoreCase("del") || args[0].equalsIgnoreCase("delete")) {
+                    // Check for matching home
+                    boolean match = false;
+                    for (String home : user.getHomes().keySet()) {
+                        if (home.equalsIgnoreCase(args[1])) {
+                            match = true;
+                            break;
+                        }
+                    }
 
+                    if (!match) {
+                        player.sendMessage(ChatColor.RED + "Can't find a matching home for " + args[1]);
+                        return true;
+                    }
+
+                    if (args[0].equalsIgnoreCase("update")) {
+                        user.updateHome(args[1], player.getLocation());
+                        player.sendMessage(ChatColor.GREEN + "Home " + args[1] + " location updated!");
+                    } else {
+                        user.removeHome(args[1]);
+                        player.sendMessage(ChatColor.GREEN + "Home " + args[1] + " deleted!");
+                    }
+
+                    return true;
+                }
             }
-
-
-
-            // TODO if remove home, copy the record into the DB hashmap
-
-
-            // TODO /home player:homename for admins
 
             return true;
         } else {
-            if (args.length == 0) {
+            if (args.length != 1) {
                 sender.sendMessage("Only players can use this command, use /home <player> to see the homes of a player.");
                 return true;
             } else {

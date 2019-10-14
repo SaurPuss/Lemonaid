@@ -211,7 +211,7 @@ public class DatabaseManager {
         return true;
     }
 
-    private void deleteRecords() {
+    public static void deleteRemovalRecords() {
         if (ignoreRemovals.size() == 0 && homeRemovals.size() == 0) return;
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {

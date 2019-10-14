@@ -26,6 +26,13 @@ public class JoinLeave implements Listener {
         plugin.mapPlayer(player.getUniqueId(), user);
 
         if (player.hasPlayedBefore()) {
+            // Send a message to online moderators about the login event
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (p.hasPermission("lemonaid.notify")) {
+                    p.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.GOLD + " joined the server!");
+                }
+            }
+
             // Welcome to the server MOTD
             List<String> motdList = plugin.getConfig().getStringList("message-of-the-day");
             Random random = new Random(motdList.size());
@@ -42,15 +49,6 @@ public class JoinLeave implements Listener {
             // TODO add first join items from kit
         }
 
-
-
-        // Send a message to online moderators about the login event
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.hasPermission("lemonaid.notify")) {
-                p.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.GOLD + " joined the server!");
-            }
-        }
-
     }
 
     @EventHandler
@@ -58,7 +56,7 @@ public class JoinLeave implements Listener {
         Player player = e.getPlayer();
         // Save player Lemon and remove player from userManager
         Lemon user = plugin.getUser(player.getUniqueId());
-        user.updateUser();
+        user.saveUser();
         plugin.unmapPlayer(player.getUniqueId());
 
         // Send a message to online admins about the quit event
@@ -74,7 +72,7 @@ public class JoinLeave implements Listener {
         Player player = e.getPlayer();
         // Save player Lemon and remove player from userManager
         Lemon user = plugin.getUser(player.getUniqueId());
-        user.updateUser();
+        user.saveUser();
         plugin.unmapPlayer(player.getUniqueId());
 
         // Send a message to online admins about the quit event

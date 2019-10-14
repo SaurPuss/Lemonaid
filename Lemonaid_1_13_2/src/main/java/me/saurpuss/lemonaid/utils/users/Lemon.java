@@ -72,7 +72,10 @@ public class Lemon {
 
     // bespoke getters and setters
     public boolean isMuted() { return muteEnd > System.currentTimeMillis(); }
-    public void removeHome(String name) { homes.remove(name.toLowerCase()); }
+    public void removeHome(String name) {
+        homes.remove(name.toLowerCase());
+        DatabaseManager.removeRecord(uuid, name); // Create a record for DB removal
+    }
     public int homeCount() { return homes.size(); }
     public Location getHome(String name) { return homes.get(name.toLowerCase()); }
     public short addHome(String name, Location location) {
@@ -85,6 +88,13 @@ public class Lemon {
             return 1; // Successfully added location to homes
         }
     }
+    public boolean updateHome(String name, Location location) {
+        boolean bool = true;
+        if (!homes.containsKey(name.toLowerCase())) bool = false;
+
+        homes.put(name.toLowerCase(), location);
+        return bool;
+    }
     public String listHomes() {
         StringBuilder s = new StringBuilder();
         homes.forEach((name, location) -> s.append(name + " "));
@@ -94,11 +104,11 @@ public class Lemon {
     public boolean toggleIgnore(UUID uuid) {
         if (ignored.contains(uuid)) {
             ignored.remove(uuid);
-            DatabaseManager.removeRecord(this.getUuid(), uuid); // Add record for removal from DB
+            DatabaseManager.removeRecord(this.uuid, uuid); // Add record for removal from DB
             return false; // Player is no longer ignored
         } else {
             ignored.add(uuid);
-            DatabaseManager.undoRemoveRecord(this.getUuid(), uuid); // Make sure there isn't a deletion record in the map
+            DatabaseManager.undoRemoveRecord(this.uuid, uuid); // Make sure there isn't a deletion record in the map
             return true; // Player is now ignored
         }
     }
@@ -111,7 +121,7 @@ public class Lemon {
         return user;
     }
 
-    private void saveUser() {
+    public void saveUser() {
         DatabaseManager.saveUser(this);
     }
 

@@ -6,6 +6,7 @@ import me.saurpuss.lemonaid.commands.social.*;
 import me.saurpuss.lemonaid.commands.social.channels.*;
 import me.saurpuss.lemonaid.commands.teleport.*;
 import me.saurpuss.lemonaid.events.*;
+import me.saurpuss.lemonaid.utils.sql.DatabaseManager;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.*;
@@ -42,7 +43,8 @@ public final class Lemonaid extends JavaPlugin {
 //        getLogger().info(Utils.console("Plugin shutdown"));
 
         // Save all remaining Lemons to DB
-        userManager.forEach((uuid, user) -> user.updateUser());
+        userManager.forEach((uuid, user) -> user.saveUser());
+        DatabaseManager.deleteRemovalRecords(); // Delete any listed homes or ignores mapped from DB
     }
 
     private void registerCommands() {
