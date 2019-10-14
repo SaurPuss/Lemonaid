@@ -20,6 +20,16 @@ public class Home implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
+            if (args.length == 0) {
+                Lemon user = plugin.getUser(player.getUniqueId());
+                if (user.getHomes().size() == 1) {
+                    // TODO teleport to found home
+                } else {
+                    // TODO list all available homes
+                }
+                return true;
+            }
+
             if (args.length == 1) {
                 // List homes for sender
                 if (args[0].equalsIgnoreCase("list")) {
@@ -61,6 +71,7 @@ public class Home implements CommandExecutor {
                     Lemon user = plugin.getUser(target.getUniqueId());
                     Location location = user.getHome(subArg[1]);
                     if (location != null) {
+                        // TODO should this go via the Teleport manager class?
                         player.teleport(location);
                         player.sendMessage(ChatColor.GREEN + "Successfully teleported to " +
                                 target.getName() + "'s home: " + subArg[1]);
@@ -73,11 +84,19 @@ public class Home implements CommandExecutor {
                     }
                     return true;
                 }
+
+                // Teleport to specific home
+                // TODO yo /home <name> here
+
+
+
+
+
             }
 
 
 
-            // /home arg[0] <homeName>
+            // Edit or create a home
             if (args.length == 2) {
                 Lemon user = plugin.getUser(player.getUniqueId());
                 // Create a home if there is space
@@ -146,7 +165,4 @@ public class Home implements CommandExecutor {
             }
         }
     }
-
-
-    // TODO delete home save to record in db manager class
 }

@@ -170,31 +170,35 @@ commands:
     usage: /<command>
     permission: lemonaid.teleport.back
     permission-message: *noperms
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   home:
-    description: Allow players to set and teleport to personal homes
+    description: |
+      Allow players to set, delete, update, and teleport to saved home
+      locations
     usage: |
       /<command> - Go to your singular home, or display all homes
-      /<command> set [name] - Set a new home, if [name] is not used
-       it will default to home.
-      /<command> delete|remove <name> - Remove a homeset
       /<command> list - Display all your homesets
+      /<command> [name] - Teleport to your home
+      /<command> set [name] - Set a new home at your current location
+      /<command> update [name] - Update an existing home to your
+       current location
+      /<command> del|delete [name] - Remove specific home
     permission: lemonaid.teleport.home
     permission-message: *noperms
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   localchat:
     description: Talk to the players within earshot
