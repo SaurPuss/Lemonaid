@@ -257,6 +257,7 @@ permissions:
       lemonaid.slow: true
       lemonaid.clearchat: true
       lemonaid.socialspy: true
+      lemonaid.teleport.admin: true
   lemonaid.chat.color:
     description: Allow the use of colors with & color codes
     default: op
@@ -301,3 +302,4 @@ permissions:
       lemonaid.teleport.tpaccept: true
       lemonaid.teleport.back: true
       lemonaid.teleport.home: true
+      lemonaid.teleport.admin: false

@@ -38,6 +38,8 @@ message-of-the-day:
 # This is also where you set up the first join spawn and items
 # to be added to the player's inventory.
 # Use %player% to stub in the joining player's display name.
+# In spawn locations yaw is the horizontal view direction, and pitch
+# is the vertical view direction.
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 first-join-announcements:
   - Welcome %player% to the server!
@@ -48,11 +50,18 @@ first-join-message:
   - Please read the /rules and have a great time!
 first-join-spawn:
   world: 'world'
-  x: 0
-  y: ~
-  z: 0
-  yaw: 0
-  pitch: 0
+  x: 0.0
+  y: 65.0
+  z: 0.0
+  yaw: 0.0
+  pitch: 0.0
+world-spawn:
+  world: 'world'
+  x: 0.0
+  y: 65.0
+  z: 0.0
+  yaw: 0.0
+  pitch: 0.0
 
 #first-join-items:
 #  - item: 'COOKED_BEEF'

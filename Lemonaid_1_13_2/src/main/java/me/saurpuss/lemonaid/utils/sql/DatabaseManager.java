@@ -8,10 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.sql.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class DatabaseManager {
 
@@ -55,6 +52,8 @@ public class DatabaseManager {
                     " last_location_x FLOAT DEFAULT NULL," +
                     " last_location_y FLOAT DEFAULT NULL," +
                     " last_location_z FLOAT DEFAULT NULL," +
+                    " last_location_yaw FLOAT DEFAULT NULL," +
+                    " last_location_pitch FLOAT DEFAULT NULL, " +
                     " last_message CHAR(36) CHARACTER SET ascii DEFAULT NULL," +
                     " busy BOOLEAN DEFAULT false," +
                     " cuffed BOOLEAN DEFAULT false," +
@@ -64,9 +63,11 @@ public class DatabaseManager {
                     " fk_uuid CHAR(36) CHARACTER SET ascii NOT NULL," +
                     " home_name VARCHAR(20) NOT NULL," +
                     " home_world VARCHAR(20) DEFAULT 'world'," +
-                    " home_x FLOAT DEFAULT," +
-                    " home_y FLOAT DEFAULT," +
-                    " home_z FLOAT DEFAULT," +
+                    " home_x FLOAT," +
+                    " home_y FLOAT," +
+                    " home_z FLOAT," +
+                    " home_yaw FLOAT," +
+                    " home_pitch FLOAT," +
                     " PRIMARY KEY (fk_uuid, home_name)," +
                     " FOREIGN KEY (fk_uuid) REFERENCES " + lemonTable + " (pk_uuid) ON DELETE CASCADE," +
                     ");";
@@ -119,14 +120,13 @@ public class DatabaseManager {
                     String nick = rs.getString("nickname");
                     if (!rs.wasNull()) nickname = nick;
 
-                    String world = rs.getString("last_location_world");
-                    if (!rs.wasNull()) {
-                        lastLocation = new Location(
-                                Bukkit.getServer().getWorld(world),
-                                rs.getDouble("last_location_x"),
-                                rs.getDouble("last_location_y"),
-                                rs.getDouble("last_location_z"));
-                    }
+                    lastLocation = new Location(
+                            Bukkit.getServer().getWorld(rs.getString("last_location_world")),
+                            rs.getDouble("last_location_x"),
+                            rs.getDouble("last_location_y"),
+                            rs.getDouble("last_location_z"),
+                            rs.getFloat("last_location_yaw"),
+                            rs.getFloat("last_location_pitch"));
 
                     String last = rs.getString("last_message");
                     if (!rs.wasNull()) lastMessage = UUID.fromString(last);
@@ -180,11 +180,19 @@ public class DatabaseManager {
     public static void createUser(Lemon user) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
             String sql = "INSERT INTO " + lemonTable +
-                    " (pk_uuid, max_homes)" +
-                    " VALUES (?, ?);";
+                    " (pk_uuid, last_location_world, last_location_x, last_location_y," +
+                    " last_location_z, last_location_yaw, last_location_pitch, max_homes)" +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement statement = connection.prepareStatement(sql);
+            Location location = user.getLastLocation();
             statement.setString(1, user.getUuid().toString());
-            statement.setInt(2, user.getMaxHomes());
+            statement.setString(2, Objects.requireNonNull(location.getWorld()).toString());
+            statement.setDouble(3, location.getBlockX());
+            statement.setDouble(4, location.getBlockY());
+            statement.setDouble(5, location.getBlockZ());
+            statement.setFloat(6, location.getYaw());
+            statement.setFloat(7, location.getPitch());
+            statement.setInt(8, user.getMaxHomes());
 
             // One row should be affected
             if (statement.executeUpdate() != 1) {
@@ -223,15 +231,6 @@ public class DatabaseManager {
                         e.printStackTrace();
                     }
                 }
-//                ignoreRemovals.forEach((key, value) -> {
-//                    try {
-//                        statement.setString(1, key.toString());
-//                        statement.setString(2, value.toString());
-//                        statement.addBatch();
-//                    } catch (SQLException e) {
-//                        e.printStackTrace();
-//                    }
-//                });
                 statement.executeBatch();
                 connection.commit();
             }
@@ -250,16 +249,6 @@ public class DatabaseManager {
                         e.printStackTrace();
                     }
                 }
-
-//                homeRemovals.forEach((key, value) -> {
-//                    try {
-//                        statement.setString(1, key.toString());
-//                        statement.setString(2, value);
-//                        statement.addBatch();
-//                    } catch (SQLException e) {
-//                        e.printStackTrace();
-//                    }
-//                });
                 statement.executeBatch();
                 connection.commit();
             }
@@ -276,7 +265,6 @@ public class DatabaseManager {
         ignoreRemovals.remove(player, target);
     }
 
-    // TODO connect removeRecord and undoRemoveRecord to the commands to make it useful
     public static void removeRecord(UUID player, String homeName) {
         homeRemovals.put(player, homeName);
     }

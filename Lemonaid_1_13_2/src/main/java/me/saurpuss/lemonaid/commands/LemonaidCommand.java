@@ -2,7 +2,7 @@ package me.saurpuss.lemonaid.commands;
 
 import org.bukkit.command.*;
 
-public class Lemonaid implements CommandExecutor {
+public class LemonaidCommand implements CommandExecutor {
 
 
     @Override

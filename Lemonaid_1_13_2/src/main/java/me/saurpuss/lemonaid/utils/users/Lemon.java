@@ -22,7 +22,7 @@ public class Lemon {
         this.uuid = uuid;
         muteEnd = 0;
         nickname = null;
-        lastLocation = null; // TODO set this as the current location of the player attached to the uuid?
+        lastLocation = plugin.getServer().getWorlds().get(0).getSpawnLocation(); // Get from config?
         lastMessage = null;
         busy = false;
         cuffed = false;
@@ -74,7 +74,7 @@ public class Lemon {
     public boolean isMuted() { return muteEnd > System.currentTimeMillis(); }
     public void removeHome(String name) { homes.remove(name.toLowerCase()); }
     public int homeCount() { return homes.size(); }
-    public Location getHomeName(String name) { return homes.get(name.toLowerCase()); }
+    public Location getHome(String name) { return homes.get(name.toLowerCase()); }
     public short addHome(String name, Location location) {
         if (homes.containsKey(name.toLowerCase())) {
             return -1; // Home name already exists
