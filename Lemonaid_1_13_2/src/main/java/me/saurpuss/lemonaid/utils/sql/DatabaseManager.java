@@ -44,37 +44,42 @@ public class DatabaseManager {
 
     private static void createTables() {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
-            String lemons = "CREATE IF NOT EXISTS " + lemonTable + "(" +
+            String lemons = "CREATE TABLE IF NOT EXISTS " + lemonTable + "(" +
                     " pk_uuid CHAR(36) CHARACTER SET ascii NOT NULL PRIMARY KEY," +
                     " mute_end INT UNSIGNED DEFAULT 0," +
-                    " nickname VARCHAR(20)," +
-                    " last_location_world VARCHAR(20) DEFAULT 'world'," +
-                    " last_location_x FLOAT," +
-                    " last_location_y FLOAT," +
-                    " last_location_z FLOAT," +
-                    " last_message CHAR(36) CHARACTER SET ascii," +
+                    " nickname VARCHAR(20) DEFAULT NULL," +
+                    " last_location_world VARCHAR(20) DEFAULT NULL," +
+                    " last_location_x FLOAT DEFAULT NULL," +
+                    " last_location_y FLOAT DEFAULT NULL," +
+                    " last_location_z FLOAT DEFAULT NULL," +
+                    " last_message CHAR(36) CHARACTER SET ascii DEFAULT NULL," +
                     " busy BOOLEAN DEFAULT false," +
                     " cuffed BOOLEAN DEFAULT false," +
                     " max_homes INT UNSIGNED DEFAULT 1," +
                     ");";
-            String homes = "CREATE IF NOT EXISTS " + lemonHomes + "(" +
+            String homes = "CREATE TABLE IF NOT EXISTS " + lemonHomes + "(" +
                     " fk_uuid CHAR(36) CHARACTER SET ascii NOT NULL," +
                     " home_name VARCHAR(20) NOT NULL," +
                     " home_world VARCHAR(20) DEFAULT 'world'," +
-                    " home_x FLOAT DEFAULT 0," +
-                    " home_y FLOAT DEFAULT 0," +
-                    " home_z FLOAT DEFAULT 0," +
+                    " home_x FLOAT DEFAULT NOT NULL," +
+                    " home_y FLOAT DEFAULT NOT NULL," +
+                    " home_z FLOAT DEFAULT NOT NULL," +
                     " PRIMARY KEY (fk_uuid, home_name)," +
                     " FOREIGN KEY (fk_uuid) REFERENCES " + lemonTable + " (pk_uuid) ON DELETE CASCADE," +
                     ");";
             // What if a player removes an ignored party from their list? On update cascade?
-            String ignored = "CREATE IF NOT EXISTS " + lemonIgnored + "(" +
+            String ignored = "CREATE TABLE IF NOT EXISTS " + lemonIgnored + "(" +
                     " fk_uuid CHAR(36) CHARACTER SET ascii NOT NULL," +
                     " ignored_player CHAR(36) CHARACTER SET ascii NOT NULL," +
                     " PRIMARY KEY (fk_uuid, ignored_player)," +
                     " FOREIGN KEY (fk_uuid) REFERENCES " + lemonTable + " (pk_uuid) ON DELETE CASCADE" +
                     ");";
 
+            Statement statement = connection.createStatement();
+            // TODO single query with batch update
+            statement.executeQuery(lemons);
+            statement.executeQuery(homes);
+            statement.executeQuery(ignored);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -107,19 +112,29 @@ public class DatabaseManager {
                 while (rs.next()) {
                     id = UUID.fromString(rs.getString("pk_uuid"));
                     muteEnd = rs.getLong("mute_end");
+
                     nickname = rs.getString("nickname");
-                    lastLocation = new Location(
-                            Bukkit.getServer().getWorld(rs.getString("last_location_world")),
-                            rs.getDouble("last_location_x"),
-                            rs.getDouble("last_location_y"),
-                            rs.getDouble("last_location_z"));
-                    lastMessage = UUID.fromString(rs.getString("last_message"));
+                    if (rs.wasNull()) nickname = null;
+
+                    String world = rs.getString("last_location_world");
+                    if (!rs.wasNull()) {
+                        lastLocation = new Location(
+                                Bukkit.getServer().getWorld(world),
+                                rs.getDouble("last_location_x"),
+                                rs.getDouble("last_location_y"),
+                                rs.getDouble("last_location_z"));
+                    }
+
+                    String last = rs.getString("last_message");
+                    if (!rs.wasNull()) lastMessage = UUID.fromString(last);
+
                     busy = rs.getBoolean("busy");
                     cuffed  = rs.getBoolean("cuffed");
                     maxHomes = rs.getInt("max_homes");
+                    rs.close();
                 }
-                rs.close();
 
+                // TODO I think I can simplify this
                 Statement ignoredStatement = connection.createStatement();
                 results = ignoredStatement.execute(getIgnored);
                 if (results) {
@@ -159,10 +174,24 @@ public class DatabaseManager {
         }
     }
 
-    public static Lemon createUser(Lemon user) {
-        // TODO insert new record
+    public static void createUser(Lemon user) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
+            String sql = "INSERT INTO " + lemonTable +
+                    " (pk_uuid, max_homes)" +
+                    " VALUES (?, ?);";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, user.getUuid().toString());
+            statement.setInt(2, user.getMaxHomes());
 
-        return user;
+            // One row should be affected
+            if (statement.executeUpdate() != 1) {
+                plugin.getLogger().warning("Error while inserting new user record into MySQL database!");
+                plugin.getLogger().info("Affected user: " + Bukkit.getPlayer(user.getUuid()).getName());
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static boolean saveUser(Lemon user) {

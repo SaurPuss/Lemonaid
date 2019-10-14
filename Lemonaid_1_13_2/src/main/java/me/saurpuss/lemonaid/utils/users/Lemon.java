@@ -21,16 +21,16 @@ public class Lemon {
     public Lemon(UUID uuid) {
         this.uuid = uuid;
         muteEnd = 0;
-        nickname = "";
+        nickname = null;
         lastLocation = null;
         lastMessage = null;
         busy = false;
         cuffed = false;
         homes = new HashMap<>();
-        maxHomes = 3;
+        maxHomes = 3; // TODO make this viable
         ignored = new HashSet<>();
 
-        // TODO save to database, this is triggered on first join event
+        DatabaseManager.createUser(this);
     }
 
     public Lemon(UUID uuid, long muteEnd, String nickname, Location lastLocation,
@@ -94,9 +94,11 @@ public class Lemon {
     public boolean toggleIgnore(UUID uuid) {
         if (ignored.contains(uuid)) {
             ignored.remove(uuid);
+            DatabaseManager.removeRecord(this.getUuid(), uuid); // Add record for removal from DB
             return false; // Player is no longer ignored
         } else {
             ignored.add(uuid);
+            DatabaseManager.undoRemoveRecord(this.getUuid(), uuid); // Make sure there isn't a deletion record in the map
             return true; // Player is now ignored
         }
     }

@@ -39,8 +39,6 @@ public class Ignore implements CommandExecutor {
                 return true;
             }
 
-            // TODO if unignore, copy the record into the DB hashmap
-
             // Try to retrieve a target player to ignore
             Player target = Utils.getPlayer(args[0]);
             if (target == null) {
