@@ -22,12 +22,12 @@ public class Lemon {
         this.uuid = uuid;
         muteEnd = 0;
         nickname = null;
-        lastLocation = null;
+        lastLocation = null; // TODO set this as the current location of the player attached to the uuid?
         lastMessage = null;
         busy = false;
         cuffed = false;
         homes = new HashMap<>();
-        maxHomes = 3; // TODO make this viable
+        maxHomes = 3; // TODO make this viable && if player isOP set to 100
         ignored = new HashSet<>();
 
         DatabaseManager.createUser(this);

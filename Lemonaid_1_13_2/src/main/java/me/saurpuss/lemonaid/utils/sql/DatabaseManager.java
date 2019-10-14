@@ -1,5 +1,7 @@
 package me.saurpuss.lemonaid.utils.sql;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import org.bukkit.Bukkit;
@@ -8,15 +10,16 @@ import org.bukkit.Location;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.UUID;
 
 public class DatabaseManager {
 
     // Use removal records to delete composite primary keys
     // Track ignore pk removals for deletion <Player, Target>
-    private static HashMap<UUID, UUID> ignoreRemovals = new HashMap<>();
+    private static Multimap<UUID, UUID> ignoreRemovals = HashMultimap.create();
     // Track home pk removals for deletion <Player, HomeName>
-    private static HashMap<UUID, String> homeRemovals = new HashMap<>();
+    private static Multimap<UUID, String> homeRemovals = HashMultimap.create();
 
     private static Lemonaid plugin = Lemonaid.plugin;
     private static Connection conn;
@@ -61,9 +64,9 @@ public class DatabaseManager {
                     " fk_uuid CHAR(36) CHARACTER SET ascii NOT NULL," +
                     " home_name VARCHAR(20) NOT NULL," +
                     " home_world VARCHAR(20) DEFAULT 'world'," +
-                    " home_x FLOAT DEFAULT NOT NULL," +
-                    " home_y FLOAT DEFAULT NOT NULL," +
-                    " home_z FLOAT DEFAULT NOT NULL," +
+                    " home_x FLOAT DEFAULT," +
+                    " home_y FLOAT DEFAULT," +
+                    " home_z FLOAT DEFAULT," +
                     " PRIMARY KEY (fk_uuid, home_name)," +
                     " FOREIGN KEY (fk_uuid) REFERENCES " + lemonTable + " (pk_uuid) ON DELETE CASCADE," +
                     ");";
@@ -113,8 +116,8 @@ public class DatabaseManager {
                     id = UUID.fromString(rs.getString("pk_uuid"));
                     muteEnd = rs.getLong("mute_end");
 
-                    nickname = rs.getString("nickname");
-                    if (rs.wasNull()) nickname = null;
+                    String nick = rs.getString("nickname");
+                    if (!rs.wasNull()) nickname = nick;
 
                     String world = rs.getString("last_location_world");
                     if (!rs.wasNull()) {
@@ -209,15 +212,26 @@ public class DatabaseManager {
                         "(user_uuid, ignored_player) = (?,?);";
                 PreparedStatement statement = connection.prepareStatement(sql);
                 connection.setAutoCommit(false);
-                ignoreRemovals.forEach((key, value) -> {
+
+                // TODO test multimap
+                for (Map.Entry<UUID, UUID> key : ignoreRemovals.entries()) {
                     try {
                         statement.setString(1, key.toString());
-                        statement.setString(2, value.toString());
+                        statement.setString(2, key.getValue().toString());
                         statement.addBatch();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                });
+                }
+//                ignoreRemovals.forEach((key, value) -> {
+//                    try {
+//                        statement.setString(1, key.toString());
+//                        statement.setString(2, value.toString());
+//                        statement.addBatch();
+//                    } catch (SQLException e) {
+//                        e.printStackTrace();
+//                    }
+//                });
                 statement.executeBatch();
                 connection.commit();
             }
@@ -227,15 +241,25 @@ public class DatabaseManager {
                         "(user_uuid, home_name) = (?,?);";
                 PreparedStatement statement = connection.prepareStatement(sql);
                 connection.setAutoCommit(false);
-                homeRemovals.forEach((key, value) -> {
+                for (Map.Entry<UUID, String> key : homeRemovals.entries()) {
                     try {
                         statement.setString(1, key.toString());
-                        statement.setString(2, value);
+                        statement.setString(2, key.getValue());
                         statement.addBatch();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                });
+                }
+
+//                homeRemovals.forEach((key, value) -> {
+//                    try {
+//                        statement.setString(1, key.toString());
+//                        statement.setString(2, value);
+//                        statement.addBatch();
+//                    } catch (SQLException e) {
+//                        e.printStackTrace();
+//                    }
+//                });
                 statement.executeBatch();
                 connection.commit();
             }
@@ -244,7 +268,6 @@ public class DatabaseManager {
         }
     }
 
-    // TODO connect removeRecord and undoRemoveRecord to the commands to make it useful
     public static void removeRecord(UUID player, UUID target) {
         ignoreRemovals.put(player, target);
     }
@@ -253,6 +276,7 @@ public class DatabaseManager {
         ignoreRemovals.remove(player, target);
     }
 
+    // TODO connect removeRecord and undoRemoveRecord to the commands to make it useful
     public static void removeRecord(UUID player, String homeName) {
         homeRemovals.put(player, homeName);
     }
