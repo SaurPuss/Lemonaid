@@ -10,10 +10,10 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class Teleport {
+public class PlayerTeleport {
 
     private static transient Lemonaid plugin = Lemonaid.getPlugin(Lemonaid.class);
-    private static transient HashSet<Teleport> pendingRequests = new HashSet<>();
+    private static transient HashSet<PlayerTeleport> pendingRequests = new HashSet<>();
 
     // Teleport()
     private Player client;
@@ -21,8 +21,8 @@ public class Teleport {
     private TeleportType tpType;
     private static transient int id;
 
-    Teleport() {}
-    public Teleport(Player client, Player target, TeleportType tpType) {
+    PlayerTeleport() {}
+    public PlayerTeleport(Player client, Player target, TeleportType tpType) {
         this.client = client;
         this.target = target;
         this.tpType = tpType;
@@ -40,7 +40,7 @@ public class Teleport {
      * and initiate requested tp.
      * @param tp Teleportation request object
      */
-    public static void teleportEvent(Teleport tp) {
+    public static void teleportEvent(PlayerTeleport tp) {
         Economy economy = plugin.getEconomy();
         if (economy.isEnabled()) {
             // Attempt to charge the client for the teleport
@@ -56,9 +56,9 @@ public class Teleport {
         activateTp(tp);
     }
 
-    public static boolean addRequest(Teleport tp) {
+    public static boolean addRequest(PlayerTeleport tp) {
         // Check if there are no conflicting requests
-        for (Teleport t : pendingRequests) {
+        for (PlayerTeleport t : pendingRequests) {
             // requester already has an outgoing request to this specific player regardless of type
             if (t.client == tp.client && t.target == tp.target) {
                 // remove existing and break the loop
@@ -97,7 +97,7 @@ public class Teleport {
                 request = tp.client.getDisplayName() + " wants to teleport to you."; break;
             case TPAHERE: case PTPHERE:
                 request = tp.client.getDisplayName() + " wants you to teleport to them."; break;
-            case BACK: default:
+            case BACK: case HOME: case SPAWN: case RANDOM: case WARP: default: // TODO Refactor based on new TP types
                 plugin.getLogger().warning("Unexpected TeleportType tried to get listed in " +
                         "pending teleport requests!");
                 return false;
@@ -111,27 +111,27 @@ public class Teleport {
         return true;
     }
 
-    public static void removeRequest(Teleport tp) { pendingRequests.remove(tp); }
+    public static void removeRequest(PlayerTeleport tp) { pendingRequests.remove(tp); }
 
-    public static HashSet<Teleport> retrieveRequest(Player target) {
-        HashSet<Teleport> requests = new HashSet<>();
-        for (Teleport t : pendingRequests)
+    public static HashSet<PlayerTeleport> retrieveRequest(Player target) {
+        HashSet<PlayerTeleport> requests = new HashSet<>();
+        for (PlayerTeleport t : pendingRequests)
             if (t.target == target)
                 requests.add(t);
 
         return requests;
     }
 
-    public static HashSet<Teleport> outgoingRequests(Player player) {
-        HashSet<Teleport> requests = new HashSet<>();
-        for (Teleport t : pendingRequests)
+    public static HashSet<PlayerTeleport> outgoingRequests(Player player) {
+        HashSet<PlayerTeleport> requests = new HashSet<>();
+        for (PlayerTeleport t : pendingRequests)
             if (t.client == player)
                 requests.add(t);
 
         return requests;
     }
 
-    private static void activateTp(Teleport tp) {
+    private static void activateTp(PlayerTeleport tp) {
         removeRequest(tp);
         teleportTask(tp.client, tp.target, plugin.getConfig().getInt("teleport." + tp.tpType.name + ".timer"));
     }

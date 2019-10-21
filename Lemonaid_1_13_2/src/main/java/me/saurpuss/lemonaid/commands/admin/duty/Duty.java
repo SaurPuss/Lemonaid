@@ -1,4 +1,4 @@
-package me.saurpuss.lemonaid.commands.admin;
+package me.saurpuss.lemonaid.commands.admin.duty;
 
 public class Duty {
 

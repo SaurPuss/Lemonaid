@@ -1,6 +1,6 @@
 package me.saurpuss.lemonaid.commands.teleport;
 
-import me.saurpuss.lemonaid.utils.tp.Teleport;
+import me.saurpuss.lemonaid.utils.tp.PlayerTeleport;
 import me.saurpuss.lemonaid.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,13 +16,13 @@ public class TpAccept implements CommandExecutor {
         if (sender instanceof Player) {
             Player target = (Player) sender;
             // Check if there are incoming requests
-            HashSet<Teleport> incoming = Teleport.retrieveRequest(target);
+            HashSet<PlayerTeleport> incoming = PlayerTeleport.retrieveRequest(target);
             if (incoming.isEmpty()) {
                 target.sendMessage("§cYou have no pending teleport requests.");
                 return true;
             } else if (incoming.size() == 1) {
-                for (Teleport tp : incoming) {
-                    Teleport.teleportEvent(tp);
+                for (PlayerTeleport tp : incoming) {
+                    PlayerTeleport.teleportEvent(tp);
                 }
                 return true;
             }
@@ -31,7 +31,7 @@ public class TpAccept implements CommandExecutor {
                 if (args.length == 0) {
                     StringBuilder s = new StringBuilder();
                     s.append("§6You have incoming requests from: \n");
-                    for (Teleport tp : incoming) {
+                    for (PlayerTeleport tp : incoming) {
                         s.append("§5- " + tp.getClient().getName() + "\n");
                     }
                     // TODO make the command bits a different color
@@ -43,17 +43,17 @@ public class TpAccept implements CommandExecutor {
 
                 // accept all incoming requests
                 if (args[0].equalsIgnoreCase("all")) {
-                    for (Teleport tp : incoming) {
-                        Teleport.teleportEvent(tp);
+                    for (PlayerTeleport tp : incoming) {
+                        PlayerTeleport.teleportEvent(tp);
                     }
                     return true;
                 }
 
                 // accept all valid arguments
-                for (Teleport tp : incoming) {
+                for (PlayerTeleport tp : incoming) {
                     for (String arg : args) {
                         if (arg.equalsIgnoreCase(tp.getClient().getName())) {
-                            Teleport.teleportEvent(tp);
+                            PlayerTeleport.teleportEvent(tp);
                             incoming.remove(tp);
                         }
                     }

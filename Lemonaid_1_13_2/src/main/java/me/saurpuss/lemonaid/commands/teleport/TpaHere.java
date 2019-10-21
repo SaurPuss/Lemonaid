@@ -1,7 +1,7 @@
 package me.saurpuss.lemonaid.commands.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.tp.Teleport;
+import me.saurpuss.lemonaid.utils.tp.PlayerTeleport;
 import me.saurpuss.lemonaid.utils.tp.TeleportType;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import me.saurpuss.lemonaid.utils.Utils;
@@ -51,7 +51,7 @@ public class TpaHere implements CommandExecutor {
                 if (user.isBusy() || user.isIgnored(player.getUniqueId())) {
                     player.sendMessage("§c" + target.getName() + " is unavailable.");
                 } else {
-                    Teleport.addRequest(new Teleport(player, target, TeleportType.TPAHERE));
+                    PlayerTeleport.addRequest(new PlayerTeleport(player, target, TeleportType.TPAHERE));
                 }
             }
             return true;

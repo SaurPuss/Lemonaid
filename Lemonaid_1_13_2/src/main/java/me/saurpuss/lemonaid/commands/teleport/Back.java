@@ -1,6 +1,6 @@
 package me.saurpuss.lemonaid.commands.teleport;
 
-import me.saurpuss.lemonaid.utils.tp.Teleport;
+import me.saurpuss.lemonaid.utils.tp.PlayerTeleport;
 import me.saurpuss.lemonaid.utils.tp.TeleportType;
 import me.saurpuss.lemonaid.utils.Utils;
 import org.bukkit.command.Command;
@@ -14,7 +14,7 @@ public class Back implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            Teleport.teleportEvent(new Teleport(player, null, TeleportType.BACK));
+            PlayerTeleport.teleportEvent(new PlayerTeleport(player, null, TeleportType.BACK));
         } else {
             sender.sendMessage(Utils.playerOnly());
         }

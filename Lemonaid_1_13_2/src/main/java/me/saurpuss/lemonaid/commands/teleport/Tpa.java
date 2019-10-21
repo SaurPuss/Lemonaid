@@ -1,7 +1,7 @@
 package me.saurpuss.lemonaid.commands.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.tp.Teleport;
+import me.saurpuss.lemonaid.utils.tp.PlayerTeleport;
 import me.saurpuss.lemonaid.utils.tp.TeleportType;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import me.saurpuss.lemonaid.utils.Utils;
@@ -43,7 +43,7 @@ public class Tpa implements CommandExecutor {
             }
 
             // Start teleportation request
-            Teleport.addRequest(new Teleport(player, target, TeleportType.TPA));
+            PlayerTeleport.addRequest(new PlayerTeleport(player, target, TeleportType.TPA));
             return true;
         } else { // Console can't teleport
             sender.sendMessage(Utils.playerOnly());

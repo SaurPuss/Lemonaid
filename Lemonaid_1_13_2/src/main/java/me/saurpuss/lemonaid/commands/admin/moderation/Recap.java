@@ -1,4 +1,4 @@
-package me.saurpuss.lemonaid.commands.admin;
+package me.saurpuss.lemonaid.commands.admin.moderation;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.Utils;
@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 

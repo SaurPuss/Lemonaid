@@ -1,4 +1,4 @@
-package me.saurpuss.lemonaid.commands.admin;
+package me.saurpuss.lemonaid.commands.admin.moderation;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.users.Lemon;

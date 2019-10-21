@@ -1,7 +1,7 @@
 package me.saurpuss.lemonaid;
 
 import me.saurpuss.lemonaid.commands.admin.*;
-import me.saurpuss.lemonaid.commands.admin.MasterCuff;
+import me.saurpuss.lemonaid.commands.admin.moderation.*;
 import me.saurpuss.lemonaid.commands.social.*;
 import me.saurpuss.lemonaid.commands.social.channels.*;
 import me.saurpuss.lemonaid.commands.teleport.*;

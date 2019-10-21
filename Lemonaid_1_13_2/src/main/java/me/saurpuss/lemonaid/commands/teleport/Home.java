@@ -1,4 +1,4 @@
-package me.saurpuss.lemonaid.commands;
+package me.saurpuss.lemonaid.commands.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.Utils;

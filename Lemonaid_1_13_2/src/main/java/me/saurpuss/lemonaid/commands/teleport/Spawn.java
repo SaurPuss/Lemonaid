@@ -1,4 +1,4 @@
-package me.saurpuss.lemonaid.commands;
+package me.saurpuss.lemonaid.commands.teleport;
 
 public class Spawn {
 
