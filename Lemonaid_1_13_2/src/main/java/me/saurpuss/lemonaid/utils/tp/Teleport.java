@@ -11,8 +11,9 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class Teleport {
-    private static Lemonaid plugin = Lemonaid.getPlugin(Lemonaid.class);
-    private static HashSet<Teleport> pendingRequests = new HashSet<>();
+
+    private static transient Lemonaid plugin = Lemonaid.getPlugin(Lemonaid.class);
+    private static transient HashSet<Teleport> pendingRequests = new HashSet<>();
 
     // Teleport()
     private Player client;
@@ -82,9 +83,11 @@ public class Teleport {
         }
 
         // Check for cross-world and if it's allowed
-        if (!plugin.getConfig().getBoolean("teleport." + tp.tpType.name + ".cross-world")) {
-            tp.client.sendMessage(ChatColor.RED + "You cannot teleport between worlds! Request canceled.");
-            return false;
+        if (tp.client.getWorld() != tp.target.getWorld()) {
+            if (!plugin.getConfig().getBoolean("teleport." + tp.tpType.name + ".cross-world")) {
+                tp.client.sendMessage(ChatColor.RED + "You cannot teleport between worlds! Request canceled.");
+                return false;
+            }
         }
 
         int delay = plugin.getConfig().getInt("teleport.request-timer");
