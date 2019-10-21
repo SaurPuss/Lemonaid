@@ -2,7 +2,9 @@ package me.saurpuss.lemonaid.utils.users;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.sql.DatabaseManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -20,6 +22,7 @@ public class Lemon {
 
     public Lemon(UUID uuid) {
         this.uuid = uuid;
+        maxHomes = determineMaxHomes(this.uuid);
         muteEnd = 0;
         nickname = null;
         lastLocation = plugin.getServer().getWorlds().get(0).getSpawnLocation(); // Get from config?
@@ -27,7 +30,6 @@ public class Lemon {
         busy = false;
         cuffed = false;
         homes = new HashMap<>();
-        maxHomes = 3; // TODO make this viable && if player isOP set to 100
         ignored = new HashSet<>();
 
         DatabaseManager.createUser(this);
@@ -35,7 +37,7 @@ public class Lemon {
 
     public Lemon(UUID uuid, long muteEnd, String nickname, Location lastLocation,
                  UUID lastMessage, boolean busy, boolean cuffed,
-                 HashMap<String, Location> homes, int maxHomes, HashSet<UUID> ignored) {
+                 HashMap<String, Location> homes, HashSet<UUID> ignored) {
         this.uuid = uuid;
         this.muteEnd = muteEnd;
         this.nickname = nickname;
@@ -44,7 +46,7 @@ public class Lemon {
         this.busy = busy;
         this.cuffed = cuffed;
         this.homes = homes;
-        this.maxHomes = maxHomes;
+        this.maxHomes = determineMaxHomes(this.uuid);
         this.ignored = ignored;
     }
 
@@ -65,10 +67,10 @@ public class Lemon {
     public void setCuffed(boolean cuffed) { this.cuffed = cuffed; }
     public HashMap<String, Location> getHomes() { return homes; }
     public void setHomes(HashMap<String, Location> homes) { this.homes = homes;}
-    public int getMaxHomes() { return maxHomes; }
-    public void setMaxHomes(int maxHomes) { this.maxHomes = maxHomes; }
     public HashSet<UUID> getIgnored() { return ignored; }
     public void setIgnored(HashSet<UUID> ignored) { this.ignored = ignored; }
+    public int getMaxHomes() { return maxHomes; }
+    public void setMaxHomes(int maxHomes) { this.maxHomes = maxHomes; }
 
     // bespoke getters and setters
     public boolean isMuted() { return muteEnd > System.currentTimeMillis(); }
@@ -113,6 +115,31 @@ public class Lemon {
         }
     }
 
+    private static int determineMaxHomes(UUID uuid) {
+        int maxHome = plugin.getConfig().getInt("player-homes.default");
+
+        Player player = Bukkit.getPlayer(uuid);
+        Set<String> list = plugin.getConfig().getConfigurationSection("player-homes").getKeys(false);
+
+        if (player == null || list.isEmpty()) return maxHome;
+
+        if (player.hasPermission("lemonaid.homes.unlimited"))
+            maxHome = Integer.MAX_VALUE;
+        else {
+            for (String node : list) {
+                if (player.hasPermission("lemonaid.homes." + node)) {
+                    if (maxHome < plugin.getConfig().getInt(node)) {
+                        maxHome = plugin.getConfig().getInt(node);
+                    }
+                }
+            }
+        }
+
+        return maxHome;
+    }
+
+
+    // save/update/delete object references
     public Lemon getUser() {
         Lemon user = plugin.getUser(uuid);
         if (user == null)

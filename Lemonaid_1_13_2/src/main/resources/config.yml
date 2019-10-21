@@ -27,7 +27,7 @@ server-motd-hover:
 # Use - to indicate a new line with another motd option.
 # Use %player% to stub in the joining player's display name.
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-message-of-the-day:
+player-motd:
   - &eWelcome back %player%!
   - &eHey %player%! Enjoy your stay!
   - &eDon't forget to read the &6/rules&e!
@@ -88,10 +88,24 @@ nether-spawn:
   yaw: 0.0
   pitch: 0.0
 
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Player Homes -
+# You can assign homes by creating new keys under player-homes, each
+# will be checked against a player's corresponding homes permission.
+# You will need to manage your permissions with another plugin,
+# LuckPerms is a good option. Make sure to name your permissions
+# lemonaid.homes.<groupname> where <groupname> corresponds with the keys
+# listed under player-homes. You can also use lemonaid.homes.unlimited
+# as needed, operators automatically inherit this node.
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+player-homes:
+  default: 3
+  vip: 5 # lemonaid.homes.vip
+  staff: 10 # lemonaid.homes.staff
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-#   - Moderation settings
-# Setting you can manipulate for groups inheriting lemonaid.ignoreexempt.
+#   - Moderation settings -
+# Setting you can manipulate for groups inheriting lemonaid.ignoreexempt
 # You can allow your moderators to add players to their ignore list by
 # setting allow-moderator-ignore to true.
 # Moderators can set themselves to busy but will still receive a copy
@@ -108,23 +122,10 @@ duty-creative: true # Set a player's game mode to creative while in duty
 duty-permissions:
   - lemonaid.reload
   - lemonaid.kits.admin
+  - lemonaid.homes.unlimited
 
 
 
-#first-join-items:
-#  - item: 'COOKED_BEEF'
-#    item-slot: 0
-#    item-amount: 1
-#    item-title: '&5Welcome to the server!'
-#    item-description: >-
-#      Please read &c/rules&r for more information.
-#      Assholes will be yeeted!
-#  - item: 'WOODEN_AXE'
-#      item-slot: 1
-#      item-amount: 1
-#      item-title: 'Chop chop!'
-#      item-description: >-
-#        Use /help to find out more about the server
 
 
 

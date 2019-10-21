@@ -47,9 +47,8 @@ public final class Lemonaid extends JavaPlugin {
         // Plugin shutdown logic
 //        getLogger().info(Utils.console("Plugin shutdown"));
 
-        // Save all remaining Lemons to DB
-        userManager.forEach((uuid, user) -> user.saveUser());
-        DatabaseManager.deleteRemovalRecords(); // Delete any listed homes or ignores mapped from DB
+        // Save all remaining Lemons to DB & Delete any listed homes or ignores mapped from DB
+        saveUserManager();
     }
 
     private void registerCommands() {
@@ -86,6 +85,7 @@ public final class Lemonaid extends JavaPlugin {
         pm.registerEvents(new JoinLeave(this), this);
         pm.registerEvents(new ChatModeration(this), this);
         pm.registerEvents(new ActionEvents(this), this);
+        pm.registerEvents(new WorldEvents(this), this);
     }
 
     private void registerConfigs() {
@@ -121,6 +121,11 @@ public final class Lemonaid extends JavaPlugin {
     public void mapPlayer(UUID uuid, Lemon user) { userManager.put(uuid, user); }
     public void unmapPlayer(UUID uuid) { userManager.remove(uuid); }
     public Lemon getUser(UUID uuid) { return userManager.get(uuid); }
+    public void saveUserManager() {
+        // Called on World auto-save and plugin disable
+        userManager.forEach((uuid, user) -> user.saveUser());
+        DatabaseManager.deleteRemovalRecords();
+    }
 
     public Economy getEconomy() { return economy; }
 

@@ -38,7 +38,7 @@ public class JoinLeave implements Listener {
             }
 
             // Welcome to the server MOTD
-            List<String> motdList = plugin.getConfig().getStringList("message-of-the-day");
+            List<String> motdList = plugin.getConfig().getStringList("player-motd");
             Random random = new Random(motdList.size());
             String motd = motdList.get(random.nextInt()).replace("%player%", player.getDisplayName());
 

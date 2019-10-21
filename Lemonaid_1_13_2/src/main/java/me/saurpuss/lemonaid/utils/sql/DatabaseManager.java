@@ -30,6 +30,7 @@ public class DatabaseManager {
     private static final String lemonTable = "lemonaid_users";
     private static final String lemonHomes = "lemonaid_homes";
     private static final String lemonIgnored = "lemonaid_ignored";
+    private static final String publicWarps = "lemonaid_warps";
     private static final String partyTable = "lemonaid_party";
 
     private static void connect() {
@@ -57,7 +58,6 @@ public class DatabaseManager {
                     " last_message CHAR(36) CHARACTER SET ascii DEFAULT NULL," +
                     " busy BOOLEAN DEFAULT false," +
                     " cuffed BOOLEAN DEFAULT false," +
-                    " max_homes INT UNSIGNED DEFAULT 1," +
                     ");";
             String homes = "CREATE TABLE IF NOT EXISTS " + lemonHomes + "(" +
                     " fk_uuid CHAR(36) CHARACTER SET ascii NOT NULL," +
@@ -99,7 +99,6 @@ public class DatabaseManager {
         Location lastLocation = null;
         boolean busy = false, cuffed = false;
         HashMap<String, Location> homes = new HashMap<>();
-        int maxHomes = 1;
         HashSet<UUID> ignored = new HashSet<>();
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
@@ -133,7 +132,6 @@ public class DatabaseManager {
 
                     busy = rs.getBoolean("busy");
                     cuffed  = rs.getBoolean("cuffed");
-                    maxHomes = rs.getInt("max_homes");
                     rs.close();
                 }
 
@@ -165,7 +163,7 @@ public class DatabaseManager {
             }
 
             if (id != null)
-                user = new Lemon(id, muteEnd, nickname, lastLocation, lastMessage, busy, cuffed, homes, maxHomes, ignored);
+                user = new Lemon(id, muteEnd, nickname, lastLocation, lastMessage, busy, cuffed, homes, ignored);
             else
                 user = new Lemon(uuid);
 

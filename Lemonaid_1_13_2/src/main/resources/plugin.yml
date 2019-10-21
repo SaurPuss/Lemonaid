@@ -267,6 +267,7 @@ permissions:
       lemonaid.clearchat: true
       lemonaid.socialspy: true
       lemonaid.teleport.admin: true
+      lemonaid.homes.unlimited: true
   lemonaid.duty:
     description: Allow duty mode for moderators; manage child-permissions in the config
     default: op
