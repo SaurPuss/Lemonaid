@@ -26,6 +26,14 @@ public class Ignore implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Lemon user = plugin.getUser(player.getUniqueId());
+
+            // If moderators are not allowed to ignore players this happens
+            if (player.hasPermission("lemonaid.ignoreexempt") &&
+                    !plugin.getConfig().getBoolean("allow-moderator-ignore")) {
+                player.sendMessage(ChatColor.RED + "Ignoring players when you're a moderator is bad form.");
+                return true;
+            }
+
             // Display ignored list
             if (args.length == 0) {
                 if (user.getIgnored().size() == 0) {

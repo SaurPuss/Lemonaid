@@ -34,10 +34,19 @@ public class ChatModeration implements Listener {
         }
 
         // Remove this message from chat for players that have this person ignored
+        // Don't do this for players with the ignore exempt permission, unless they are
+        // allowed to ignore in the config
         for (Player p : Bukkit.getOnlinePlayers()) {
-            Lemon u = new Lemon(p.getUniqueId()).getUser();
-            if (u.isIgnored(player.getUniqueId()))
-                e.getRecipients().remove(p);
+            if (player.hasPermission("lemonaid.ignoreexempt") &&
+                    !plugin.getConfig().getBoolean("moderator-allow-ignore")) {
+                break;
+            }
+
+            if (!p.hasPermission("lemonaid.ignoreexempt")) {
+                Lemon u = new Lemon(p.getUniqueId()).getUser();
+                if (u.isIgnored(player.getUniqueId()))
+                    e.getRecipients().remove(p);
+            }
         }
 
         // Translate chat colors for those with the permission

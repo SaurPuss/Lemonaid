@@ -36,9 +36,11 @@ public class Msg implements CommandExecutor {
             // Not enough arguments
             if (args.length <= 1) return false;
 
-            // If sender is set to busy they are not allowed to send a dm
+            // If sender is set to busy they are not allowed to send a dm, unless mod
+            // and only while mods are not allowed to
             Lemon p = plugin.getUser(player.getUniqueId());
-            if (p.isBusy()) {
+            if (p.isBusy() && (!player.hasPermission("lemonaid.exempt") ||
+                    plugin.getConfig().getBoolean("allow-moderator-busy"))) {
                 player.sendMessage(ChatColor.RED + "You can't send whispers while " +
                         ChatColor.DARK_PURPLE + "/busy" + ChatColor.RED + "!");
                 return true;
@@ -54,8 +56,14 @@ public class Msg implements CommandExecutor {
             // Check if the user is set to busy
             Lemon user = plugin.getUser(target.getUniqueId());
             if (user.isBusy()) {
-                player.sendMessage(ChatColor.RED + args[0] + " is currently unavailable.");
-                return true;
+                if (target.hasPermission("lemonaid.exempt") &&
+                        !plugin.getConfig().getBoolean("allow-moderator-busy")) {
+                    player.sendMessage(ChatColor.RED + args[0] + " is currently set to busy. " +
+                            "They may not see your message!");
+                } else {
+                    player.sendMessage(ChatColor.RED + args[0] + " is currently unavailable.");
+                    return true;
+                }
             }
 
             // Compile and send the message

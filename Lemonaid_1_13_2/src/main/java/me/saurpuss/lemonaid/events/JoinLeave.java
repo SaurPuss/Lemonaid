@@ -1,6 +1,7 @@
 package me.saurpuss.lemonaid.events;
 
 import me.saurpuss.lemonaid.Lemonaid;
+import me.saurpuss.lemonaid.commands.social.Welcome;
 import me.saurpuss.lemonaid.utils.Utils;
 import me.saurpuss.lemonaid.utils.sql.DatabaseManager;
 import me.saurpuss.lemonaid.utils.users.Lemon;
@@ -25,6 +26,9 @@ public class JoinLeave implements Listener {
         Lemon user = DatabaseManager.getUser(player.getUniqueId());
         plugin.mapPlayer(player.getUniqueId(), user);
 
+        // TODO if player is in air and has fly permission, set them to fly automatically
+        // TODO if player has silentjoin or vanishjoin permission set them to vanish
+
         if (player.hasPlayedBefore()) {
             // Send a message to online moderators about the login event
             for (Player p : Bukkit.getOnlinePlayers()) {
@@ -45,6 +49,9 @@ public class JoinLeave implements Listener {
             Random random = new Random(announceList.size());
             String announcement = announceList.get(random.nextInt()).replaceAll("%player%", player.getDisplayName());
             e.setJoinMessage(Utils.color(announcement));
+
+            // Set lastJoinPlayer in /welcome
+            Welcome.lastJoinedPlayer = e.getPlayer().getDisplayName();
 
             // TODO add first join items from kit
         }

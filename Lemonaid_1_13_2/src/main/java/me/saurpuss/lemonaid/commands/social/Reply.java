@@ -25,8 +25,9 @@ public class Reply implements CommandExecutor {
 
             // Get the player from the last incoming message
             Lemon p = plugin.getUser(player.getUniqueId());
-            if (p.isBusy()) {
-                player.sendMessage(ChatColor.RED + "You can't send whispers while" +
+            if (p.isBusy() && (!player.hasPermission("lemonaid.exempt") ||
+                    plugin.getConfig().getBoolean("allow-moderator-busy"))) {
+                player.sendMessage(ChatColor.RED + "You can't send whispers while " +
                         ChatColor.DARK_PURPLE + "/busy" + ChatColor.RED + "!");
                 return true;
             }
@@ -40,8 +41,14 @@ public class Reply implements CommandExecutor {
 
             Lemon t = plugin.getUser(target.getUniqueId());
             if (t.isBusy()) {
-                player.sendMessage(ChatColor.RED + args[0] + " is unavailable right now.");
-                return true;
+                if (target.hasPermission("lemonaid.exempt") &&
+                        !plugin.getConfig().getBoolean("allow-moderator-busy")) {
+                    player.sendMessage(ChatColor.RED + args[0] + " is currently set to busy. " +
+                            "They may not see your message!");
+                } else {
+                    player.sendMessage(ChatColor.RED + args[0] + " is currently unavailable.");
+                    return true;
+                }
             }
 
             // Compile the message and update users
