@@ -35,8 +35,8 @@ message-of-the-day:
 #   - Joining the server for the first time -
 # The announcement is a list of options, one will be used at random.
 # You can use '&' for color codes.
-# This is also where you set up the first join spawn and items
-# to be added to the player's inventory.
+# This is also where you set up the first join spawn and create optional
+# messages for the /welcome command
 # Use %player% to stub in the joining player's display name.
 # In spawn locations yaw is the horizontal view direction, and pitch
 # is the vertical view direction.
@@ -48,20 +48,68 @@ first-join-announcements:
 first-join-message:
   - Hello %player%! Welcome to the Server!
   - Please read the /rules and have a great time!
+welcome-messages:
+  - Welcome to the server %player%!
+  - Nice to see you %player%! Have a great time!
 first-join-spawn:
   world: 'world'
-  x: 0.0
+  x: 0.5
   y: 65.0
-  z: 0.0
+  z: 0.5
   yaw: 0.0
   pitch: 0.0
-world-spawn:
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Server Spawn Locations -
+# In spawn locations yaw is the horizontal view direction, and pitch
+# is the vertical view direction. All spawns can be overridden with the
+# /setspawn <world|death> command, using the location of the command
+# executor.
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+world-spawn: # /spawn
   world: 'world'
-  x: 0.0
+  x: 0.5
   y: 65.0
-  z: 0.0
+  z: 0.5
   yaw: 0.0
   pitch: 0.0
+  timer: 3 # Seconds before activating teleport
+death-spawn:
+  world: 'world'
+  x: 0.5
+  y: 65.0
+  z: 0.5
+  yaw: 0.0
+  pitch: 0.0
+nether-spawn:
+  world: 'nether'
+  x: 0.5
+  y: 65.0
+  z: 0.5
+  yaw: 0.0
+  pitch: 0.0
+
+
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#   - Moderation settings
+# Setting you can manipulate for groups inheriting lemonaid.ignoreexempt.
+# You can allow your moderators to add players to their ignore list by
+# setting allow-moderator-ignore to true.
+# Moderators can set themselves to busy but will still receive a copy
+# of the direct message when a player tries to contact them (the player
+# will get a warning of the mod being busy), unless set to true.
+# Players with the lemonaid.duty permission can toggle their duty status
+# by using /duty. Add permissions to be granted (temporarily) to the
+# duty-permissions.
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+allow-moderator-ignore: false # Allow moderators to add players to their ignore list
+allow-moderator-busy: false # Allow moderators to ignore msg etc while busy
+duty-inventory: true # Give a player a temporary clean inventory while in duty
+duty-creative: true # Set a player's game mode to creative while in duty
+duty-permissions:
+  - lemonaid.reload
+  - lemonaid.kits.admin
+
+
 
 #first-join-items:
 #  - item: 'COOKED_BEEF'
@@ -86,7 +134,7 @@ world-spawn:
 # All times are in seconds
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 teleport:
-  request-timer: 30
+  request-timer: 30 # time before a request expires
   tpa:
     timer: 3
     cost: 100
@@ -106,6 +154,10 @@ teleport:
   ptphere:
     timer: 15
     cost: 500
+    cross-world: true
+  home:
+    timer: 3
+    cost: 0
     cross-world: true
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#

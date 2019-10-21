@@ -22,7 +22,6 @@ commands:
       /<command> info - Plugin information
       /<command> reload - Reload the plugin configs
       /<command> ?|help - Plugin help file
-    aliases: [lemon]
 
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
   #   Administrator commands
@@ -116,25 +115,31 @@ commands:
   #   Social commands
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
   msg:
-    description: Whisper to another player
+    description: |
+      Whisper to another player, does not work when either party is set to busy.
+      Exception is made for moderators.
     usage: /<command> [target] [message...]
     aliases: [tell, whisper]
     permission: lemonaid.chat.private
     permission-message: *noperms
   reply:
-    description: Reply to a whispered message
+    description: |
+      Reply to a whispered message, does not work when either party is set to busy.
+      Exception is made for moderators.
     usage: /<command> [message...]
     aliases: [r]
     permission: lemonaid.chat.private
     permission-message: *noperms
   busy:
-    description: Prevent incoming whispers and tp requests
+    description: Prevent incoming whispers and tp requests, moderators are exempt.
     usage: /<command>
     aliases: [dnd]
     permission: lemonaid.chat.busy
     permission-message: *noperms
   ignore:
-    description: Ignore all messages and tp requests from another player
+    description: |
+      Ignore all messages and tp requests from another player, does not apply to
+      moderators.
     usage: |
       /<command> - Display your ignored list
       /<command> [target] - Add or remove your target from your ignore list
@@ -262,6 +267,9 @@ permissions:
       lemonaid.clearchat: true
       lemonaid.socialspy: true
       lemonaid.teleport.admin: true
+  lemonaid.duty:
+    description: Allow duty mode for moderators; manage child-permissions in the config
+    default: op
   lemonaid.chat.color:
     description: Allow the use of colors with & color codes
     default: op
@@ -281,11 +289,16 @@ permissions:
     default: false
     children:
       lemonaid.notify: true
+      lemonaid.ignoreexempt: true
+      lemonaid.afk.kick: false
   lemonaid.notify:
     description: Permission required to be notified of moderation commands
     default: false
   lemonaid.reload:
     description: Reload plugin configuration files
+    default: false
+  lemonaid.kits.admin:
+    description: Permission to load items from all kits in the kit files
     default: false
   lemonaid.basic:
     description: Basic perm nodes that are on by default
@@ -297,6 +310,9 @@ permissions:
       lemonaid.chat.color: false
       lemonaid.teleport: true
       lemonaid.home: true
+      lemonaid.kits: true # Allow access to basic kits for players
+      lemonaid.afk: true # Allow afk / auto afk
+      lemonaid.afk.kick: true
   lemonaid.teleport:
     description: Basic perm nodes for teleportation
     default: true

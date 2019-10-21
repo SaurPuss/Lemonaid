@@ -1,0 +1,22 @@
+
+
+first-join-kits:
+  basic:
+    delay: 10
+    items:
+      -
+
+
+player-kits:
+  welcome:
+    cost: 100
+    delay: 10
+    items:
+      -
+  hotstuff:
+    cost: 1000
+    delay: 10
+    items:
+      -
+
+
