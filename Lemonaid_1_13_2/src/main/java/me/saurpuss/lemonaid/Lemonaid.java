@@ -49,6 +49,7 @@ public final class Lemonaid extends JavaPlugin {
 
         // Save all remaining Lemons to DB & Delete any listed homes or ignores mapped from DB
         saveUserManager();
+        saveWarpManager();
     }
 
     private void registerCommands() {
@@ -121,14 +122,19 @@ public final class Lemonaid extends JavaPlugin {
     public void mapPlayer(UUID uuid, Lemon user) { userManager.put(uuid, user); }
     public void unmapPlayer(UUID uuid) { userManager.remove(uuid); }
     public Lemon getUser(UUID uuid) { return userManager.get(uuid); }
+
+
+    // trigger these during world save event && onDisable
     public void saveUserManager() {
-        // Called on World auto-save and plugin disable
         userManager.forEach((uuid, user) -> user.saveUser());
         DatabaseManager.deleteRemovalRecords();
     }
+    public void saveWarpManager() {
+        // TODO create stuff in DB-manager
+    }
 
+    // Vault Stuff
     public Economy getEconomy() { return economy; }
-
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null)
             return false;
@@ -140,4 +146,6 @@ public final class Lemonaid extends JavaPlugin {
         economy = rsp.getProvider();
         return economy != null;
     }
+
+    // WorldGuard Stuff
 }

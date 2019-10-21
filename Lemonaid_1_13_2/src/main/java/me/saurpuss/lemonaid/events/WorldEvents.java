@@ -13,5 +13,6 @@ public class WorldEvents implements Listener {
     @EventHandler
     public void worldSave(WorldSaveEvent e) {
         plugin.saveUserManager();
+        plugin.saveWarpManager();
     }
 }

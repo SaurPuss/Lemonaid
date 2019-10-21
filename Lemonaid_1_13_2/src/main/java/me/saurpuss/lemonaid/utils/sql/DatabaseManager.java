@@ -19,7 +19,7 @@ public class DatabaseManager {
     private static Multimap<UUID, String> homeRemovals = HashMultimap.create();
 
     private static Lemonaid plugin = Lemonaid.plugin;
-    private static Connection conn;
+    private static Connection conn; // TODO make this work
     private static final String DB_URL =
             "jdbc:mysql://" + plugin.getConfig().getString("sql.host") +
                     ":" + plugin.getConfig().getString("sql.port") +
@@ -78,12 +78,22 @@ public class DatabaseManager {
                     " PRIMARY KEY (fk_uuid, ignored_player)," +
                     " FOREIGN KEY (fk_uuid) REFERENCES " + lemonTable + " (pk_uuid) ON DELETE CASCADE" +
                     ");";
+            String warps = "CREATE TABLE IF NOT EXISITS " + publicWarps + "(" +
+                    " warp_name VARCHAR(50) PRIMARY KEY," +
+                    " warp_world VARCHAR(20) DEFAULT 'world'," +
+                    " warp_x FLOAT," +
+                    " warp_y FLOAT," +
+                    " warp_z FLOAT," +
+                    " warp_yaw FLOAT," +
+                    " warp_pitch FLOAT" +
+                    ");";
 
             Statement statement = connection.createStatement();
             // TODO single query with batch update
             statement.executeQuery(lemons);
             statement.executeQuery(homes);
             statement.executeQuery(ignored);
+            statement.executeQuery(warps); // TODO insert, update, delete methods
 
         } catch (SQLException e) {
             e.printStackTrace();
