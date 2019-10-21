@@ -9,6 +9,7 @@ import me.saurpuss.lemonaid.events.*;
 import me.saurpuss.lemonaid.utils.sql.DatabaseManager;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Location;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,9 +17,13 @@ import java.util.*;
 
 public final class Lemonaid extends JavaPlugin {
     public static Lemonaid plugin;
+
+    // Managers etc
     private static Economy economy;
     private HashMap<UUID, Lemon> userManager;
+    private HashMap<String, Location> warpManager; // TODO save in DB
 
+    // Moderation settings
     private static boolean masterCuff = false;
     private static boolean globalMute = false;
 
