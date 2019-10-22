@@ -1,4 +1,4 @@
-package me.saurpuss.lemonaid.utils.tp;
+package me.saurpuss.lemonaid.utils.teleport;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

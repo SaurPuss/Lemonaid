@@ -7,7 +7,7 @@ import me.saurpuss.lemonaid.commands.social.channels.*;
 import me.saurpuss.lemonaid.commands.teleport.*;
 import me.saurpuss.lemonaid.events.*;
 import me.saurpuss.lemonaid.utils.sql.DatabaseManager;
-import me.saurpuss.lemonaid.utils.tp.TeleportManager;
+import me.saurpuss.lemonaid.utils.teleport.TeleportManager;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.*;

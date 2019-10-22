@@ -1,4 +1,4 @@
-package me.saurpuss.lemonaid.utils.tp;
+package me.saurpuss.lemonaid.utils.teleport;
 
 public enum TeleportType {
     // Player to Player
