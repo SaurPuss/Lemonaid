@@ -1,11 +1,12 @@
 package me.saurpuss.lemonaid.commands.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.tp.PlayerTeleport;
+import me.saurpuss.lemonaid.utils.tp.Teleport;
 import me.saurpuss.lemonaid.utils.tp.TeleportType;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import me.saurpuss.lemonaid.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,7 +15,6 @@ import org.bukkit.entity.Player;
 public class Tpa implements CommandExecutor {
 
     Lemonaid plugin;
-
     public Tpa(Lemonaid plugin) {
         this.plugin = plugin;
     }
@@ -28,10 +28,10 @@ public class Tpa implements CommandExecutor {
                 return true;
             }
             Player player = (Player) sender;
-            // Attempt to get a teleport target
+            // Attempt to get a tp target
             Player target = Bukkit.getPlayer(args[0]);
             if (target == null) {
-                player.sendMessage("§cCan't find " + args[0]);
+                player.sendMessage(ChatColor.RED + "Can't find " + args[0]);
                 return true;
             }
 
@@ -42,10 +42,10 @@ public class Tpa implements CommandExecutor {
                 return true;
             }
 
-            // Start teleportation request
-            PlayerTeleport.addRequest(new PlayerTeleport(player, target, TeleportType.TPA));
+            // Start tp request
+            plugin.getTeleportManager().teleportEvent(new Teleport(player, target, null, TeleportType.TPA));
             return true;
-        } else { // Console can't teleport
+        } else { // Console can't do this, like at all
             sender.sendMessage(Utils.playerOnly());
             return true;
         }

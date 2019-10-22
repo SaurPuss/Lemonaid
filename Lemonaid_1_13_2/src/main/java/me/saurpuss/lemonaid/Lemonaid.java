@@ -7,9 +7,9 @@ import me.saurpuss.lemonaid.commands.social.channels.*;
 import me.saurpuss.lemonaid.commands.teleport.*;
 import me.saurpuss.lemonaid.events.*;
 import me.saurpuss.lemonaid.utils.sql.DatabaseManager;
+import me.saurpuss.lemonaid.utils.tp.TeleportManager;
 import me.saurpuss.lemonaid.utils.users.Lemon;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Location;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,8 +20,8 @@ public final class Lemonaid extends JavaPlugin {
 
     // Managers etc
     private static Economy economy;
-    private HashMap<UUID, Lemon> userManager;
-    private HashMap<String, Location> warpManager; // TODO save in DB
+    private static HashMap<UUID, Lemon> userManager;
+    private static TeleportManager teleportManager;
 
     // Moderation settings
     private static boolean masterCuff = false;
@@ -33,6 +33,7 @@ public final class Lemonaid extends JavaPlugin {
 //        getLogger().info(Utils.console("Plugin startup"));
         plugin = this;
         userManager = new HashMap<>();
+        teleportManager = new TeleportManager(this);
 
         // TODO test connection to DB and set up tables etc
 
@@ -74,9 +75,9 @@ public final class Lemonaid extends JavaPlugin {
         // Teleport commands
         getCommand("tpa").setExecutor(new Tpa(this));
         getCommand("tpahere").setExecutor(new TpaHere(this));
-        getCommand("tpaccept").setExecutor(new TpAccept());
+        getCommand("tpaccept").setExecutor(new TpAccept(this));
         getCommand("tpdeny").setExecutor(new TpDeny()); // also tpacancel
-        getCommand("back").setExecutor(new Back());
+        getCommand("back").setExecutor(new Back(this));
 
     }
 
@@ -123,6 +124,7 @@ public final class Lemonaid extends JavaPlugin {
     public void unmapPlayer(UUID uuid) { userManager.remove(uuid); }
     public Lemon getUser(UUID uuid) { return userManager.get(uuid); }
 
+    public TeleportManager getTeleportManager() { return teleportManager; }
 
     // trigger these during world save event && onDisable
     public void saveUserManager() {

@@ -280,4 +280,24 @@ public class DatabaseManager {
     public static void undoRemoveRecord(UUID player, String homeName) {
         homeRemovals.remove(player, homeName);
     }
+
+    public static HashMap<String, Location> getWarps() {
+
+
+
+        return new HashMap<>();
+    }
+
+    public static void addWarp(String warpName, Location warpLocation) {
+
+    }
+
+    public static void updateWarp(String warpName, Location warpLocation) {
+
+    }
+
+    public static void deleteWarp(String warpName) {
+
+
+    }
 }

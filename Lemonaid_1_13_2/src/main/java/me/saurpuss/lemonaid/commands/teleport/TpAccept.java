@@ -1,7 +1,9 @@
 package me.saurpuss.lemonaid.commands.teleport;
 
-import me.saurpuss.lemonaid.utils.tp.PlayerTeleport;
+import me.saurpuss.lemonaid.Lemonaid;
+import me.saurpuss.lemonaid.utils.tp.Teleport;
 import me.saurpuss.lemonaid.utils.Utils;
+import me.saurpuss.lemonaid.utils.tp.TeleportManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,18 +13,24 @@ import java.util.HashSet;
 
 public class TpAccept implements CommandExecutor {
 
+    private Lemonaid plugin;
+
+    public TpAccept(Lemonaid plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player target = (Player) sender;
             // Check if there are incoming requests
-            HashSet<PlayerTeleport> incoming = PlayerTeleport.retrieveRequest(target);
+            HashSet<Teleport> incoming = TeleportManager.retrieveRequest(target);
             if (incoming.isEmpty()) {
                 target.sendMessage("§cYou have no pending teleport requests.");
                 return true;
             } else if (incoming.size() == 1) {
-                for (PlayerTeleport tp : incoming) {
-                    PlayerTeleport.teleportEvent(tp);
+                for (Teleport tp : incoming) {
+                    plugin.getTeleportManager().teleportEvent(tp);
                 }
                 return true;
             }
@@ -31,7 +39,7 @@ public class TpAccept implements CommandExecutor {
                 if (args.length == 0) {
                     StringBuilder s = new StringBuilder();
                     s.append("§6You have incoming requests from: \n");
-                    for (PlayerTeleport tp : incoming) {
+                    for (Teleport tp : incoming) {
                         s.append("§5- " + tp.getClient().getName() + "\n");
                     }
                     // TODO make the command bits a different color
@@ -43,17 +51,17 @@ public class TpAccept implements CommandExecutor {
 
                 // accept all incoming requests
                 if (args[0].equalsIgnoreCase("all")) {
-                    for (PlayerTeleport tp : incoming) {
-                        PlayerTeleport.teleportEvent(tp);
+                    for (Teleport tp : incoming) {
+                        plugin.getTeleportManager().teleportEvent(tp);
                     }
                     return true;
                 }
 
                 // accept all valid arguments
-                for (PlayerTeleport tp : incoming) {
+                for (Teleport tp : incoming) {
                     for (String arg : args) {
                         if (arg.equalsIgnoreCase(tp.getClient().getName())) {
-                            PlayerTeleport.teleportEvent(tp);
+                            plugin.getTeleportManager().teleportEvent(tp);
                             incoming.remove(tp);
                         }
                     }

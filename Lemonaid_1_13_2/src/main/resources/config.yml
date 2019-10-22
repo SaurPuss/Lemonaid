@@ -16,11 +16,11 @@ mysql:
 # Use - to indicate a new line with another option.
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 server-motd:
-  - &cSexy Minecraft Server Here
+  - '&cSexy Minecraft Server Here'
 server-motd-hover:
-  - Website&#59; https://voxmc.com
-  - Reddit%3B https://reddit/com/r/voxmc
-  - Discord&#59; https://discord.gg/BCBMZTs
+  - 'Website - https://voxmc.com'
+  - 'Reddit  - https://reddit/com/r/voxmc'
+  - 'Discord - https://discord.gg/BCBMZTs'
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 #   - Player join messages -
 # You can use '&' for color codes.
@@ -28,9 +28,9 @@ server-motd-hover:
 # Use %player% to stub in the joining player's display name.
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 player-motd:
-  - &eWelcome back %player%!
-  - &eHey %player%! Enjoy your stay!
-  - &eDon't forget to read the &6/rules&e!
+  - '&eWelcome back %player%!'
+  - '&eHey %player%! Enjoy your stay!'
+  - '&eDon''t forget to read the &6/rules&e!'
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 #   - Joining the server for the first time -
 # The announcement is a list of options, one will be used at random.
@@ -47,7 +47,7 @@ first-join-announcements:
   - Say hello to %player%!
 first-join-message:
   - Hello %player%! Welcome to the Server!
-  - Please read the /rules and have a great time!
+  - Hey %player%! Please read the /rules and have a great time!
 welcome-messages:
   - Welcome to the server %player%!
   - Nice to see you %player%! Have a great time!
@@ -72,7 +72,6 @@ world-spawn: # /spawn
   z: 0.5
   yaw: 0.0
   pitch: 0.0
-  timer: 3 # Seconds before activating teleport
 death-spawn:
   world: 'world'
   x: 0.5
@@ -130,36 +129,61 @@ duty-permissions:
 
 
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 #   - Teleportation -
-# All times are in seconds
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+# All timers are in seconds. All teleport options need their below
+# settings, but you can tweak the numbers as necessary.
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 teleport:
-  request-timer: 30 # time before a request expires
+  # Cancel a teleportation countdown by walking or jumping
+  cancel-countdown: true
+  # Player to Player teleport event
   tpa:
     timer: 3
     cost: 100
     cross-world: false
+    request-timer: 30 # time before a request expires
   tpahere:
     timer: 3
     cost: 100
     cross-world: false
-  back:
-    timer: 3
-    cost: 10
-    cross-world: true
+    request-timer: 30
   ptp:
     timer: 15
     cost: 500
     cross-world: true
+    request-timer: 30
   ptphere:
     timer: 15
     cost: 500
+    cross-world: true
+    request-timer: 30
+  # Player to Location teleport event
+  back:
+    timer: 5
+    cost: 0
     cross-world: true
   home:
     timer: 3
     cost: 0
     cross-world: true
+  spawn: # Teleport to world spawn defined above
+    timer: 5
+    cost: 0
+    cross-world: true
+  warp:
+    timer: 1
+    cost: 10
+    cross-world: true
+  random:
+    timer: 5
+    cost: 10
+    cross-world: true
+    world: 'world'
+    radius: 1000 # size of the block radius around 0,0 on your designated world
+    safety-check: true # players will not spawn in lava etc
+    water-spawn: true # water blocks are considered a safe location
+
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 #   - Social Settings -

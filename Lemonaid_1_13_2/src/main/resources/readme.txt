@@ -1,13 +1,5 @@
 Lemonaid for spigot 1.13.2
 
-
-User wrapper:
-    In order to allow mutes and other moderation tools to function players are wrapped and stored
-    in a map once they join the server. The wrapper is removed from the map and stored once they
-    quit or are kicked. Saving this data will require you to set up a connection with an MySQL
-    database, which you can configure in the config.yml which is created the first time this plugin
-    is launched.
-
 Permission nodes:
     There are a few pre-defined inheritance groups set up in the Lemonaid permissions, which
     should make it easier to manage the moderation for non-operators. The main one is the
@@ -69,10 +61,22 @@ Moderation commands:
       Usage is simple "/recap Your Message Here" will get logged with a date. The last 10 entries can be
       read by simply using "/recap", starting with the most recent recap.
 
+User wrapper:
+    In order to allow mutes and other moderation tools to function players are wrapped and stored
+    in a map once they join the server. The wrapper is removed from the map and stored once they
+    quit or are kicked. Saving this data will require you to set up a connection with an MySQL
+    database, which you can configure in the config.yml which is created the first time this plugin
+    is launched.
 
-
-
-Custom errors:
+Lemonaid errors:
   UserNotFound:
     The plugin failed to retrieve the record that is automatically created when a player joins!
-    This likely means there is a problem with your database connection!
+    This likely means there is a problem with your database connection! Make sure your connection info
+    in the plugin config.yml file is correct.
+  TeleportToLocationMixup:
+    Somehow a Player to Location Teleportation Task tried to get into the Player to Player Teleport Request
+    Queue. This should be impossible, you may have a hacked version of Lemonaid. Please contact the developer
+    and make sure to get a legitimate version running on your server.
+  DestinationUnknown:
+    An attempt was made to schedule a Teleportation Task without providing a valid destination. This should
+    be impossible. Please contact the developer.

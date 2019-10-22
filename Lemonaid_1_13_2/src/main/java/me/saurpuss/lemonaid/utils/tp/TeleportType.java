@@ -2,13 +2,26 @@ package me.saurpuss.lemonaid.utils.tp;
 
 public enum TeleportType {
     // Player to Player
-    TPA("tpa"), TPAHERE("tpahere"), PTP("ptp"), PTPHERE("ptphere"),
+    TPA("tpa", true), TPAHERE("tpahere", true),
+    PTP("ptp", true), PTPHERE("ptphere", true),
     // Player to Location
-    BACK("back"), HOME("home"), SPAWN("spawn"), RANDOM("random"), WARP("warp");
+    BACK("back", false), HOME("home", false),
+    SPAWN("spawn", false), RANDOM("random", false),
+    WARP("warp", false);
 
-    String name;
+    private String name;
+    private boolean p2p;
 
-    TeleportType(String name) {
+    TeleportType(String name, boolean p2p) {
         this.name = name;
+        this.p2p = p2p;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    boolean isP2p() {
+        return p2p;
     }
 }
