@@ -12,14 +12,38 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * /home Command available to players, requires lemonaid.teleport.home permission node. Players
+ * with the lemonaid.teleport.admin permission node can use /home player:home to teleport to
+ * a specific player home instantly.
+ */
 public class Home implements CommandExecutor {
 
+    /**
+     * Dependency injection of the current plugin instance
+     */
     private Lemonaid plugin;
 
+    /**
+     * Home Constructor
+     * @param plugin Dependency injection of the current plugin instance.
+     */
     public Home(Lemonaid plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     * Attempt to find a Location that matches a player's home to args[0] input. If
+     * successful a Teleport event will be initiated. Players with lemonaid.teleport.admin
+     * can attempt to retrieve a valid location for a player home and teleport to said
+     * location immediately if successful.
+     * @param sender Player
+     * @param command home
+     * @param label none
+     * @param args home_name (or player:home_name for administrators)
+     *             to search for in player homes
+     * @return true
+     */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
