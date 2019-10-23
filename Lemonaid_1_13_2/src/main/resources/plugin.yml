@@ -147,7 +147,7 @@ commands:
     permission-message: *noperms
 
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-  #   Teleportation commands
+  #   Player to Player Teleportation commands
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
   tpa:
     description: Send a teleportation request to another player
@@ -170,25 +170,52 @@ commands:
     aliases: [tpacancel, tpcancel]
     permission: lemonaid.teleport.tpaccept
     permission-message: *noperms
+
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  #   Player to Location Teleportation commands
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
   back:
-    description: Return to your last saved location
+    description: |
+      Return to your last saved location. Your last location is automatically
+      saved on teleportation or death.
     usage: /<command>
     permission: lemonaid.teleport.back
     permission-message: *noperms
   home:
-    description: |
-      Allow players to set, delete, update, and teleport to saved home
-      locations
+    description: Go to a previously saved home
     usage: |
-      /<command> - Go to your singular home, or display all homes
-      /<command> list - Display all your homesets
-      /<command> [name] - Teleport to your home
-      /<command> set [name] - Set a new home at your current location
-      /<command> update [name] - Update an existing home to your
-       current location
-      /<command> del|delete [name] - Remove specific home
+      /<command> - Teleport to your home if there is only one
+      /<command> [homename] - Teleport to your home
     permission: lemonaid.teleport.home
     permission-message: *noperms
+  # Home utility commands
+  homes:
+    description: List all your current homes and available home slots
+    usage: /<command>
+    aliases: [homelist, listhome, listhomes]
+    permission: lemonaid.teleport.home
+    permission-message: *noperms
+  sethome:
+    description: Save your current location as a home
+    usage: |
+      /<command> - Save your current location as 'home'
+      /<command> [homename] - Give your home a unique name and save it
+    aliases: [homeset]
+    permission: lemonaid.teleport.home
+    permission-message: *noperms
+  delhome:
+    description: Delete a saved home from your homes list
+    usage: /<command> [homename] - Delete your saved home matching homename
+    aliases: [homedel, deletehome, homedelete]
+    permission: lemonaid.teleport.home
+    permission-message: *noperms
+  updatehome:
+    description: Update an existing home to your current location
+    usage: /<command> [homename] - Update your saved home matching homename
+    aliases: [edithome, homeedit, homeupdate]
+    permission: lemonaid.teleport.home
+    permission-message: *noperms
+
 
 
 

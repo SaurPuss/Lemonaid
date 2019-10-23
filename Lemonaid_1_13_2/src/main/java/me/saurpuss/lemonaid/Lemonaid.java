@@ -72,12 +72,16 @@ public final class Lemonaid extends JavaPlugin {
 
         getCommand("localchat").setExecutor(new LocalChat(this));
 
-        // Teleport commands
+        // Player to player Teleport commands
         getCommand("tpa").setExecutor(new Tpa(this));
         getCommand("tpahere").setExecutor(new TpaHere(this));
         getCommand("tpaccept").setExecutor(new TpAccept(this));
         getCommand("tpdeny").setExecutor(new TpDeny()); // also tpacancel
+        // Player to location Teleport commands
         getCommand("back").setExecutor(new Back(this));
+        getCommand("home").setExecutor(new Home(this));
+
+        // Teleport utility commands
 
     }
 

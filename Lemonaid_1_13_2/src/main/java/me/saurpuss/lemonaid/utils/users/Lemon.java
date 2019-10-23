@@ -80,6 +80,12 @@ public class Lemon {
     }
     public int homeCount() { return homes.size(); }
     public Location getHome(String name) { return homes.get(name.toLowerCase()); }
+    public Location getFirstHome() {
+        if (homes.size() == 1)
+            return homes.values().stream().findFirst().get();
+        else
+            return null;
+    }
     public short addHome(String name, Location location) {
         if (homes.containsKey(name.toLowerCase())) {
             return -1; // Home name already exists
@@ -124,7 +130,7 @@ public class Lemon {
         if (player == null || list.isEmpty()) return maxHome;
 
         if (player.hasPermission("lemonaid.homes.unlimited"))
-            maxHome = Integer.MAX_VALUE;
+            maxHome = 0; // 0 equals infinite homes TODO implement
         else {
             for (String node : list) {
                 if (player.hasPermission("lemonaid.homes." + node)) {
@@ -133,6 +139,7 @@ public class Lemon {
                     }
                 }
             }
+            if (maxHome == 0) maxHome = 1; // fallback so players don't end up with infinite homes
         }
 
         return maxHome;
