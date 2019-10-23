@@ -2,6 +2,7 @@ package me.saurpuss.lemonaid.events;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.users.Lemon;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,5 +20,9 @@ public class PlayerDeath implements Listener {
         // Set last location to death location
         Lemon user = plugin.getUser(player.getUniqueId());
         user.setLastLocation(player.getLocation());
+        player.sendMessage(ChatColor.LIGHT_PURPLE + "Use " + ChatColor.DARK_PURPLE +
+                "/back" + ChatColor.LIGHT_PURPLE + " to return to the place of your death.");
+
+
     }
 }
