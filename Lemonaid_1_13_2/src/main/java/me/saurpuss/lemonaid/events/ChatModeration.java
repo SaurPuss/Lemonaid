@@ -15,12 +15,12 @@ public class ChatModeration implements Listener {
     }
 
     @EventHandler
-    public void chatEvent(AsyncPlayerChatEvent e) {
-        Player player = e.getPlayer();
+    public void chatEvent(AsyncPlayerChatEvent event) {
+        Player player = event.getPlayer();
         // Check if global mute or master cuff is true
         if ((plugin.isMasterCuff() || plugin.isGlobalMute()) &&
                 !player.hasPermission("lemonaid.exempt")) {
-            e.setCancelled(true);
+            event.setCancelled(true);
             return;
         }
 
@@ -29,7 +29,7 @@ public class ChatModeration implements Listener {
         // This player is not allowed to talk
         if (user.isMuted() || user.isCuffed()) {
             player.sendMessage(Utils.noPermission());
-            e.setCancelled(true);
+            event.setCancelled(true);
             return;
         }
 
@@ -45,24 +45,24 @@ public class ChatModeration implements Listener {
             if (!p.hasPermission("lemonaid.ignoreexempt")) {
                 Lemon u = new Lemon(p.getUniqueId()).getUser();
                 if (u.isIgnored(player.getUniqueId()))
-                    e.getRecipients().remove(p);
+                    event.getRecipients().remove(p);
             }
         }
 
         // Translate chat colors for those with the permission
         if (player.hasPermission("lemonaid.chat.color")) {
-            String message = e.getMessage();
-            e.setMessage(Utils.color(message));
+            String message = event.getMessage();
+            event.setMessage(Utils.color(message));
         }
     }
 
     @EventHandler
-    public void commandEvent(PlayerCommandPreprocessEvent e) {
-        Player player = e.getPlayer();
+    public void commandEvent(PlayerCommandPreprocessEvent event) {
+        Player player = event.getPlayer();
         // Check if global mute or master cuff is true
         if ((plugin.isMasterCuff() || plugin.isGlobalMute()) &&
                 !player.hasPermission("lemonaid.exempt")) {
-            e.setCancelled(true);
+            event.setCancelled(true);
             return;
         }
 
@@ -70,7 +70,7 @@ public class ChatModeration implements Listener {
         Lemon user = plugin.getUser(player.getUniqueId());
         if (user.isCuffed()) {
             player.sendMessage(Utils.noPermission());
-            e.setCancelled(true);
+            event.setCancelled(true);
         }
     }
 }

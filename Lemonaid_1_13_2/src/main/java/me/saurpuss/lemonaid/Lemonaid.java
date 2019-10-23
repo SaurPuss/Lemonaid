@@ -88,6 +88,7 @@ public final class Lemonaid extends JavaPlugin {
         pm.registerEvents(new ChatModeration(this), this);
         pm.registerEvents(new ActionEvents(this), this);
         pm.registerEvents(new WorldEvents(this), this);
+        pm.registerEvents(new PlayerDeath(this), this);
     }
 
     private void registerConfigs() {
