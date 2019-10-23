@@ -37,8 +37,9 @@ public class TeleportManager {
     private static HashMap<String, Location> warpManager;
 
     /**
-     *
-     * @param plugin Dependency injection of the runtime instance of the Lemonaid plugin.
+     * Teleport Manager constructor initialized in Main Lemonaid class.
+     * @param plugin Dependency injection of the runtime instance of the
+     *               Lemonaid plugin.
      */
     public TeleportManager(Lemonaid plugin) {
         this.plugin = plugin;
@@ -46,32 +47,64 @@ public class TeleportManager {
         warpManager = DatabaseManager.getWarps();
     }
 
+    /**
+     * Add a public warp to the warpManager and save or update a copy
+     * in the MySQL database.
+     * @param name Warp name, converted to lowercase to prevent duplicates.
+     * @param location In-game location set as the warp destination.
+     */
     public void setWarp(String name, Location location) {
         warpManager.put(name.toLowerCase(), location);
         // TODO add to DB
     }
 
+    /**
+     * Retrieve a public warp destination.
+     * @param name Name of the warp to look up in the warpManager.
+     * @return Location destination that corresponds with the request input.
+     */
     public Location getWarp(String name) {
         return warpManager.get(name.toLowerCase());
     }
 
+    /**
+     * Delete an existing warp name and destination from the warpManager
+     * and the MySQL database.
+     * @param name Name of the warp to be deleted.
+     */
     public void deleteWarp(String name) {
         warpManager.remove(name.toLowerCase());
         // TODO remove from DB
     }
 
+    /**
+     * Retrieve a HashSet of Teleports that have a client that matches
+     * the given player object.
+     * @param target Requesting player to match to the tpClient.
+     * @return Set of Teleport objects that contain the input target.
+     */
     public HashSet<Teleport> retrieveRequest(Player target) {
         // TODO refactor tpDeny
 
         return new HashSet<>();
     }
 
+    /**
+     * Retrieve a HashSet of Teleports that have a target that matches
+     * the given player object.
+     * @param target Requesting player to match tot the tpTarget
+     * @return Set of Teleport objects that contain the input target.
+     */
     public HashSet<Teleport> outgoingRequests(Player target) {
         // TODO refactor tpDeny
 
         return new HashSet<>();
     }
 
+    /**
+     * Manually remove a pending Teleport from playerRequests.
+     * @param tp Teleport object to remove
+     */
     public void removeRequest(Teleport tp) {
         playerRequests.remove(tp);
     }
@@ -105,7 +138,12 @@ public class TeleportManager {
     }
 
     /**
-     * Add a request to the playerRequests, will remove itself after delay set in config.yml
+     * Add a request to the playerRequests, will remove itself after delay set in the Lemonaid
+     * config.yml. Checks if there is a pre-existing request stored that conflicts with the
+     * new Teleport, or if there is a cross-world conflict.
+     * If Teleport is a valid instance it will schedule an automatic removal from the
+     * playerRequest HashSet with a the Bukkit Scheduler to be activated upon expiration defined
+     * inside the Lemonaid config.yml.
      * @param tp Teleport with a player to player intent
      */
     void addRequest(Teleport tp) {

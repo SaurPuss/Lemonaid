@@ -7,36 +7,69 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+/**
+ * Custom BukkitTask to handle Teleportation events for players.
+ */
 public class TeleportTask extends BukkitRunnable {
 
+    /**
+     * Dependency injection of the current plugin instance.
+     */
     private Lemonaid plugin;
+    /**
+     * Teleport object with the information needed to execute the
+     * teleportation event on the client or target.
+     */
     private Teleport tp;
+
+    /**
+     * Countdown amount that determines how many seconds a task needs
+     * to repeat before initiating the actual teleport on the player.
+     */
     private int timer;
+
+    /**
+     * Boolean set in the Lemonaid config.yml, if set to true the task
+     * will compare the player's current x, y, and z coordinates to the
+     * ones the player is on at the start of the task.
+     */
     private boolean cancelCountdown;
 
+    /**
+     * Task object to activate for Teleportation execution.
+     * @param pl Dependency injection of the current Lemonaid instance.
+     * @param t Teleport object containing the required teleportation
+     *          information.
+     */
     TeleportTask(Lemonaid pl, Teleport t) {
         plugin = pl;
         tp = t;
         timer = plugin.getConfig().getInt("teleport." + tp.getTpType().getName() + ".timer");
         cancelCountdown = this.plugin.getConfig().getBoolean("teleport.cancel-countdown");
-        if (timer < 1) timer = 1;
+        if (timer < 1) timer = 1; // fallback
     }
 
+    /**
+     * Implemention of self canceling TeleportTask.
+     */
     @Override
     public void run() {
         // Set location and player variables
         Location destination = null;
         Player player = tp.getClient(); // Target player to teleport
         switch (tp.getTpType()) {
+            // client to target
             case TPA:
             case PTP:
                 destination = tp.getTarget().getLocation();
                 break;
+            // target to client
             case TPAHERE:
             case PTPHERE:
                 player = tp.getTarget(); // Update player
                 destination = tp.getClient().getLocation();
                 break;
+            // client to location
             case BACK:
             case WARP:
             case HOME:
@@ -45,10 +78,14 @@ public class TeleportTask extends BukkitRunnable {
                 destination = tp.getLocation();
         }
 
+        // Get the location of the player to be teleported
         Location origin = player.getLocation();
         int x = origin.getBlockX();
         int y = origin.getBlockY();
         int z = origin.getBlockZ();
+
+        // Let the player know the teleport countdown is starting (and not to
+        // move if cancelCountdown is true
         player.sendMessage(ChatColor.GOLD + "Teleportation commencing in " +
                 ChatColor.DARK_AQUA + timer + ChatColor.GOLD + " seconds!" +
                 (cancelCountdown ? " Do not move!" : ""));
@@ -56,9 +93,9 @@ public class TeleportTask extends BukkitRunnable {
         if (timer > 0) {
             // Client is not allowed to move during countdown
             if (cancelCountdown &&
-                    (x != tp.getClient().getLocation().getBlockX() &&
-                     y != tp.getClient().getLocation().getBlockY() &&
-                     z != tp.getClient().getLocation().getBlockZ())) {
+                    (x != player.getLocation().getBlockX() &&
+                     y != player.getLocation().getBlockY() &&
+                     z != player.getLocation().getBlockZ())) {
                 // client has moved! cancel task!
                 player.sendMessage(ChatColor.RED + "Teleportation canceled!");
                 this.cancel();
@@ -73,12 +110,14 @@ public class TeleportTask extends BukkitRunnable {
         }
         // Successful completion of task
         else {
+            // Save player data in Lemon wrapper
             Lemon user = plugin.getUser(player.getUniqueId());
             user.setLastLocation(origin);
             user.updateUser();
             // Can't perform if we don't know where to go
             if (destination != null) player.teleport(destination);
             else plugin.getLogger().warning("Error DestinationUnknown! More info in plugin readme.txt!");
+            // Finish the task and remove from scheduler
             this.cancel();
         }
     }
