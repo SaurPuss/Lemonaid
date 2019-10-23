@@ -7,17 +7,18 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class TeleportPlayerTask extends BukkitRunnable {
+public class TeleportTask extends BukkitRunnable {
 
     private Lemonaid plugin;
     private Teleport tp;
     private int timer;
-    private boolean cancelCountdown = this.plugin.getConfig().getBoolean("teleport.cancel-countdown");
+    private boolean cancelCountdown;
 
-    TeleportPlayerTask(Lemonaid pl, Teleport t) {
+    TeleportTask(Lemonaid pl, Teleport t) {
         plugin = pl;
         tp = t;
         timer = plugin.getConfig().getInt("teleport." + tp.getTpType().getName() + ".timer");
+        cancelCountdown = this.plugin.getConfig().getBoolean("teleport.cancel-countdown");
         if (timer < 1) timer = 1;
     }
 
@@ -44,12 +45,6 @@ public class TeleportPlayerTask extends BukkitRunnable {
                 destination = tp.getLocation();
         }
 
-        // Can't perform if we don't know where to go
-        if (destination == null) {
-            plugin.getLogger().warning("Error DestinationUnknown! Please contact the developer!");
-            this.cancel();
-        }
-
         Location origin = player.getLocation();
         int x = origin.getBlockX();
         int y = origin.getBlockY();
@@ -65,23 +60,25 @@ public class TeleportPlayerTask extends BukkitRunnable {
                      y != tp.getClient().getLocation().getBlockY() &&
                      z != tp.getClient().getLocation().getBlockZ())) {
                 // client has moved! cancel task!
-                tp.getClient().sendMessage(ChatColor.RED + "Teleportation canceled!");
+                player.sendMessage(ChatColor.RED + "Teleportation canceled!");
                 this.cancel();
             }
             // Countdown alerts
             else if (timer == 10) {
-                tp.getClient().sendMessage("§3" + timer + ChatColor.GOLD + " seconds until teleport!");
+                player.sendMessage("§3" + timer + ChatColor.GOLD + " seconds until teleport!");
             } else if (timer <= 5) {
-                tp.getClient().sendMessage("§3" + timer + ChatColor.GOLD + "!");
+                player.sendMessage("§3" + timer + ChatColor.GOLD + "!");
             }
             timer--;
         }
         // Successful completion of task
         else {
-            Lemon user = plugin.getUser(tp.getClient().getUniqueId());
+            Lemon user = plugin.getUser(player.getUniqueId());
             user.setLastLocation(origin);
             user.updateUser();
-            tp.getClient().teleport(destination);
+            // Can't perform if we don't know where to go
+            if (destination != null) player.teleport(destination);
+            else plugin.getLogger().warning("Error DestinationUnknown! More info in plugin readme.txt!");
             this.cancel();
         }
     }

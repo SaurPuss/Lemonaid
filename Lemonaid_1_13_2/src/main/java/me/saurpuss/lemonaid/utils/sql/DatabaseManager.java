@@ -12,6 +12,8 @@ import java.util.*;
 
 public class DatabaseManager {
 
+    // TODO add UserNotFound error on retrieval
+
     // Use removal records to delete composite primary keys
     // Track ignore pk removals for deletion <Player, Target>
     private static Multimap<UUID, UUID> ignoreRemovals = HashMultimap.create();
