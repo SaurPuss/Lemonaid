@@ -3,8 +3,7 @@ package me.saurpuss.lemonaid.commands.teleport;
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.teleport.Teleport;
 import me.saurpuss.lemonaid.utils.teleport.TeleportType;
-import me.saurpuss.lemonaid.utils.Utils;
-import me.saurpuss.lemonaid.utils.users.Lemon;
+import me.saurpuss.lemonaid.utils.users.User;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -42,7 +41,7 @@ public class Back implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            Lemon user = plugin.getUser(player.getUniqueId());
+            User user = plugin.getUser(player.getUniqueId());
             if (user.getLastLocation() == null) {
                 user.setLastLocation(player.getLocation()); // save current location
                 player.sendMessage(ChatColor.RED + "You don't have anywhere to go " +

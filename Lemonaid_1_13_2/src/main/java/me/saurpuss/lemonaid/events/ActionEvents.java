@@ -1,8 +1,7 @@
 package me.saurpuss.lemonaid.events;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.Utils;
-import me.saurpuss.lemonaid.utils.users.Lemon;
+import me.saurpuss.lemonaid.utils.users.User;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,7 +24,7 @@ public class ActionEvents implements Listener {
         }
 
         // Get player from userManager
-        Lemon user = plugin.getUser(player.getUniqueId());
+        User user = plugin.getUser(player.getUniqueId());
         if (user.isCuffed()) {
             player.sendMessage(Utils.noPermission());
             e.setCancelled(true);
@@ -42,7 +41,7 @@ public class ActionEvents implements Listener {
         }
 
         // Get player from userManager
-        Lemon user = plugin.getUser(player.getUniqueId());
+        User user = plugin.getUser(player.getUniqueId());
         if (user.isCuffed()) {
             player.sendMessage(Utils.noPermission());
             e.setCancelled(true);
@@ -60,7 +59,7 @@ public class ActionEvents implements Listener {
         }
 
         // Get player from userManager
-        Lemon user = plugin.getUser(player.getUniqueId());
+        User user = plugin.getUser(player.getUniqueId());
         if (user.isCuffed()) {
             player.sendMessage(Utils.noPermission());
             e.setCancelled(true);

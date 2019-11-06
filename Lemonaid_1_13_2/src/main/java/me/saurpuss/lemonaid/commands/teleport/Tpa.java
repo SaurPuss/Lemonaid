@@ -3,8 +3,7 @@ package me.saurpuss.lemonaid.commands.teleport;
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.teleport.Teleport;
 import me.saurpuss.lemonaid.utils.teleport.TeleportType;
-import me.saurpuss.lemonaid.utils.users.Lemon;
-import me.saurpuss.lemonaid.utils.Utils;
+import me.saurpuss.lemonaid.utils.users.User;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -22,11 +21,10 @@ public class Tpa implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
-            // not enough arguments
-            if (args.length == 0) {
-                sender.sendMessage("§6Type: §d/tpa §5<§dname§5> §6to request a teleport.");
-                return true;
-            }
+            if (args.length == 0) return false;
+//                sender.sendMessage(ChatColor.GOLD + "Type: §d/tpa §5<§dname§5> §6to request a " +
+//                        "teleport.");
+
             Player player = (Player) sender;
             // Attempt to get a tp target
             Player target = Bukkit.getPlayer(args[0]);
@@ -36,18 +34,18 @@ public class Tpa implements CommandExecutor {
             }
 
             // Check if target is /busy or has player /ignored
-            Lemon user = plugin.getUser(target.getUniqueId());
+            User user = plugin.getUser(target.getUniqueId());
             if (user.isBusy() || user.isIgnored(player.getUniqueId())) {
-                player.sendMessage("§c" + target.getName() + " is unavailable.");
+                player.sendMessage(ChatColor.RED + target.getName() + " is unavailable.");
                 return true;
             }
 
             // Start tp request
-            plugin.getTeleportManager().teleportEvent(new Teleport(player, target, null, TeleportType.TPA));
-            return true;
+            plugin.getTeleportManager().teleportEvent(new Teleport(player, target, null,
+                    TeleportType.TPA));
         } else { // Console can't do this, like at all
             sender.sendMessage(Utils.playerOnly());
-            return true;
         }
+        return true;
     }
 }

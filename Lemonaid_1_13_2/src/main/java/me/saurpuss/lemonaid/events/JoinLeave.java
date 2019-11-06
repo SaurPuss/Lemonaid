@@ -2,9 +2,8 @@ package me.saurpuss.lemonaid.events;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.commands.social.Welcome;
-import me.saurpuss.lemonaid.utils.Utils;
-import me.saurpuss.lemonaid.utils.sql.DatabaseManager;
-import me.saurpuss.lemonaid.utils.users.Lemon;
+import me.saurpuss.lemonaid.utils.database.DatabaseManager;
+import me.saurpuss.lemonaid.utils.users.User;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -23,7 +22,7 @@ public class JoinLeave implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        Lemon user = DatabaseManager.getUser(player.getUniqueId());
+        User user = DatabaseManager.getUser(player.getUniqueId());
         plugin.mapPlayer(player.getUniqueId(), user);
 
         // TODO if player is in air and has fly permission, set them to fly automatically
@@ -62,7 +61,7 @@ public class JoinLeave implements Listener {
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
         // Save player Lemon and remove player from userManager
-        Lemon user = plugin.getUser(player.getUniqueId());
+        User user = plugin.getUser(player.getUniqueId());
         user.saveUser();
         plugin.unmapPlayer(player.getUniqueId());
 
@@ -78,7 +77,7 @@ public class JoinLeave implements Listener {
     public void onKick(PlayerKickEvent e) {
         Player player = e.getPlayer();
         // Save player Lemon and remove player from userManager
-        Lemon user = plugin.getUser(player.getUniqueId());
+        User user = plugin.getUser(player.getUniqueId());
         user.saveUser();
         plugin.unmapPlayer(player.getUniqueId());
 

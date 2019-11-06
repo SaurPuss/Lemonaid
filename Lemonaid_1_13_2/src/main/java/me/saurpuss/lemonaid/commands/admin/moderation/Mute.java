@@ -1,8 +1,7 @@
 package me.saurpuss.lemonaid.commands.admin.moderation;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.users.Lemon;
-import me.saurpuss.lemonaid.utils.Utils;
+import me.saurpuss.lemonaid.utils.users.User;
 import org.apache.commons.lang.StringUtils;
 
 import org.bukkit.Bukkit;
@@ -69,7 +68,7 @@ public class Mute implements CommandExecutor {
                     return true;
                 }
 
-                Lemon user = plugin.getUser(target.getUniqueId());
+                User user = plugin.getUser(target.getUniqueId());
 
                 // update mute status
                 if (user.isMuted()) {
@@ -175,7 +174,7 @@ public class Mute implements CommandExecutor {
      */
     private void mute(CommandSender sender, Player target, long endMute, String reason) {
         // Get a user wrapper for the target
-        Lemon user = plugin.getUser(target.getUniqueId());
+        User user = plugin.getUser(target.getUniqueId());
         user.setMuteEnd(endMute);
         user.updateUser();
 

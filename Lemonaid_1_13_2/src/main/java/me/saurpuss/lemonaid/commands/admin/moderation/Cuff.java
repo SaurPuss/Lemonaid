@@ -1,8 +1,8 @@
 package me.saurpuss.lemonaid.commands.admin.moderation;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.Utils;
-import me.saurpuss.lemonaid.utils.users.Lemon;
+import me.saurpuss.lemonaid.utils.users.User;
+import me.saurpuss.lemonaid.utils.utility.PlayerSearch;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,7 +16,7 @@ import java.nio.charset.Charset;
 import java.time.*;
 import java.util.*;
 
-public class Cuff implements CommandExecutor {
+public class Cuff implements CommandExecutor, PlayerSearch {
 
     private Lemonaid plugin;
     private final File cuffTXT = new File(plugin.getDataFolder(), "cuffs.txt");
@@ -26,7 +26,7 @@ public class Cuff implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // Permission check TODO is this not handled by plugin.yml?
+        // Permission check
         if (!sender.hasPermission("lemonaid.cuff")) return true;
 
         // Not enough arguments
@@ -49,7 +49,7 @@ public class Cuff implements CommandExecutor {
             }
 
             // Check if args[0] is a player or offline player
-            Player target = Utils.getPlayer(args[0]);
+            Player target = getPlayer(args[0]);
             if (target == null) {
                 sender.sendMessage(ChatColor.RED + "Can't find " + args[0] + "! Use " +
                         ChatColor.BLUE + "/cuff"+ ChatColor.RED + " to view available command options.");
@@ -80,7 +80,7 @@ public class Cuff implements CommandExecutor {
             }
 
             // Try to retrieve an online or offline player from the first argument
-            Player target = Utils.getPlayer(args[0]);
+            Player target = getPlayer(args[0]);
             if (target == null) {
                 sender.sendMessage(ChatColor.RED + "Can't find " + args[0] + "! Use " +
                         ChatColor.BLUE + "/cuff"+ ChatColor.RED + " to view available command options.");
@@ -109,7 +109,7 @@ public class Cuff implements CommandExecutor {
      */
     private void cuff(CommandSender sender, Player target, String reason) {
         // Retrieve user if exists
-        Lemon user = plugin.getUser(target.getUniqueId());
+        User user = plugin.getUserManager().getUser(target.getUniqueId());
         if (user == null) { // This should not happen!
             sender.sendMessage(ChatColor.RED + "Error: Lemonaid:UserNotFound! Please contact an administrator!");
             return;
@@ -129,7 +129,7 @@ public class Cuff implements CommandExecutor {
 
         // Update and notify the target
         user.setCuffed(!user.isCuffed());
-        user.updateUser();
+        plugin.getUserManager().updateUser(user);
         target.sendMessage("§cYou are now " + (user.isCuffed() ? "cuffed!" : "uncuffed!") +
                 (reason.equals("") ? "" : " Reason: §r" + Utils.color(reason)));
         plugin.getLogger().info("[CUFF] " + log);

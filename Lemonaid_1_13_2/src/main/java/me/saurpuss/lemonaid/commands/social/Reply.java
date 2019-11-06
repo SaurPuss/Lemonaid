@@ -1,8 +1,7 @@
 package me.saurpuss.lemonaid.commands.social;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.users.Lemon;
-import me.saurpuss.lemonaid.utils.Utils;
+import me.saurpuss.lemonaid.utils.users.User;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,7 +23,7 @@ public class Reply implements CommandExecutor {
             Player player = (Player) sender;
 
             // Get the player from the last incoming message
-            Lemon p = plugin.getUser(player.getUniqueId());
+            User p = plugin.getUser(player.getUniqueId());
             if (p.isBusy() && (!player.hasPermission("lemonaid.exempt") ||
                     plugin.getConfig().getBoolean("allow-moderator-busy"))) {
                 player.sendMessage(ChatColor.RED + "You can't send whispers while " +
@@ -39,7 +38,7 @@ public class Reply implements CommandExecutor {
                 return true;
             }
 
-            Lemon t = plugin.getUser(target.getUniqueId());
+            User t = plugin.getUser(target.getUniqueId());
             if (t.isBusy()) {
                 if (target.hasPermission("lemonaid.exempt") &&
                         !plugin.getConfig().getBoolean("allow-moderator-busy")) {

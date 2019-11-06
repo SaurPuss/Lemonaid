@@ -1,8 +1,7 @@
 package me.saurpuss.lemonaid.commands.social;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.users.Lemon;
-import me.saurpuss.lemonaid.utils.Utils;
+import me.saurpuss.lemonaid.utils.users.User;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,7 +37,7 @@ public class Msg implements CommandExecutor {
 
             // If sender is set to busy they are not allowed to send a dm, unless mod
             // and only while mods are not allowed to
-            Lemon p = plugin.getUser(player.getUniqueId());
+            User p = plugin.getUser(player.getUniqueId());
             if (p.isBusy() && (!player.hasPermission("lemonaid.exempt") ||
                     plugin.getConfig().getBoolean("allow-moderator-busy"))) {
                 player.sendMessage(ChatColor.RED + "You can't send whispers while " +
@@ -54,7 +53,7 @@ public class Msg implements CommandExecutor {
             }
 
             // Check if the user is set to busy
-            Lemon user = plugin.getUser(target.getUniqueId());
+            User user = plugin.getUser(target.getUniqueId());
             if (user.isBusy()) {
                 if (target.hasPermission("lemonaid.exempt") &&
                         !plugin.getConfig().getBoolean("allow-moderator-busy")) {

@@ -1,9 +1,9 @@
-package me.saurpuss.lemonaid.utils.sql;
+package me.saurpuss.lemonaid.utils.database;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.users.Lemon;
+import me.saurpuss.lemonaid.utils.users.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -20,7 +20,7 @@ public class DatabaseManager {
     // Track home pk removals for deletion <Player, HomeName>
     private static Multimap<UUID, String> homeRemovals = HashMultimap.create();
 
-    private static Lemonaid plugin = Lemonaid.plugin;
+    private static Lemonaid plugin = Lemonaid.instance;
     private static Connection conn; // TODO make this work
     private static final String DB_URL =
             "jdbc:mysql://" + plugin.getConfig().getString("sql.host") +
@@ -103,8 +103,8 @@ public class DatabaseManager {
     }
 
 
-    public static Lemon getUser(UUID uuid) {
-        Lemon user;
+    public static User getUser(UUID uuid) {
+        User user;
         UUID id = null, lastMessage = null;
         long muteEnd = 0;
         String nickname = null;
@@ -175,19 +175,19 @@ public class DatabaseManager {
             }
 
             if (id != null)
-                user = new Lemon(id, muteEnd, nickname, lastLocation, lastMessage, busy, cuffed, homes, ignored);
+                user = new User(id, muteEnd, nickname, lastLocation, lastMessage, busy, cuffed, homes, ignored);
             else
-                user = new Lemon(uuid);
+                user = new User(uuid);
 
             return user;
         } catch (SQLException e) {
             plugin.getLogger().info("SQL exception when trying to retrieve Lemon from database, creating new entry.");
             e.printStackTrace();
-            return new Lemon(uuid);
+            return new User(uuid);
         }
     }
 
-    public static void createUser(Lemon user) {
+    public static void createUser(User user) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
             String sql = "INSERT INTO " + lemonTable +
                     " (pk_uuid, last_location_world, last_location_x, last_location_y," +
@@ -215,7 +215,7 @@ public class DatabaseManager {
         }
     }
 
-    public static boolean saveUser(Lemon user) {
+    public static boolean saveUser(User user) {
 
         // TODO sql update user & homes & ignored
         return true;

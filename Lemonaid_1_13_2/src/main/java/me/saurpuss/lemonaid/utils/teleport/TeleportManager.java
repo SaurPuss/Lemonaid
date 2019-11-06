@@ -1,7 +1,7 @@
 package me.saurpuss.lemonaid.utils.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.sql.DatabaseManager;
+import me.saurpuss.lemonaid.utils.database.DatabaseManager;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -219,5 +219,10 @@ public class TeleportManager {
             tpClient.sendMessage(ChatColor.RED + "Teleport request expired!");
             playerRequests.remove(tp);
         }, delay * 20L);
+    }
+
+    public void saveWarpManager() {
+
+        // TODO onDisable method to make sure the DB has all the warps
     }
 }

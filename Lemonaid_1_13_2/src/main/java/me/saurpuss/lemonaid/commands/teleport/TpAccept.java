@@ -2,8 +2,6 @@ package me.saurpuss.lemonaid.commands.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.teleport.Teleport;
-import me.saurpuss.lemonaid.utils.Utils;
-import me.saurpuss.lemonaid.utils.teleport.TeleportManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,7 +22,7 @@ public class TpAccept implements CommandExecutor {
         if (sender instanceof Player) {
             Player target = (Player) sender;
             // Check if there are incoming requests
-            HashSet<Teleport> incoming = TeleportManager.retrieveRequest(target);
+            HashSet<Teleport> incoming = plugin.getTeleportManager().retrieveRequest(target);
             if (incoming.isEmpty()) {
                 target.sendMessage("§cYou have no pending teleport requests.");
                 return true;

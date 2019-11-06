@@ -1,7 +1,7 @@
 package me.saurpuss.lemonaid.utils.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.users.Lemon;
+import me.saurpuss.lemonaid.utils.users.User;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -111,7 +111,7 @@ public class TeleportTask extends BukkitRunnable {
         // Successful completion of task
         else {
             // Save player data in Lemon wrapper
-            Lemon user = plugin.getUser(player.getUniqueId());
+            User user = plugin.getUserManager().getUser(player.getUniqueId());
             user.setLastLocation(origin);
             user.updateUser();
             // Can't perform if we don't know where to go

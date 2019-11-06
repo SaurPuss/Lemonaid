@@ -1,8 +1,7 @@
 package me.saurpuss.lemonaid.commands.teleport;
 
+import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.teleport.Teleport;
-import me.saurpuss.lemonaid.utils.Utils;
-import me.saurpuss.lemonaid.utils.teleport.TeleportManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,6 +10,14 @@ import org.bukkit.entity.Player;
 import java.util.HashSet;
 
 public class TpDeny implements CommandExecutor {
+
+    private Lemonaid plugin;
+
+    public TpDeny(Lemonaid plugin) {
+        this.plugin = plugin;
+    }
+
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -18,9 +25,10 @@ public class TpDeny implements CommandExecutor {
             return true;
         }
 
+        // TODO refactor & rework
         Player target = (Player) sender;
-        HashSet<Teleport> incoming = TeleportManager.retrieveRequest(target);
-        HashSet<Teleport> outgoing = TeleportManager.outgoingRequests(target);
+        HashSet<Teleport> incoming = plugin.getTeleportManager().retrieveRequest(target);
+        HashSet<Teleport> outgoing = plugin.getTeleportManager().outgoingRequests(target);
 
         // There are both incoming and outgoing requests
         if (!incoming.isEmpty() && !outgoing.isEmpty()) {
@@ -44,7 +52,7 @@ public class TpDeny implements CommandExecutor {
             if (args[0].equalsIgnoreCase("all")) {
                 incoming.addAll(outgoing);
                 for (Teleport tp : incoming) {
-                    TeleportManager.removeRequest(tp);
+                    plugin.getTeleportManager().removeRequest(tp);
                 }
 
                 target.sendMessage("§6All pending teleport requests canceled!");
@@ -55,13 +63,13 @@ public class TpDeny implements CommandExecutor {
             for (String arg : args) {
                 for (Teleport tp : incoming) {
                     if (arg.equalsIgnoreCase(tp.getClient().getName())) {
-                        TeleportManager.removeRequest(tp);
+                        plugin.getTeleportManager().removeRequest(tp);
                         incoming.remove(tp);
                     }
                 }
                 for (Teleport tp : outgoing) {
                     if (arg.equalsIgnoreCase(tp.getTarget().getName())) {
-                        TeleportManager.removeRequest(tp);
+                        plugin.getTeleportManager().removeRequest(tp);
                         outgoing.remove(tp);
                     }
                 }
@@ -76,7 +84,7 @@ public class TpDeny implements CommandExecutor {
             // There is only 1 incoming request
             if (incoming.size() == 1) {
                 for (Teleport tp : incoming) {
-                    TeleportManager.removeRequest(tp);
+                    plugin.getTeleportManager().removeRequest(tp);
                 }
                 target.sendMessage("§6Incoming teleport request canceled.");
                 return true;
@@ -96,7 +104,7 @@ public class TpDeny implements CommandExecutor {
             // Deny all incoming requests
             if (args[0].equalsIgnoreCase("all")) {
                 for (Teleport tp : incoming)
-                    TeleportManager.removeRequest(tp);
+                    plugin.getTeleportManager().removeRequest(tp);
                 target.sendMessage("§6Denied all incoming teleport requests");
                 return true;
             }
@@ -105,7 +113,7 @@ public class TpDeny implements CommandExecutor {
             for (String arg : args)
                 for (Teleport tp : incoming)
                     if (arg.equalsIgnoreCase(tp.getClient().getDisplayName())) {
-                        TeleportManager.removeRequest(tp);
+                        plugin.getTeleportManager().removeRequest(tp);
                         incoming.remove(tp);
                     }
             target.sendMessage("§6Denied all valid teleport requests.");
@@ -117,7 +125,7 @@ public class TpDeny implements CommandExecutor {
             // There is only 1 outgoing request
             if (outgoing.size() == 1) {
                 for (Teleport tp : outgoing) {
-                    TeleportManager.removeRequest(tp);
+                    plugin.getTeleportManager().removeRequest(tp);
                 }
                 target.sendMessage("§6Your pending teleport request has been canceled.");
                 return true;
@@ -137,7 +145,7 @@ public class TpDeny implements CommandExecutor {
             // Cancel all outgoing requests
             if (args[0].equalsIgnoreCase("all")) {
                 for (Teleport tp : outgoing)
-                    TeleportManager.removeRequest(tp);
+                    plugin.getTeleportManager().removeRequest(tp);
 
                 target.sendMessage("§6Your outgoing teleport requests have been canceled.");
                 return true;
@@ -147,7 +155,7 @@ public class TpDeny implements CommandExecutor {
             for (String arg : args) {
                 for (Teleport tp : outgoing) {
                     if (arg.equalsIgnoreCase(tp.getTarget().getDisplayName())) {
-                        TeleportManager.removeRequest(tp);
+                        plugin.getTeleportManager().removeRequest(tp);
                         outgoing.remove(tp);
                     }
                 }

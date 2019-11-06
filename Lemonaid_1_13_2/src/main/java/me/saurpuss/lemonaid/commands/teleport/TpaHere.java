@@ -3,8 +3,7 @@ package me.saurpuss.lemonaid.commands.teleport;
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.teleport.Teleport;
 import me.saurpuss.lemonaid.utils.teleport.TeleportType;
-import me.saurpuss.lemonaid.utils.users.Lemon;
-import me.saurpuss.lemonaid.utils.Utils;
+import me.saurpuss.lemonaid.utils.users.User;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -46,11 +45,12 @@ public class TpaHere implements CommandExecutor {
 
             // Send tpahere requests to available targets
             for (Player target : list) {
-                Lemon user = plugin.getUser(target.getUniqueId());
+                User user = plugin.getUser(target.getUniqueId());
                 if (user.isBusy() || user.isIgnored(player.getUniqueId())) {
                     player.sendMessage("§c" + target.getName() + " is unavailable.");
                 } else {
-                    plugin.getTeleportManager().teleportEvent(new Teleport(player, target, null, TeleportType.TPAHERE));
+                    plugin.getTeleportManager().teleportEvent(new Teleport(player, target, null,
+                            TeleportType.TPAHERE));
                 }
             }
             return true;

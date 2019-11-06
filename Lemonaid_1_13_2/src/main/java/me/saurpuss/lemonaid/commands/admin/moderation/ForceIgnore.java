@@ -1,8 +1,7 @@
 package me.saurpuss.lemonaid.commands.admin.moderation;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.Utils;
-import me.saurpuss.lemonaid.utils.users.Lemon;
+import me.saurpuss.lemonaid.utils.users.User;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -31,7 +30,7 @@ public class ForceIgnore implements CommandExecutor {
                 return true;
             }
 
-            Lemon user = plugin.getUser(player.getUniqueId());
+            User user = plugin.getUser(player.getUniqueId());
             user.toggleIgnore(target.getUniqueId());
             user.updateUser();
 

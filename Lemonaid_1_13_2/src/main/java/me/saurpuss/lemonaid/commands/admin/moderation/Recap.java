@@ -1,7 +1,6 @@
 package me.saurpuss.lemonaid.commands.admin.moderation;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,7 +17,7 @@ import java.util.*;
 public class Recap implements CommandExecutor {
 
     private Lemonaid plugin;
-    private final File file = new File(plugin.getDataFolder(), "recap.txt");
+    private File file;
     private Deque<String> recap = getRecap();
 
     /**
@@ -27,6 +26,7 @@ public class Recap implements CommandExecutor {
      */
     public Recap(Lemonaid plugin) {
         this.plugin = plugin;
+        file = new File(this.plugin.getDataFolder(), "recap.txt");
     }
 
     /**
@@ -74,10 +74,11 @@ public class Recap implements CommandExecutor {
             plugin.getLogger().warning("Failed to read recap.txt!");
         }
 
-        // Read the last 10 entries from the ArrayList
+        // Read the last 10 entries from the ArrayList into the log
+        Collections.sort(list, Collections.reverseOrder());
         Deque<String> log = new LinkedList<>();
-        for (int i = log.size() - 1; i > log.size() - 11; i--) {
-            log.addFirst(list.get(i));
+        for (int i = 0; i < 10 && i < list.size() - 1; i++) {
+            log.add(list.get(i));
         }
 
         // Return results

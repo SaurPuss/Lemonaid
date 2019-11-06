@@ -1,8 +1,7 @@
 package me.saurpuss.lemonaid.commands.social;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.users.Lemon;
-import me.saurpuss.lemonaid.utils.Utils;
+import me.saurpuss.lemonaid.utils.users.User;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -25,7 +24,7 @@ public class Ignore implements CommandExecutor {
         // Player wants to (un)ignore another player
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            Lemon user = plugin.getUser(player.getUniqueId());
+            User user = plugin.getUser(player.getUniqueId());
 
             // If moderators are not allowed to ignore players this happens
             if (player.hasPermission("lemonaid.ignoreexempt") &&

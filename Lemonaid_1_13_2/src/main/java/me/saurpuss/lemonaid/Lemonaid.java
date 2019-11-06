@@ -6,37 +6,44 @@ import me.saurpuss.lemonaid.commands.social.*;
 import me.saurpuss.lemonaid.commands.social.channels.*;
 import me.saurpuss.lemonaid.commands.teleport.*;
 import me.saurpuss.lemonaid.events.*;
-import me.saurpuss.lemonaid.utils.sql.DatabaseManager;
+import me.saurpuss.lemonaid.utils.database.LogManager;
 import me.saurpuss.lemonaid.utils.teleport.TeleportManager;
-import me.saurpuss.lemonaid.utils.users.Lemon;
+import me.saurpuss.lemonaid.utils.users.UserManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
-
 public final class Lemonaid extends JavaPlugin {
-    public static Lemonaid plugin;
 
-    // Managers etc
-    private static Economy economy;
-    private static HashMap<UUID, Lemon> userManager;
+    // This
+    public static Lemonaid instance;
+
+    // Plugin Managers
+    private static UserManager userManager;
     private static TeleportManager teleportManager;
+    private static LogManager logManager;
 
     // Moderation settings
-    private static boolean masterCuff = false;
-    private static boolean globalMute = false;
+    private volatile boolean masterCuff = false;
+    private volatile boolean globalMute = false;
+
+    // Dependencies
+    private static Economy economy;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
 //        getLogger().info(Utils.console("Plugin startup"));
-        plugin = this;
-        userManager = new HashMap<>();
+        instance = this;
+
+        // Managers
+        userManager = new UserManager(this);
         teleportManager = new TeleportManager(this);
+        logManager = new LogManager(this);
 
         // TODO test connection to DB and set up tables etc
 
+        // Register elements
         registerConfigs();
         registerCommands();
         registerEvents();
@@ -49,8 +56,8 @@ public final class Lemonaid extends JavaPlugin {
 //        getLogger().info(Utils.console("Plugin shutdown"));
 
         // Save all remaining Lemons to DB & Delete any listed homes or ignores mapped from DB
-        saveUserManager();
-        saveWarpManager();
+        userManager.saveUserManager();
+        teleportManager.saveWarpManager();
     }
 
     private void registerCommands() {
@@ -76,7 +83,7 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("tpa").setExecutor(new Tpa(this));
         getCommand("tpahere").setExecutor(new TpaHere(this));
         getCommand("tpaccept").setExecutor(new TpAccept(this));
-        getCommand("tpdeny").setExecutor(new TpDeny()); // also tpacancel
+        getCommand("tpdeny").setExecutor(new TpDeny(this)); // also tpacancel
         // Player to location Teleport commands
         getCommand("back").setExecutor(new Back(this));
         getCommand("home").setExecutor(new Home(this));
@@ -117,6 +124,9 @@ public final class Lemonaid extends JavaPlugin {
         }
     }
 
+    // Static getter just in case
+    public static Lemonaid getInstance() { return instance; }
+
     // Admin level stuff
     public void toggleMasterCuff() { masterCuff = !masterCuff; }
     public void toggleMasterCuff(boolean isOn) { masterCuff = isOn; }
@@ -124,21 +134,11 @@ public final class Lemonaid extends JavaPlugin {
     public void toggleGlobalMute() { globalMute = !globalMute; }
     public boolean isGlobalMute() { return globalMute; }
 
-    // Keep track of Lemons
-    public void mapPlayer(UUID uuid, Lemon user) { userManager.put(uuid, user); }
-    public void unmapPlayer(UUID uuid) { userManager.remove(uuid); }
-    public Lemon getUser(UUID uuid) { return userManager.get(uuid); }
 
+    // Get the Managers
     public TeleportManager getTeleportManager() { return teleportManager; }
-
-    // trigger these during world save event && onDisable
-    public void saveUserManager() {
-        userManager.forEach((uuid, user) -> user.saveUser());
-        DatabaseManager.deleteRemovalRecords();
-    }
-    public void saveWarpManager() {
-        // TODO create stuff in DB-manager
-    }
+    public UserManager getUserManager() { return userManager; }
+    public LogManager getLogManager() { return logManager; }
 
     // Vault Stuff
     public Economy getEconomy() { return economy; }

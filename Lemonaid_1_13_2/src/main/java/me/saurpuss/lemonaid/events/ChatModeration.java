@@ -1,8 +1,7 @@
 package me.saurpuss.lemonaid.events;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.users.Lemon;
-import me.saurpuss.lemonaid.utils.Utils;
+import me.saurpuss.lemonaid.utils.users.User;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
@@ -25,7 +24,7 @@ public class ChatModeration implements Listener {
         }
 
         // Get player from userManager
-        Lemon user = plugin.getUser(player.getUniqueId());
+        User user = plugin.getUser(player.getUniqueId());
         // This player is not allowed to talk
         if (user.isMuted() || user.isCuffed()) {
             player.sendMessage(Utils.noPermission());
@@ -37,15 +36,13 @@ public class ChatModeration implements Listener {
         // Don't do this for players with the ignore exempt permission, unless they are
         // allowed to ignore in the config
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (player.hasPermission("lemonaid.ignoreexempt") &&
-                    !plugin.getConfig().getBoolean("moderator-allow-ignore")) {
-                break;
-            }
-
             if (!p.hasPermission("lemonaid.ignoreexempt")) {
-                Lemon u = new Lemon(p.getUniqueId()).getUser();
+                User u = new User(p.getUniqueId()).getUser();
                 if (u.isIgnored(player.getUniqueId()))
                     event.getRecipients().remove(p);
+            } else {
+                if (!plugin.getConfig().getBoolean("moderator-allow-ignore"))
+                    break;
             }
         }
 
@@ -67,7 +64,7 @@ public class ChatModeration implements Listener {
         }
 
         // Get player from userManager
-        Lemon user = plugin.getUser(player.getUniqueId());
+        User user = plugin.getUser(player.getUniqueId());
         if (user.isCuffed()) {
             player.sendMessage(Utils.noPermission());
             event.setCancelled(true);

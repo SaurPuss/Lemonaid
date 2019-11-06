@@ -1,6 +1,6 @@
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 #   Plugin information
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 name: Lemonaid
 version: ${project.version}
 main: me.saurpuss.lemonaid.Lemonaid
@@ -9,11 +9,15 @@ description: Lots of basic commands put together in one plugin
 database: true
 website: https://voxmc.com
 softdepend: [Vault, WorldGuard]
-permission-message: &noperms "§cYou don't have permission to do this!"
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+# Permission message hooks
+&unknown "§rUnknown command" # Hide command existence from players without permission
+&noperms "§cYou don't have permission to do this!" # Notify player of missing permission node
+
+
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 #   Commands
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 commands:
   # Plugin specific commands
   lemonaid:
@@ -23,22 +27,22 @@ commands:
       /<command> reload - Reload the plugin configs
       /<command> ?|help - Plugin help file
 
-  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
   #   Administrator commands
-  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
   broadcast:
     description: Broadcast a message across the server
     usage: /<command> [message...]
     aliases: [bc]
     permission: lemonaid.broadcast
-    permission-message: *noperms
+    permission-message: *unknown
   fly:
     description: Toggle fly mode
     usage: |
       /<command> - Toggle fly on yourself
       /<command> [target] - Toggle fly on a valid target
     permission: lemonaid.fly
-    permission-message: *noperms
+    permission-message: *unknown
   globalmute:
     description: |
       Prevent every player without the globalmute or exempt permission from using
@@ -46,7 +50,7 @@ commands:
     usage: /<command>
     aliases: [silence]
     permission: lemonaid.globalmute
-    permission-message: *noperms
+    permission-message: *unknown
   mastercuff:
     description: |
       Lock every player without the mastercuff or exempt permission in place and
@@ -55,31 +59,30 @@ commands:
       /<command> - Toggle mastercuff for all online players
       /<command> on|off - Toggle mastercuff on or off for all online players
     permission: lemonaid.mastercuff
-    permission-message: *noperms
+    permission-message: *unknown
   forceignore:
     description: Force a player onto another player's ignore list
     usage: /<command> <player> <target to ignore>
     permission: lemonaid.forceignore
-    permission-message: *noperms
+    permission-message: *unknown
 
-  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
   #   Moderation commands
-  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
   mute:
     description: Prevent a player from speaking
     usage: |
       /<command> list - Display last 10 mute logs
       /<command> help|? [#] - Display mute help (page number optional)
       /<command> [target] - Mute player indefinitely, apply again to unmute
-      /<command> [target] [time] - Mute a player for a specific amount of time
-       (0 = forever | number + time: s = seconds, m = minutes, h = hours, d = days,
-       w = weeks, y = years, "10m = 10minutes")
-      /<command> [target] [time] [reason] - Mute a player for a specific amount of
-       time and log the reason
-      /<command> [target] 0 [reason] - Mute a player indefinitely for a specific
-       reason
+      /<command> [target] [time] - Mute a player for a specific amount of time (0 = forever |
+      number + time: s = seconds, m = minutes, h = hours, d = days, w = weeks, y = years, "10m =
+      10minutes")
+      /<command> [target] [time] [reason] - Mute a player for a specific amount of time and log
+      the reason
+      /<command> [target] 0 [reason] - Mute a player indefinitely for a specific reason
     permission: lemonaid.mute
-    permission-message: *noperms
+    permission-message: *unknown
   cuff:
     description: Lock an offending player in place and prevent them from using chat
     usage: |
@@ -88,14 +91,14 @@ commands:
       /<command> [target] - Toggle cuff on|off for your target
       /<command> [target] [reason...] - Toggle cuff on a player and log a reason
     permission: lemonaid.cuff
-    permission-message: *noperms
+    permission-message: *unknown
   recap:
     description: Log quick recaps for information hand-off
     usage: |
       /<command> - Display last 10 recaps
       /<command> [message...] - Add recap
     permission: lemonaid.recap
-    permission-message: *noperms
+    permission-message: *unknown
 
 
   clearchat:
@@ -103,29 +106,29 @@ commands:
     usage: /<command>
     aliases: [cc]
     permission: lemonaid.clearchat
-    permission-message: *noperms
+    permission-message: *unknown
   socialspy:
     description: Toggle chat channels for spying on your playerbase
     usage: /<command>
     aliases: [spy]
     permission: lemonaid.socialspy
-    permission-message: *noperms
+    permission-message: *unknown
 
-  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
   #   Social commands
-  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
   msg:
     description: |
-      Whisper to another player, does not work when either party is set to busy.
-      Exception is made for moderators.
+      Whisper to another player, does not work when either party is set to busy. Exception is
+      made for moderators.
     usage: /<command> [target] [message...]
     aliases: [tell, whisper]
     permission: lemonaid.chat.private
     permission-message: *noperms
   reply:
     description: |
-      Reply to a whispered message, does not work when either party is set to busy.
-      Exception is made for moderators.
+      Reply to a whispered message, does not work when either party is set to busy. Exception is
+      made for moderators.
     usage: /<command> [message...]
     aliases: [r]
     permission: lemonaid.chat.private
@@ -138,17 +141,16 @@ commands:
     permission-message: *noperms
   ignore:
     description: |
-      Ignore all messages and tp requests from another player, does not apply to
-      moderators.
+      Ignore all messages and tp requests from another player, does not apply to moderators.
     usage: |
       /<command> - Display your ignored list
       /<command> [target] - Add or remove your target from your ignore list
     permission: lemonaid.chat.ignore
     permission-message: *noperms
 
-  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
   #   Player to Player Teleportation commands
-  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
   tpa:
     description: Send a teleportation request to another player
     usage: /<command> [target]
@@ -171,9 +173,9 @@ commands:
     permission: lemonaid.teleport.tpaccept
     permission-message: *noperms
 
-  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
   #   Player to Location Teleportation commands
-  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+  #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
   back:
     description: |
       Return to your last saved location. Your last location is automatically
@@ -272,9 +274,9 @@ commands:
 
 
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 #   Permissions
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 permissions:
   lemonaid.admin:
     description: Admin level permissions for Lemonaid
