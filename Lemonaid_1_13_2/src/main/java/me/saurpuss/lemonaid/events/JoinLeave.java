@@ -2,7 +2,7 @@ package me.saurpuss.lemonaid.events;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.commands.social.Welcome;
-import me.saurpuss.lemonaid.utils.database.DatabaseManager;
+import me.saurpuss.lemonaid.utils.database.OldMySQL;
 import me.saurpuss.lemonaid.utils.users.User;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,7 +22,7 @@ public class JoinLeave implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        User user = DatabaseManager.getUser(player.getUniqueId());
+        User user = OldMySQL.getUser(player.getUniqueId());
         plugin.mapPlayer(player.getUniqueId(), user);
 
         // TODO if player is in air and has fly permission, set them to fly automatically
