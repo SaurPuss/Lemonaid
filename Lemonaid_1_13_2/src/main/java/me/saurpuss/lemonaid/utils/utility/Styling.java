@@ -5,9 +5,7 @@ import org.bukkit.ChatColor;
 public interface Styling {
 
     // Translate Chat Colors with & instead of §
-    default String colors(String message) {
+    default String color(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
-
-
 }
