@@ -14,7 +14,9 @@ public class WorldEvents implements Listener {
     public void worldSave(WorldSaveEvent e) {
         // Save plugin managers
         plugin.getUserManager().saveUserManager();
+
         plugin.getTeleportManager().saveWarpManager();
+
         if (!plugin.getConfig().getBoolean("log.append"))
             plugin.getLogManager().saveLogs();
     }

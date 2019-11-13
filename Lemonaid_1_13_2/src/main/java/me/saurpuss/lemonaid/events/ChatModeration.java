@@ -10,25 +10,27 @@ import org.bukkit.event.*;
 import org.bukkit.event.player.*;
 
 public class ChatModeration implements Listener, Styling, PermissionMessages {
-    private Lemonaid plugin;
+    private Lemonaid lemonaid;
     public ChatModeration(Lemonaid plugin) {
-        this.plugin = plugin;
+        lemonaid = plugin;
     }
 
     @EventHandler
     public void chatEvent(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         // Check if global mute or master cuff is true
-        if ((plugin.isMasterCuff() || plugin.isGlobalMute()) &&
+        if ((lemonaid.isMasterCuff() || lemonaid.isGlobalMute()) &&
                 !player.hasPermission("lemonaid.exempt")) {
             event.setCancelled(true);
             return;
         }
 
         // Get player from userManager
-        User user = plugin.getUserManager().getUser(player.getUniqueId());
+        User user = lemonaid.getUserManager().getUser(player.getUniqueId());
         // This player is not allowed to talk
         if (user.isMuted() || user.isCuffed()) {
+            // TODO tell player when their mute ends
+
             player.sendMessage(noPermission());
             event.setCancelled(true);
             return;
@@ -40,11 +42,11 @@ public class ChatModeration implements Listener, Styling, PermissionMessages {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (!p.hasPermission("lemonaid.ignoreexempt")) {
                 // TODO double check this
-                User u = plugin.getUserManager().getUser(p.getUniqueId());
+                User u = lemonaid.getUserManager().getUser(p.getUniqueId());
                 if (u.isIgnored(player.getUniqueId()))
                     event.getRecipients().remove(p);
             } else {
-                if (!plugin.getConfig().getBoolean("moderator-allow-ignore"))
+                if (!lemonaid.getConfig().getBoolean("moderator-allow-ignore"))
                     break;
             }
         }
@@ -60,14 +62,14 @@ public class ChatModeration implements Listener, Styling, PermissionMessages {
     public void commandEvent(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         // Check if global mute or master cuff is true
-        if ((plugin.isMasterCuff() || plugin.isGlobalMute()) &&
+        if ((lemonaid.isMasterCuff() || lemonaid.isGlobalMute()) &&
                 !player.hasPermission("lemonaid.exempt")) {
             event.setCancelled(true);
             return;
         }
 
         // Get player from userManager
-        User user = plugin.getUserManager().getUser(player.getUniqueId());
+        User user = lemonaid.getUserManager().getUser(player.getUniqueId());
         if (user.isCuffed()) {
             player.sendMessage(noPermission());
             event.setCancelled(true);

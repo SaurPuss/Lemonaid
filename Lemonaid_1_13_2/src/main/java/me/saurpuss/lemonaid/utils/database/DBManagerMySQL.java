@@ -1,9 +1,11 @@
 package me.saurpuss.lemonaid.utils.database;
 
 import me.saurpuss.lemonaid.Lemonaid;
+import me.saurpuss.lemonaid.utils.users.User;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.Connection;
+import java.util.UUID;
 
 public class DBManagerMySQL extends DBManager {
 
@@ -40,6 +42,14 @@ public class DBManagerMySQL extends DBManager {
     }
 
     public void connect() {
+        if (connection == null) {
+
+
+
+
+        }
+
+
 
     }
 
@@ -59,47 +69,76 @@ public class DBManagerMySQL extends DBManager {
     }
 
     @Override
-    boolean saveUser() {
+    public boolean saveUser(User user) {
+
+
+
         return false;
     }
 
     @Override
-    boolean getUser() {
+    public User getUser(UUID uuid) {
+
+
+
+        return new User(uuid);
+    }
+
+    @Override
+    boolean deleteUser(User user) {
+
+
         return false;
     }
 
     @Override
-    boolean deleteUser() {
+    boolean deleteUser(UUID uuid) {
+
         return false;
     }
 
     @Override
-    boolean updateUser() {
+    boolean updateUser(User user) {
         return false;
     }
 
     @Override
     boolean removeIgnore() {
+
+
         return false;
     }
 
     @Override
     boolean removeHome() {
+
+
+
         return false;
     }
 
     @Override
     boolean saveWarp() {
+
+
+
         return false;
     }
 
     @Override
     boolean updateWarp() {
+
+
+
         return false;
     }
 
     @Override
     boolean deleteWarp() {
+
+
+
+
         return false;
     }
 }

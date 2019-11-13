@@ -1,7 +1,6 @@
 package me.saurpuss.lemonaid.utils.users;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.database.OldMySQL;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
@@ -17,7 +16,9 @@ public class UserManager {
     /**
      * Map containing the User wrapper objects for online players.
      */
-    private static HashMap<UUID, User> userManager;
+    private HashMap<UUID, User> userManager;
+
+    private String lastJoinedPlayer;
 
     /**
      * Manage and maintain the User wrappers needed to allow players to have access to plugin
@@ -42,6 +43,11 @@ public class UserManager {
         // TODO close connection
     }
 
+
+    public void setLastJoinedPlayer(String player) {
+        lastJoinedPlayer = player;
+    }
+
     /**
      * Retrieve a User wrapper from the userManager, or try to retrieve one from the Database if
      * there is no pre-existing User in the map.
@@ -52,17 +58,17 @@ public class UserManager {
         if (userManager.containsKey(uuid))
             return userManager.get(uuid);
 
-        return OldMySQL.getUser(uuid);
+        User user = lemonaid.getDbManager().getUser(uuid);
+        userManager.put(uuid, user);
+        return user;
     }
-
-
 
 
     // TODO rework everything
     // trigger these during world save event && onDisable
     public void saveUserManager() {
         userManager.forEach((uuid, user) -> saveUser(user));
-        OldMySQL.deleteRemovalRecords();
+//        OldMySQL.deleteRemovalRecords();
     }
 
 
@@ -72,7 +78,12 @@ public class UserManager {
     }
 
     private void saveUser(User user) {
-        OldMySQL.saveUser(user);
+        lemonaid.getDbManager().saveUser(user);
+    }
+
+    private void deleteUser(User user) {
+        // TODO no
+        // TODO remove from DB Manager
     }
 
     public void removeUser(User user) {

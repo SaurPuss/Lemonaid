@@ -152,6 +152,7 @@ public final class Lemonaid extends JavaPlugin {
     public TeleportManager getTeleportManager() { return teleportManager; }
     public UserManager getUserManager() { return userManager; }
     public LogManager getLogManager() { return logManager; }
+    public DBManager getDbManager() { return dbManager; }
 
     // Vault Stuff
     public Economy getEconomy() { return economy; }

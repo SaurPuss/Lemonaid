@@ -1,5 +1,9 @@
 package me.saurpuss.lemonaid.utils.database;
 
+import me.saurpuss.lemonaid.utils.users.User;
+
+import java.util.UUID;
+
 public abstract class DBManager {
 
     // DB manager methods
@@ -7,10 +11,11 @@ public abstract class DBManager {
     abstract boolean save();
 
     // User related methods
-    abstract boolean saveUser();
-    abstract boolean getUser();
-    abstract boolean deleteUser();
-    abstract boolean updateUser();
+    public abstract boolean saveUser(User user);
+    public abstract User getUser(UUID uuid);
+    abstract boolean deleteUser(User user);
+    abstract boolean deleteUser(UUID uuid);
+    abstract boolean updateUser(User user);
     abstract boolean removeIgnore();
     abstract boolean removeHome();
 

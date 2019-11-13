@@ -10,16 +10,20 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 public class PlayerDeath implements Listener {
 
-    private Lemonaid plugin;
-    public PlayerDeath(Lemonaid plugin) { this.plugin = plugin; }
+    private Lemonaid lemonaid;
+    public PlayerDeath(Lemonaid plugin) {
+        lemonaid = plugin;
+    }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
 
         // Set last location to death location
-        User user = plugin.getUser(player.getUniqueId());
+        User user = lemonaid.getUserManager().getUser(player.getUniqueId());
         user.setLastLocation(player.getLocation());
+        lemonaid.getUserManager().updateUser(user);
+        
         player.sendMessage(ChatColor.LIGHT_PURPLE + "Use " + ChatColor.DARK_PURPLE +
                 "/back" + ChatColor.LIGHT_PURPLE + " to return to the place of your death.");
 

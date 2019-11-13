@@ -1,32 +1,40 @@
 package me.saurpuss.lemonaid.events;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.commands.social.Welcome;
-import me.saurpuss.lemonaid.utils.database.OldMySQL;
 import me.saurpuss.lemonaid.utils.users.User;
+import me.saurpuss.lemonaid.utils.utility.PermissionMessages;
+import me.saurpuss.lemonaid.utils.utility.Styling;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.player.*;
 
 import java.util.*;
 
-public class JoinLeave implements Listener {
+public class JoinLeave implements Listener, Styling, PermissionMessages {
 
-    private Lemonaid plugin;
+    private Lemonaid lemonaid;
+    private FileConfiguration config;
     public JoinLeave(Lemonaid plugin) {
-        this.plugin = plugin;
+        lemonaid = plugin;
+        config = lemonaid.getConfig();
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        User user = OldMySQL.getUser(player.getUniqueId());
-        plugin.mapPlayer(player.getUniqueId(), user);
+        User user = lemonaid.getUserManager().getUser(player.getUniqueId());
 
-        // TODO if player is in air and has fly permission, set them to fly automatically
-        // TODO if player has silentjoin or vanishjoin permission set them to vanish
+        if (player.hasPermission("lemonaid.silentjoin")) {
+            // TODO set them to vanish
+        }
+
+        if (player.hasPermission("lemonaid.fly")) {
+            // TODO set them to fly automatically if in the air
+
+        }
 
         if (player.hasPlayedBefore()) {
             // Send a message to online moderators about the login event
@@ -37,23 +45,29 @@ public class JoinLeave implements Listener {
             }
 
             // Welcome to the server MOTD
-            List<String> motdList = plugin.getConfig().getStringList("player-motd");
+            List<String> motdList = config.getStringList("player-motd");
             Random random = new Random(motdList.size());
             String motd = motdList.get(random.nextInt()).replace("%player%", player.getDisplayName());
 
-            player.sendMessage(Utils.color(motd));
-        } else {
+            player.sendMessage(color(motd));
+        }
+        // First time join
+        else {
             // Announce new player
-            List<String> announceList = plugin.getConfig().getStringList("first-join-announcements");
+            List<String> announceList = config.getStringList("first-join-announcements");
             Random random = new Random(announceList.size());
             String announcement = announceList.get(random.nextInt()).replaceAll("%player%", player.getDisplayName());
-            e.setJoinMessage(Utils.color(announcement));
+            e.setJoinMessage(color(announcement));
 
-            // Set lastJoinPlayer in /welcome
-            Welcome.lastJoinedPlayer = e.getPlayer().getDisplayName();
+            // Set lastJoinPlayer for /welcome
+            lemonaid.getUserManager().setLastJoinedPlayer(e.getPlayer().getDisplayName());
 
             // TODO add first join items from kit
         }
+
+        String notification = ChatColor.YELLOW + player.getDisplayName() + ChatColor.GOLD +
+                " joined the server!";
+        adminNotification(notification);
 
     }
 
@@ -61,31 +75,27 @@ public class JoinLeave implements Listener {
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
         // Save player Lemon and remove player from userManager
-        User user = plugin.getUser(player.getUniqueId());
-        user.saveUser();
-        plugin.unmapPlayer(player.getUniqueId());
+        User user = lemonaid.getUserManager().getUser(player.getUniqueId());
+        lemonaid.getUserManager().updateUser(user);
+        lemonaid.getUserManager().removeUser(user);
 
-        // Send a message to online admins about the quit event
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.hasPermission("lemonaid.notify")) {
-                p.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.GOLD +" quit the server!");
-            }
-        }
+        String notification = ChatColor.YELLOW + player.getDisplayName() + ChatColor.GOLD +
+                " quit the server!";
+        adminNotification(notification);
+
     }
 
     @EventHandler
     public void onKick(PlayerKickEvent e) {
         Player player = e.getPlayer();
         // Save player Lemon and remove player from userManager
-        User user = plugin.getUser(player.getUniqueId());
-        user.saveUser();
-        plugin.unmapPlayer(player.getUniqueId());
+        User user = lemonaid.getUserManager().getUser(player.getUniqueId());
+        lemonaid.getUserManager().updateUser(user);
+        lemonaid.getUserManager().removeUser(user);
 
-        // Send a message to online admins about the quit event
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.hasPermission("lemonaid.notify")) {
-                p.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.RED + " was kicked from the server!");
-            }
-        }
+        String notification = ChatColor.YELLOW + player.getDisplayName() + ChatColor.GOLD +
+                " was kicked from the server!";
+        adminNotification(notification);
+
     }
 }
