@@ -10,66 +10,58 @@ public enum TeleportType {
      * Teleporting requesting player to a target player,
      * invoked with the /tpa [target] command.
      */
-    TPA("tpa", true),
+    TPA( true),
 
     /**
      * Teleporting target player to a requesting player,
      * invoked with the /tpahere [target] command.
      */
-    TPAHERE("tpahere", true),
+    TPAHERE(true),
 
     /**
      * Teleporting requesting player to a target player,
      * on the condition that both players are in the same party,
      * invoked with the /ptp [target] command.
      */
-    PTP("ptp", true),
+    PTP(true),
 
     /**
      * Teleporting target player to a requesting player,
      * on the condition that both players are in the same party,
      * invoked with the /ptphere [target] command.
      */
-    PTPHERE("ptphere", true),
+    PTPHERE(true),
 
     // Player to Location
     /**
      * Teleporting requesting player to their last saved location,
      * invoked with the /back command.
      */
-    BACK("back", false),
+    BACK(false),
 
     /**
      * Teleporting requesting player to a specified location saved
      * as a player home, invoked with the /home [home] command.
      */
-    HOME("home", false),
+    HOME(false),
 
     /**
      * Teleporting a requesting player to the spawn point defined
      * in the Lemonaid config.yml
      */
-    SPAWN("spawn", false),
+    SPAWN(false),
 
     /**
      * Teleporting a requesting player to a random (safe) location
      * within world boundaries defined in the Lemonaid config.yml
      */
-    RANDOM("random", false),
+    RANDOM(false),
 
     /**
      * Teleporting a requesting player to a predefined location saved
      * in the MySQL database, invoked with the /warp [name] command.
      */
-    WARP("warp", false);
-
-    /**
-     * String value corresponding with the enum type. Used to retrieve
-     * user defined values in the Lemonaid config.yml to determine
-     * cost, timers, and other values that influence the Teleport event
-     * for the invoking player.
-     */
-    private String name;
+    WARP(false);
 
     /**
      * Boolean value used to determine if a Teleport event is a player
@@ -79,21 +71,18 @@ public enum TeleportType {
 
     /**
      *
-     * @param name Reference to type used comparing in files.
-     * @param p2p Boolean to determine player to player or player to location types.
+     * @param p2p
      */
-    TeleportType(String name, boolean p2p) {
-        this.name = name;
+    TeleportType(boolean p2p) {
         this.p2p = p2p;
     }
 
     /**
-     * Return the enum name value, used mainly to retrieve matching information
-     * defined in the Lemonaid config.yml.
-     * @return String value of the enum in lowercase.
+     *
+     * @return
      */
     String getName() {
-        return name;
+        return this.toString().toLowerCase();
     }
 
     /**

@@ -7,6 +7,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -14,43 +15,49 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 /**
- * Managing class to keep track of player to player teleport request,
- * initiate teleport tasks and manage public warps.
+ * Managing class to keep track of player to player teleport request, initiate teleport tasks and
+ * manage public warps.
  */
 public class TeleportManager {
 
     /**
      * Dependency injection of the plugin's current runtime.
      */
-    private Lemonaid plugin;
+    private Lemonaid lemonaid;
 
     /**
-     * Static Set that keeps track of current pending player to player
-     * teleportation requests in the form of Teleport objects.
+     * Runtime copy of config.yml for easy access to user defined variables.
+     */
+    private FileConfiguration config;
+
+    /**
+     * Static Set that keeps track of current pending player to player teleportation requests in
+     * the form of Teleport objects.
      */
     private static HashSet<Teleport> playerRequests;
 
     /**
-     * Static Map that keeps track of the current name and location
-     * of public warps.
+     * Static Map that keeps track of the current name and location of public warps.
      */
     private static HashMap<String, Location> warpManager;
 
     /**
      * Teleport Manager constructor initialized in Main Lemonaid class.
+     *
      * @param plugin Dependency injection of the runtime instance of the
      *               Lemonaid plugin.
      */
     public TeleportManager(Lemonaid plugin) {
-        this.plugin = plugin;
+        lemonaid = plugin;
+        config = lemonaid.getConfig();
         playerRequests = new HashSet<>();
         warpManager = DatabaseManager.getWarps();
     }
 
     /**
-     * Add a public warp to the warpManager and save or update a copy
-     * in the MySQL database.
-     * @param name Warp name, converted to lowercase to prevent duplicates.
+     * Add a public warp to the warpManager and save or update a copy in the MySQL database.
+     *
+     * @param name     Warp name, converted to lowercase to prevent duplicates.
      * @param location In-game location set as the warp destination.
      */
     public void setWarp(String name, Location location) {
@@ -60,6 +67,7 @@ public class TeleportManager {
 
     /**
      * Retrieve a public warp destination.
+     *
      * @param name Name of the warp to look up in the warpManager.
      * @return Location destination that corresponds with the request input.
      */
@@ -68,18 +76,24 @@ public class TeleportManager {
     }
 
     /**
-     * Delete an existing warp name and destination from the warpManager
-     * and the MySQL database.
+     * Delete an existing warp name and destination from the warpManager and the MySQL database.
+     *
      * @param name Name of the warp to be deleted.
      */
     public void deleteWarp(String name) {
         warpManager.remove(name.toLowerCase());
+
         // TODO remove from DB
     }
 
+    public void saveWarpManager() {
+
+        // TODO onDisable method to make sure the DB has all the warps
+    }
+
     /**
-     * Retrieve a HashSet of Teleports that have a client that matches
-     * the given player object.
+     * Retrieve a HashSet of Teleports that have a client that matches the given player object.
+     *
      * @param target Requesting player to match to the tpClient.
      * @return Set of Teleport objects that contain the input target.
      */
@@ -90,8 +104,8 @@ public class TeleportManager {
     }
 
     /**
-     * Retrieve a HashSet of Teleports that have a target that matches
-     * the given player object.
+     * Retrieve a HashSet of Teleports that have a target that matches the given player object.
+     *
      * @param target Requesting player to match tot the tpTarget
      * @return Set of Teleport objects that contain the input target.
      */
@@ -103,6 +117,7 @@ public class TeleportManager {
 
     /**
      * Manually remove a pending Teleport from playerRequests.
+     *
      * @param tp Teleport object to remove
      */
     public void removeRequest(Teleport tp) {
@@ -110,15 +125,35 @@ public class TeleportManager {
     }
 
     /**
-     * Teleportation event start. If Vault is active withdraw from balance
-     * and initiate requested tp.
+     * Returns the cooldown timer defined in config.yml for a specific Teleport Type
+     *
+     * @param tp Teleport to check the type for
+     * @return timer integer
+     */
+    int getTimer(Teleport tp) {
+        return config.getInt("teleport." + tp.getTpType().getName() + ".timer");
+    }
+
+    /**
+     * Check the configuration options for implementation of teleport cooldown timers
+     *
+     * @return the ability tp instantly
+     */
+    boolean getCancelCooldown() {
+        return config.getBoolean("teleport.cancel-countdown");
+    }
+
+    /**
+     * Teleportation event start. If Vault is active withdraw from balance and initiate requested
+     * tp.
+     * TODO refund if tp is cancelled by moving option?
      *
      * @param tp Teleportation request object
      */
     public void teleportEvent(Teleport tp) {
-        Economy economy = plugin.getEconomy();
+        Economy economy = lemonaid.getEconomy();
         if (economy.isEnabled()) {
-            double cost = plugin.getConfig().getDouble("teleport." + tp.getTpType().getName() + ".cost");
+            double cost = config.getDouble("teleport." + tp.getTpType().getName() + ".cost");
 
             // Attempt to charge the client for the teleport
             EconomyResponse response = economy.withdrawPlayer(tp.getClient(), cost);
@@ -134,7 +169,7 @@ public class TeleportManager {
             return;
         }
 
-        BukkitTask tpTask = new TeleportTask(plugin, tp).runTaskTimer(plugin, 0, 20L);
+        BukkitTask tpTask = new TeleportTask(lemonaid, tp).runTaskTimer(lemonaid, 0, 20L);
     }
 
     /**
@@ -144,12 +179,13 @@ public class TeleportManager {
      * If Teleport is a valid instance it will schedule an automatic removal from the
      * playerRequest HashSet with a the Bukkit Scheduler to be activated upon expiration defined
      * inside the Lemonaid config.yml.
+     *
      * @param tp Teleport with a player to player intent
      */
-    void addRequest(Teleport tp) {
+    public void addRequest(Teleport tp) {
         // Make sure this is a player to player request
         if (!tp.getTpType().isP2p()) {
-            plugin.getLogger().warning("Error TeleportToLocationMixup! " +
+            lemonaid.getLogger().warning("Error TeleportToLocationMixup! " +
                     "More info in plugin readme.txt!");
             return;
         }
@@ -176,27 +212,27 @@ public class TeleportManager {
             }
             if ((t.getClient() == tpTarget && // target has an outgoing request to tp to a player
                     (t.getTpType() == TeleportType.TPA || t.getTpType() == TeleportType.PTP)) ||
-                (t.getTarget() == tpTarget && // target needs to handle existing incoming request first
-                    (tp.getTpType() == TeleportType.TPAHERE || tp.getTpType() == TeleportType.PTPHERE))) {
+                    (t.getTarget() == tpTarget && // target needs to handle existing incoming request first
+                            (tp.getTpType() == TeleportType.TPAHERE || tp.getTpType() == TeleportType.PTPHERE))) {
                 // give requester a warning to try again later and abort
                 tpClient.sendMessage(ChatColor.RED + tp.getTarget().getName() +
                         " already has a pending teleport request. Try again later.");
                 tpTarget.sendMessage(ChatColor.YELLOW + tpClient.getName() + " tried to send you a " +
-                        "teleport request, but you have conflicting request pending." );
+                        "teleport request, but you have conflicting request pending.");
                 return;
             }
         }
 
         // Check for cross-world and if it's allowed
         if (tpClient.getWorld() != tpTarget.getWorld() &&
-                !plugin.getConfig().getBoolean("teleport." + tp.getTpType().getName() + ".cross-world")) {
+                !config.getBoolean("teleport." + tp.getTpType().getName() + ".cross-world")) {
             tpClient.sendMessage(ChatColor.RED + "You cannot teleport " +
                     "between worlds! Request canceled.");
             return;
         }
 
         // align some pretty stuff
-        int delay = plugin.getConfig().getInt("teleport." + tp.getTpType().getName() + ".request-timer");
+        int delay = config.getInt("teleport." + tp.getTpType().getName() + ".request-timer");
         if (delay == 0) delay = 30;
         String request = tpClient.getName() + " wants to teleport to you.";
 
@@ -215,14 +251,9 @@ public class TeleportManager {
         tpClient.sendMessage(ChatColor.GOLD + "Request sent to " + ChatColor.YELLOW + tpTarget.getName());
 
         // schedule removal task
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(lemonaid, () -> {
             tpClient.sendMessage(ChatColor.RED + "Teleport request expired!");
             playerRequests.remove(tp);
         }, delay * 20L);
-    }
-
-    public void saveWarpManager() {
-
-        // TODO onDisable method to make sure the DB has all the warps
     }
 }

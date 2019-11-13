@@ -15,7 +15,8 @@ public class TeleportTask extends BukkitRunnable {
     /**
      * Dependency injection of the current plugin instance.
      */
-    private Lemonaid plugin;
+    private Lemonaid lemonaid;
+
     /**
      * Teleport object with the information needed to execute the
      * teleportation event on the client or target.
@@ -37,15 +38,15 @@ public class TeleportTask extends BukkitRunnable {
 
     /**
      * Task object to activate for Teleportation execution.
-     * @param pl Dependency injection of the current Lemonaid instance.
+     * @param plugin Dependency injection of the current Lemonaid instance.
      * @param t Teleport object containing the required teleportation
      *          information.
      */
-    TeleportTask(Lemonaid pl, Teleport t) {
-        plugin = pl;
+    TeleportTask(Lemonaid plugin, Teleport t) {
+        lemonaid = plugin;
         tp = t;
-        timer = plugin.getConfig().getInt("teleport." + tp.getTpType().getName() + ".timer");
-        cancelCountdown = this.plugin.getConfig().getBoolean("teleport.cancel-countdown");
+        timer = lemonaid.getTeleportManager().getTimer(t);
+        cancelCountdown = lemonaid.getTeleportManager().getCancelCooldown();
         if (timer < 1) timer = 1; // fallback
     }
 
@@ -98,6 +99,7 @@ public class TeleportTask extends BukkitRunnable {
                      z != player.getLocation().getBlockZ())) {
                 // client has moved! cancel task!
                 player.sendMessage(ChatColor.RED + "Teleportation canceled!");
+                // TODO refund?
                 this.cancel();
             }
             // Countdown alerts
@@ -111,12 +113,15 @@ public class TeleportTask extends BukkitRunnable {
         // Successful completion of task
         else {
             // Save player data in Lemon wrapper
-            User user = plugin.getUserManager().getUser(player.getUniqueId());
+            User user = lemonaid.getUserManager().getUser(player.getUniqueId());
             user.setLastLocation(origin);
-            user.updateUser();
+            lemonaid.getUserManager().updateUser(user);
             // Can't perform if we don't know where to go
-            if (destination != null) player.teleport(destination);
-            else plugin.getLogger().warning("Error DestinationUnknown! More info in plugin readme.txt!");
+            if (destination != null)
+                player.teleport(destination);
+            else
+                lemonaid.getLogger().warning("Error DestinationUnknown! More info in plugin " +
+                        "readme.txt!");
             // Finish the task and remove from scheduler
             this.cancel();
         }
