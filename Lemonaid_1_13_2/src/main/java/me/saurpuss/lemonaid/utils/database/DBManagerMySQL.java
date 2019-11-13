@@ -69,6 +69,14 @@ public class DBManagerMySQL extends DBManager {
     }
 
     @Override
+    protected User createUser(UUID uuid) {
+
+
+
+        return new User(uuid);
+    }
+
+    @Override
     public boolean saveUser(User user) {
 
 
@@ -78,10 +86,12 @@ public class DBManagerMySQL extends DBManager {
 
     @Override
     public User getUser(UUID uuid) {
+        // If new user #createUser(new User(uuid))
 
 
 
-        return new User(uuid);
+        // No pre-existing user
+        return createUser(uuid);
     }
 
     @Override

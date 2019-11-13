@@ -11,6 +11,7 @@ public abstract class DBManager {
     abstract boolean save();
 
     // User related methods
+    protected abstract User createUser(UUID uuid);
     public abstract boolean saveUser(User user);
     public abstract User getUser(UUID uuid);
     abstract boolean deleteUser(User user);
