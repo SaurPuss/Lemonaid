@@ -1,7 +1,7 @@
 package me.saurpuss.lemonaid.utils.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.database.DatabaseManager;
+import me.saurpuss.lemonaid.utils.database.OldMySQL;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -51,7 +51,7 @@ public class TeleportManager {
         lemonaid = plugin;
         config = lemonaid.getConfig();
         playerRequests = new HashSet<>();
-        warpManager = DatabaseManager.getWarps();
+        warpManager = OldMySQL.getWarps();
     }
 
     /**

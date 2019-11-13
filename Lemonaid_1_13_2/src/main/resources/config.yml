@@ -13,12 +13,14 @@
 # Logs register the date, using the date format 'MMM dd' as default, which results in "Aug 02", you
 # can change the formatting to your liking using Java LocalDate format patterns.
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
-mysql:
-  host: ''
-  port: ''
-  database: ''
-  username: ''
-  password: ''
+database:
+  flat-file: false
+  mysql: true
+    host: ''
+    port: ''
+    database: ''
+    username: ''
+    password: ''
 log:
   append: true
   to-recap: true

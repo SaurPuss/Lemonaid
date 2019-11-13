@@ -10,7 +10,7 @@ import org.bukkit.Location;
 import java.sql.*;
 import java.util.*;
 
-public class DatabaseManager {
+public class OldMySQL {
 
     // TODO add UserNotFound error on retrieval
 
@@ -21,14 +21,11 @@ public class DatabaseManager {
     private static Multimap<UUID, String> homeRemovals = HashMultimap.create();
     private static HashSet<String> warpRemovals = new HashSet<>();
 
-    private static Lemonaid plugin = Lemonaid.instance;
+    private Lemonaid lemonaid;
     private static Connection conn; // TODO make this work
-    private static final String DB_URL =
-            "jdbc:mysql://" + plugin.getConfig().getString("sql.host") +
-                    ":" + plugin.getConfig().getString("sql.port") +
-                    "/" + plugin.getConfig().getString("sql.database");
-    private static final String DB_USER = plugin.getConfig().getString("sql.user");
-    private static final String DB_PASS = plugin.getConfig().getString("sql.password");
+    private static final String DB_URL = "jdbc:mysql://";
+    private static final String DB_USER = "sql.user";
+    private static final String DB_PASS = "sql.password";
 
     private static final String lemonTable = "lemonaid_users";
     private static final String lemonHomes = "lemonaid_homes";
@@ -36,17 +33,21 @@ public class DatabaseManager {
     private static final String publicWarps = "lemonaid_warps";
     private static final String partyTable = "lemonaid_party";
 
-    private static void connect() {
+    public OldMySQL(Lemonaid plugin) {
+        this.lemonaid = plugin;
+    }
+
+    private void connect() {
         try {
 //            Class.forName("com.mysql.jdbc.Driver"); // No longer required in java 8
             conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
         } catch (SQLException e) {
-            plugin.getLogger().warning("SQL exception while trying to connect to the database!");
+            lemonaid.getLogger().warning("SQL exception while trying to connect to the database!");
             e.printStackTrace();
         }
     }
 
-    private static void createTables() {
+    private void createTables() {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
             String lemons = "CREATE TABLE IF NOT EXISTS " + lemonTable + "(" +
                     " pk_uuid CHAR(36) CHARACTER SET ascii NOT NULL PRIMARY KEY," +
@@ -104,7 +105,7 @@ public class DatabaseManager {
     }
 
 
-    public static User getUser(UUID uuid) {
+    public User getUser(UUID uuid) {
         User user;
         UUID id = null, lastMessage = null;
         long muteEnd = 0;
@@ -182,13 +183,13 @@ public class DatabaseManager {
 
             return user;
         } catch (SQLException e) {
-            plugin.getLogger().info("SQL exception when trying to retrieve Lemon from database, creating new entry.");
+            lemonaid.getLogger().info("SQL exception when trying to retrieve Lemon from database, creating new entry.");
             e.printStackTrace();
             return new User(uuid);
         }
     }
 
-    public static void createUser(User user) {
+    public void createUser(User user) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
             String sql = "INSERT INTO " + lemonTable +
                     " (pk_uuid, last_location_world, last_location_x, last_location_y," +
@@ -207,8 +208,8 @@ public class DatabaseManager {
 
             // One row should be affected
             if (statement.executeUpdate() != 1) {
-                plugin.getLogger().warning("Error while inserting new user record into MySQL database!");
-                plugin.getLogger().info("Affected user: " + Bukkit.getPlayer(user.getUuid()).getName());
+                lemonaid.getLogger().warning("Error while inserting new user record into MySQL database!");
+                lemonaid.getLogger().info("Affected user: " + Bukkit.getPlayer(user.getUuid()).getName());
             }
 
         } catch (SQLException e) {
@@ -216,13 +217,13 @@ public class DatabaseManager {
         }
     }
 
-    public static boolean saveUser(User user) {
+    public boolean saveUser(User user) {
 
         // TODO sql update user & homes & ignored
         return true;
     }
 
-    public static void deleteRemovalRecords() {
+    public void deleteRemovalRecords() {
         if (ignoreRemovals.size() == 0 && homeRemovals.size() == 0) return;
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
@@ -268,38 +269,38 @@ public class DatabaseManager {
         }
     }
 
-    public static void removeRecord(UUID player, UUID target) {
+    public void removeRecord(UUID player, UUID target) {
         ignoreRemovals.put(player, target);
     }
 
-    public static void undoRemoveRecord(UUID player, UUID target) {
+    public void undoRemoveRecord(UUID player, UUID target) {
         ignoreRemovals.remove(player, target);
     }
 
-    public static void removeRecord(UUID player, String homeName) {
+    public void removeRecord(UUID player, String homeName) {
         homeRemovals.put(player, homeName);
     }
 
-    public static void undoRemoveRecord(UUID player, String homeName) {
+    public void undoRemoveRecord(UUID player, String homeName) {
         homeRemovals.remove(player, homeName);
     }
 
-    public static HashMap<String, Location> getWarps() {
+    public HashMap<String, Location> getWarps() {
 
 
 
         return new HashMap<>();
     }
 
-    public static void addWarp(String warpName, Location warpLocation) {
+    public void addWarp(String warpName, Location warpLocation) {
 
     }
 
-    public static void updateWarp(String warpName, Location warpLocation) {
+    public void updateWarp(String warpName, Location warpLocation) {
 
     }
 
-    public static void deleteWarp(String warpName) {
+    public void deleteWarp(String warpName) {
 
 
     }

@@ -1,7 +1,7 @@
 package me.saurpuss.lemonaid.utils.users;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.database.DatabaseManager;
+import me.saurpuss.lemonaid.utils.database.OldMySQL;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
@@ -52,7 +52,7 @@ public class UserManager {
         if (userManager.containsKey(uuid))
             return userManager.get(uuid);
 
-        return DatabaseManager.getUser(uuid);
+        return OldMySQL.getUser(uuid);
     }
 
 
@@ -62,7 +62,7 @@ public class UserManager {
     // trigger these during world save event && onDisable
     public void saveUserManager() {
         userManager.forEach((uuid, user) -> saveUser(user));
-        DatabaseManager.deleteRemovalRecords();
+        OldMySQL.deleteRemovalRecords();
     }
 
 
@@ -72,7 +72,7 @@ public class UserManager {
     }
 
     private void saveUser(User user) {
-        DatabaseManager.saveUser(user);
+        OldMySQL.saveUser(user);
     }
 
     public void removeUser(User user) {

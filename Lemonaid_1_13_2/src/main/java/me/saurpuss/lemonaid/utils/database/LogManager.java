@@ -1,22 +1,17 @@
 package me.saurpuss.lemonaid.utils.database;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.utility.DateFormatting;
-import me.saurpuss.lemonaid.utils.utility.PermissionMessages;
-import me.saurpuss.lemonaid.utils.utility.Styling;
+import me.saurpuss.lemonaid.utils.utility.*;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.logging.Level;
 
-public class LogManager implements DateFormatting, Styling, PermissionMessages {
+public class LogManager implements DateFormatting, PermissionMessages, Styling {
 
     private Lemonaid lemonaid;
 

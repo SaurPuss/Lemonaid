@@ -1,7 +1,7 @@
 package me.saurpuss.lemonaid.utils.users;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.database.DatabaseManager;
+import me.saurpuss.lemonaid.utils.database.OldMySQL;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -34,7 +34,7 @@ public class User {
         ignored = new HashSet<>();
         setMaxHomes();
 
-        DatabaseManager.createUser(this); // TODO update
+        OldMySQL.createUser(this); // TODO update
     }
 
     public User(UUID uuid, long muteEnd, String nickname, Location lastLocation,
@@ -102,7 +102,7 @@ public class User {
     public boolean isMuted() { return muteEnd > System.currentTimeMillis(); }
     public void removeHome(String homeName) {
         homes.remove(homeName.toLowerCase());
-        DatabaseManager.removeRecord(uuid, homeName); // Create a record for DB removal
+        OldMySQL.removeRecord(uuid, homeName); // Create a record for DB removal
     }
     public int homeCount() { return homes.size(); }
     public Location getHome(String name) { return homes.get(name.toLowerCase()); }
@@ -152,11 +152,11 @@ public class User {
         // TODO move to USerManager
         if (ignored.contains(uuid)) {
             ignored.remove(uuid);
-            DatabaseManager.removeRecord(this.uuid, uuid); // Add record for removal from DB
+            OldMySQL.removeRecord(this.uuid, uuid); // Add record for removal from DB
             return false; // Player is no longer ignored
         } else {
             ignored.add(uuid);
-            DatabaseManager.undoRemoveRecord(this.uuid, uuid); // Make sure there isn't a deletion record in the map
+            OldMySQL.undoRemoveRecord(this.uuid, uuid); // Make sure there isn't a deletion record in the map
             return true; // Player is now ignored
         }
     }
