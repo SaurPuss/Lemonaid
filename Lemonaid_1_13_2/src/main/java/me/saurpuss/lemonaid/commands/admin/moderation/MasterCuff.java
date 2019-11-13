@@ -22,7 +22,13 @@ public class MasterCuff implements CommandExecutor {
         // Permission check
         if (!sender.hasPermission("lemonaid.globalcuff")) return true;
 
-        lemonaid.toggleMasterCuff();
+        if (args.length == 0) {
+            lemonaid.toggleMasterCuff();
+        } else if (args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) {
+            lemonaid.toggleMasterCuff(args[0].equalsIgnoreCase("on"));
+        } else {
+            return false;
+        }
         sender.sendMessage(ChatColor.DARK_RED + "MasterCuff " + (lemonaid.isMasterCuff() ?
                 ChatColor.RED + " ON" : ChatColor.GREEN + " OFF") + ChatColor.DARK_RED +
                 " for all players until next restart!");

@@ -6,7 +6,7 @@ import me.saurpuss.lemonaid.commands.social.*;
 import me.saurpuss.lemonaid.commands.social.channels.*;
 import me.saurpuss.lemonaid.commands.teleport.*;
 import me.saurpuss.lemonaid.events.*;
-import me.saurpuss.lemonaid.utils.database.LogManager;
+import me.saurpuss.lemonaid.utils.database.*;
 import me.saurpuss.lemonaid.utils.teleport.TeleportManager;
 import me.saurpuss.lemonaid.utils.users.UserManager;
 import net.milkbowl.vault.economy.Economy;
@@ -22,6 +22,7 @@ public final class Lemonaid extends JavaPlugin {
     private static UserManager userManager;
     private static TeleportManager teleportManager;
     private static LogManager logManager;
+    private static DBManager dbManager;
 
     // Moderation settings
     private volatile boolean masterCuff = false;
@@ -110,6 +111,15 @@ public final class Lemonaid extends JavaPlugin {
         userManager = new UserManager(this);
         teleportManager = new TeleportManager(this);
         logManager = new LogManager(this);
+
+        // select dbManager
+        if (getConfig().getBoolean("database.flat-file")) {
+            dbManager = new DBManagerConfig();
+        } else if (getConfig().getBoolean("database.config")) {
+            dbManager = new DBManagerMySQL(this);
+        }
+
+
     }
 
     private void registerDependencies() {
@@ -135,8 +145,8 @@ public final class Lemonaid extends JavaPlugin {
     public void toggleMasterCuff(boolean isOn) { masterCuff = isOn; }
     public boolean isMasterCuff() { return masterCuff; }
     public void toggleGlobalMute() { globalMute = !globalMute; }
+    public void toggleGlobalMute(boolean isOn) { globalMute = isOn; }
     public boolean isGlobalMute() { return globalMute; }
-
 
     // Get the Managers
     public TeleportManager getTeleportManager() { return teleportManager; }

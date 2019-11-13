@@ -23,7 +23,14 @@ public class GlobalMute implements CommandExecutor {
         // Permission check
         if (!sender.hasPermission("lemonaid.globalmute")) return true;
 
-        lemonaid.toggleGlobalMute();
+        if (args.length == 0) {
+            lemonaid.toggleGlobalMute();
+        } else if (args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) {
+            lemonaid.toggleGlobalMute(args[0].equalsIgnoreCase("on"));
+        } else {
+            return false;
+        }
+
         sender.sendMessage(ChatColor.DARK_RED + "GlobalMute " + (lemonaid.isGlobalMute() ?
                 ChatColor.RED + " ON" : ChatColor.GREEN + " OFF") + ChatColor.DARK_RED +
                 " for all players until next restart!");
