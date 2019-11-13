@@ -134,6 +134,16 @@ public class User {
         // TODO colors
         StringBuilder s = new StringBuilder(); // TODO replace with StringJoiner
         homes.forEach((name, location) -> s.append(name + " "));
+        s.append("(" + homeCount() + "/" + maxHomes + ")");
+        return s.toString();
+    }
+
+    public String adminListHomes() {
+        StringBuilder s = new StringBuilder(); // TODO replace with StringJoiner
+        homes.forEach((name, location) -> s.append(name + " " + "world: " + location.getWorld() +
+                " x: " + location.getBlockX() + " y: " + location.getBlockY() + " z: "
+                + location.getBlockZ()));
+        s.append("(" + homeCount() + "/" + maxHomes + ")");
         return s.toString();
     }
     // TODO listPlayerHomes for the admin /homes [list:player] command

@@ -2,6 +2,7 @@ package me.saurpuss.lemonaid.commands.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.teleport.Teleport;
+import me.saurpuss.lemonaid.utils.utility.PermissionMessages;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -9,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 
-public class TpAccept implements CommandExecutor {
+public class TpAccept implements CommandExecutor, PermissionMessages {
 
     private Lemonaid plugin;
 
@@ -71,7 +72,7 @@ public class TpAccept implements CommandExecutor {
                 return true;
             }
         } else {
-            sender.sendMessage(Utils.playerOnly());
+            sender.sendMessage(playerOnly());
             return true;
         }
     }

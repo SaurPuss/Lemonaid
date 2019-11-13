@@ -4,6 +4,7 @@ import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.teleport.Teleport;
 import me.saurpuss.lemonaid.utils.teleport.TeleportType;
 import me.saurpuss.lemonaid.utils.users.User;
+import me.saurpuss.lemonaid.utils.utility.PermissionMessages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -11,7 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Tpa implements CommandExecutor {
+public class Tpa implements CommandExecutor, PermissionMessages {
 
     Lemonaid plugin;
     public Tpa(Lemonaid plugin) {
@@ -34,17 +35,17 @@ public class Tpa implements CommandExecutor {
             }
 
             // Check if target is /busy or has player /ignored
-            User user = plugin.getUser(target.getUniqueId());
+            User user = plugin.getUserManager().getUser(target.getUniqueId());
             if (user.isBusy() || user.isIgnored(player.getUniqueId())) {
                 player.sendMessage(ChatColor.RED + target.getName() + " is unavailable.");
                 return true;
             }
 
             // Start tp request
-            plugin.getTeleportManager().teleportEvent(new Teleport(player, target, null,
+            plugin.getTeleportManager().addRequest(new Teleport(player, target, null,
                     TeleportType.TPA));
         } else { // Console can't do this, like at all
-            sender.sendMessage(Utils.playerOnly());
+            sender.sendMessage(playerOnly());
         }
         return true;
     }

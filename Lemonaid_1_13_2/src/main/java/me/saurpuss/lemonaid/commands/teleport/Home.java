@@ -4,6 +4,7 @@ import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.teleport.Teleport;
 import me.saurpuss.lemonaid.utils.teleport.TeleportType;
 import me.saurpuss.lemonaid.utils.users.User;
+import me.saurpuss.lemonaid.utils.utility.PermissionMessages;
 import me.saurpuss.lemonaid.utils.utility.PlayerSearch;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -17,7 +18,7 @@ import org.bukkit.entity.Player;
  * with the lemonaid.teleport.admin permission node can use /home player:home to teleport to
  * a specific player home instantly.
  */
-public class Home implements CommandExecutor, PlayerSearch {
+public class Home implements CommandExecutor, PlayerSearch, PermissionMessages {
 
     /**
      * Dependency injection of the current plugin instance
@@ -48,7 +49,7 @@ public class Home implements CommandExecutor, PlayerSearch {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            User user = plugin.getUser(player.getUniqueId());
+            User user = plugin.getUserManager().getUser(player.getUniqueId());
             Location location;
             if (args.length == 0) {
                 // player only has a single home to teleport to
@@ -83,7 +84,7 @@ public class Home implements CommandExecutor, PlayerSearch {
                     return true;
                 }
 
-                user = plugin.getUser(target.getUniqueId());
+                user = plugin.getUserManager().getUser(target.getUniqueId());
                 location = user.getHome(subArg[1]);
                 if (location != null) {
                     player.teleport(location);
@@ -114,7 +115,7 @@ public class Home implements CommandExecutor, PlayerSearch {
             return true;
         } else {
             // Console can't teleport to a player home
-            sender.sendMessage(Utils.playerOnly());
+            sender.sendMessage(playerOnly());
             return true;
         }
     }

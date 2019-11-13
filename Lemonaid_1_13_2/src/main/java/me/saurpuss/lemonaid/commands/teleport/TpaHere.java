@@ -4,6 +4,7 @@ import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.teleport.Teleport;
 import me.saurpuss.lemonaid.utils.teleport.TeleportType;
 import me.saurpuss.lemonaid.utils.users.User;
+import me.saurpuss.lemonaid.utils.utility.PermissionMessages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,9 +13,10 @@ import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 
-public class TpaHere implements CommandExecutor {
+public class TpaHere implements CommandExecutor, PermissionMessages {
 
     Lemonaid plugin;
+
     public TpaHere(Lemonaid plugin) {
         this.plugin = plugin;
     }
@@ -45,18 +47,18 @@ public class TpaHere implements CommandExecutor {
 
             // Send tpahere requests to available targets
             for (Player target : list) {
-                User user = plugin.getUser(target.getUniqueId());
+                User user = plugin.getUserManager().getUser(target.getUniqueId());
                 if (user.isBusy() || user.isIgnored(player.getUniqueId())) {
                     player.sendMessage("§c" + target.getName() + " is unavailable.");
                 } else {
-                    plugin.getTeleportManager().teleportEvent(new Teleport(player, target, null,
+                    plugin.getTeleportManager().addRequest(new Teleport(player, target, null,
                             TeleportType.TPAHERE));
                 }
             }
             return true;
         } else {
             // Console can't do this
-            sender.sendMessage(Utils.playerOnly());
+            sender.sendMessage(playerOnly());
             return true;
         }
     }

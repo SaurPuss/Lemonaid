@@ -2,13 +2,14 @@ package me.saurpuss.lemonaid.commands.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.users.User;
+import me.saurpuss.lemonaid.utils.utility.PlayerSearch;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Homes implements CommandExecutor {
+public class Homes implements CommandExecutor, PlayerSearch {
 
     private Lemonaid plugin;
 
@@ -27,13 +28,13 @@ public class Homes implements CommandExecutor {
                 String[] subArg = args[0].split(":");
 
                 // Try to retrieve the player
-                Player target = Utils.getPlayer(subArg[1]);
+                Player target = getPlayer(subArg[1]);
                 if (target == null) {
                     sender.sendMessage(ChatColor.RED + "Can't find " + subArg[1]);
                     return true;
                 }
 
-                User user = plugin.getUser(target.getUniqueId());
+                User user = plugin.getUserManager().getUser(target.getUniqueId());
                 player.sendMessage(ChatColor.YELLOW + "Saved homes for " + target.getName() + ":");
                 user.getHomes().forEach((home, location) -> sender.sendMessage(
                         ChatColor.YELLOW + "- " + home + ChatColor.GOLD + " location: "
@@ -42,7 +43,7 @@ public class Homes implements CommandExecutor {
             }
             // list homes for self
             else {
-                User user = plugin.getUser(player.getUniqueId());
+                User user = plugin.getUserManager().getUser(player.getUniqueId());
                 // TODO make this a thing
 
 
@@ -63,14 +64,14 @@ public class Homes implements CommandExecutor {
             }
 
             // Get a valid player
-            Player target = Utils.getPlayer(args[0]);
+            Player target = getPlayer(args[0]);
             if (target == null) {
                 sender.sendMessage(ChatColor.RED + "Can't find " + args[0] + "!");
                 return true;
             }
 
             // Loop through homes list and display: home name, world, x, y, z
-            User user = plugin.getUser(target.getUniqueId());
+            User user = plugin.getUserManager().getUser(target.getUniqueId());
             sender.sendMessage(ChatColor.YELLOW + "Saved homes for " + target.getName() + ":");
             user.getHomes().forEach((home, location) -> sender.sendMessage(
                     ChatColor.YELLOW + "- " + home + ChatColor.GOLD + " location: "
