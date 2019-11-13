@@ -2,50 +2,51 @@ package me.saurpuss.lemonaid.commands.admin.moderation;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.users.User;
-import org.bukkit.Bukkit;
+import me.saurpuss.lemonaid.utils.utility.PlayerSearch;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ForceIgnore implements CommandExecutor {
+public class ForceIgnore implements CommandExecutor, PlayerSearch {
 
-    private Lemonaid plugin;
-    public ForceIgnore(Lemonaid plugin) { this.plugin = plugin; }
+    private Lemonaid lemonaid;
+
+    private final String LOG_TYPE;
+
+    public ForceIgnore(Lemonaid plugin) {
+        lemonaid = plugin;
+        LOG_TYPE = lemonaid.getLogManager().RECAP;
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // Permission check
+        if (!sender.hasPermission("lemonaid.forceignore")) return true;
+
         // Admin command to force an addition to a player's ignored list
         if (args.length == 2) {
-            Player player = Utils.getPlayer(args[0]);
-            if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Can't find " + args[0]);
+            Player player = getPlayer(args[0]);
+            Player target = getPlayer(args[1]);
+            if (player == null || target == null) {
+                sender.sendMessage(ChatColor.DARK_RED + "Can't find " + ChatColor.RED +
+                        (player == null ? args[0] : args[1]) + ChatColor.DARK_RED + "!");
                 return true;
             }
 
-            Player target = Utils.getPlayer(args[1]);
-            if (target == null) {
-                sender.sendMessage(ChatColor.RED + "Can't find " + args[1]);
-                return true;
-            }
-
-            User user = plugin.getUser(player.getUniqueId());
+            User user = lemonaid.getUserManager().getUser(player.getUniqueId());
             user.toggleIgnore(target.getUniqueId());
-            user.updateUser();
+            lemonaid.getUserManager().updateUser(user);
 
-            // Notify moderators
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (p.hasPermission("lemonaid.notify")) {
-                    p.sendMessage(ChatColor.YELLOW + sender.getName() + " forced " + player.getName() +
-                            " to " + (user.isIgnored(target.getUniqueId()) ? ChatColor.RED + "ignore" :
-                            ChatColor.GREEN + "unignore") + ChatColor.YELLOW + target.getName());
-                }
-            }
+            String log = ChatColor.BLUE + sender.getName() + ChatColor.GOLD + " forced " +
+                    ChatColor.DARK_PURPLE + player.getName() + ChatColor.GOLD + " to " +
+                    (user.isIgnored(target.getUniqueId()) ? ChatColor.RED + "ignore " :
+                            ChatColor.GREEN + "unignore ") +
+                    ChatColor.LIGHT_PURPLE + target.getName() + ChatColor.GOLD + "!";
 
-            plugin.getLogger().info(ChatColor.YELLOW + sender.getName() + " forced " + player.getName() +
-                    " to " + (user.isIgnored(target.getUniqueId()) ? ChatColor.RED + "ignore" :
-                    ChatColor.GREEN + "unignore") + ChatColor.YELLOW + target.getName());
+            // Recap & Notify moderators
+            lemonaid.getLogManager().addLog(LOG_TYPE, log);
             return true;
         }
 
