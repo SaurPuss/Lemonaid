@@ -12,7 +12,10 @@ public class WorldEvents implements Listener {
 
     @EventHandler
     public void worldSave(WorldSaveEvent e) {
-        plugin.saveUserManager();
-        plugin.saveWarpManager();
+        // Save plugin managers
+        plugin.getUserManager().saveUserManager();
+        plugin.getTeleportManager().saveWarpManager();
+        if (!plugin.getConfig().getBoolean("log.append"))
+            plugin.getLogManager().saveLogs();
     }
 }

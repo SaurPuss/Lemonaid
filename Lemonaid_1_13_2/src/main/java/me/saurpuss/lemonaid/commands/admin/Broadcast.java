@@ -1,5 +1,6 @@
 package me.saurpuss.lemonaid.commands.admin;
 
+import me.saurpuss.lemonaid.utils.utility.Styling;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -9,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Bring the message of the gods to all who can hear
  */
-public class Broadcast implements CommandExecutor {
+public class Broadcast implements CommandExecutor, Styling {
 
     /**
      * Broadcast a message to the entire server
@@ -24,8 +25,8 @@ public class Broadcast implements CommandExecutor {
         if (args.length == 0) return false;
 
         // Broadcast the message to all players and the console
-        String message = StringUtils.join(args, ' ', 0, args.length);
-        Bukkit.broadcastMessage("§c[§eBROADCAST§c]§6 " + Utils.color(message));
+        String message = StringUtils.join(args, ' ');
+        Bukkit.broadcastMessage("§c[§eBROADCAST§c]§6 " + color(message));
         return true;
     }
 }

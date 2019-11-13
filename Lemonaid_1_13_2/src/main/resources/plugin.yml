@@ -5,10 +5,11 @@ name: Lemonaid
 version: ${project.version}
 main: me.saurpuss.lemonaid.Lemonaid
 authors: [SaurPuss]
-description: Lots of basic commands put together in one plugin
+description: Lots of basic utilities put together in one plugin
 database: true
 website: https://voxmc.com
 softdepend: [Vault, WorldGuard]
+prefix: Lemonaid
 
 # Permission message hooks
 &unknown "§rUnknown command" # Hide command existence from players without permission
@@ -26,6 +27,15 @@ commands:
       /<command> info - Plugin information
       /<command> reload - Reload the plugin configs
       /<command> ?|help - Plugin help file
+  halp:
+    description: Write your own help file and chapters
+    usage: |
+      /<command> - Display help topics
+      /<command> [topic] - Display a topic
+      /<command> [topic] [pagenumber] - Display a specific page for a topic
+    aliases: [ahelp, advancedhelp, help]
+    permission: lemonaid.help
+
 
   #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
   #   Administrator commands
@@ -72,30 +82,32 @@ commands:
   mute:
     description: Prevent a player from speaking
     usage: |
-      /<command> list - Display last 10 mute logs
-      /<command> help|? [#] - Display mute help (page number optional)
+      /<command> [list] - Display mute log
+      /<command> [help|?] [#] - Display mute help (page number optional)
       /<command> [target] - Mute player indefinitely, apply again to unmute
-      /<command> [target] [time] - Mute a player for a specific amount of time (0 = forever |
-      number + time: s = seconds, m = minutes, h = hours, d = days, w = weeks, y = years, "10m =
-      10minutes")
-      /<command> [target] [time] [reason] - Mute a player for a specific amount of time and log
-      the reason
-      /<command> [target] 0 [reason] - Mute a player indefinitely for a specific reason
+      /<command> [target] [time unit] - Mute a player for a specific amount of time
+      /<command> [target] [time unit] [reason] - Mute a player for a specific amount of time and
+      log the reason
+      /<command> [target] [0] [reason] - Mute a player indefinitely for a specific reason
+      Available time units (number + time): s = seconds, m = minutes, h = hours, d = days,
+      w = weeks, y = years
+      Example: "10m = 10minutes", or use 0 to apply forever
     permission: lemonaid.mute
     permission-message: *unknown
   cuff:
     description: Lock an offending player in place and prevent them from using chat
     usage: |
-      /<command> list - Display last 10 cuff logs
-      /<command> help|? [#] - Display cuff help (page number optional)
+      /<command> [list] - Display cuff log
+      /<command> [help|?] [#] - Display cuff help (page number optional)
       /<command> [target] - Toggle cuff on|off for your target
       /<command> [target] [reason...] - Toggle cuff on a player and log a reason
     permission: lemonaid.cuff
     permission-message: *unknown
   recap:
-    description: Log quick recaps for information hand-off
+    description: Log quick recaps for information hand-off, also lists mutes and cuffs
     usage: |
-      /<command> - Display last 10 recaps
+      /<command> - Display recap log
+      /<command> [list] - Display recap log
       /<command> [message...] - Add recap
     permission: lemonaid.recap
     permission-message: *unknown
@@ -140,8 +152,8 @@ commands:
     permission: lemonaid.chat.busy
     permission-message: *noperms
   ignore:
-    description: |
-      Ignore all messages and tp requests from another player, does not apply to moderators.
+    description: Ignore all messages and tp requests from another player, does not apply to
+    moderators.
     usage: |
       /<command> - Display your ignored list
       /<command> [target] - Add or remove your target from your ignore list
@@ -321,6 +333,8 @@ permissions:
       lemonaid.notify: true
       lemonaid.ignoreexempt: true
       lemonaid.afk.kick: false
+      lemonaid.exempt.cuff: true
+      lemonaid.exempt.mute: true
   lemonaid.notify:
     description: Permission required to be notified of moderation commands
     default: false

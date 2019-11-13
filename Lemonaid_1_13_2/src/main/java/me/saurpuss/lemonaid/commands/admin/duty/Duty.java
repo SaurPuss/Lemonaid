@@ -6,4 +6,6 @@ public class Duty {
 
     // TODO toggle perm-node attachments to player based on duty list
 
+    // TODO toggle operator option
+
 }

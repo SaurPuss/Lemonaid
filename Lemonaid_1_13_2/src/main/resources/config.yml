@@ -1,37 +1,61 @@
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 #   - Database Settings -
-# This plugin requires an MySQL database to store information about the
-# users. Fill out the information below to make the plugin functional.
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+# This plugin requires an MySQL database to store information about the users. Fill out the
+# information below to make the plugin functional.
+# Logs are automatically stored in their own text files, logs for mutes and cuffs are
+# automatically generated when the commands are performed. They are stored in their respective
+# log files as well as the recap.txt file. Recap also functions as a handoff, allowing moderators
+# with the correct permissions to manually add a log with the /recap command. Their size
+# determines the amount of log lines returned when the log is requested server side. The minimum
+# size is 5 for mutes and cuffs, and 10 for recaps.
+# By default each log is appended to the text file, however, you can choose to override this and
+# only save the logs present in the current runtime by setting log-append to false.
+# Logs register the date, using the date format 'MMM dd' as default, which results in "Aug 02", you
+# can change the formatting to your liking using Java LocalDate format patterns.
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 mysql:
   host: ''
   port: ''
   database: ''
   username: ''
   password: ''
+log:
+  append: true
+  to-recap: true
+  size:
+    cuff: 10
+    mute: 10
+    recap: 15
+  date-format: 'MMM dd'
+use-halp: false
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 #   - Custom Server List Options -
-# You can use '&' for color codes.
-# Use - to indicate a new line with another option.
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-server-motd:
-  - '&cSexy Minecraft Server Here'
-server-motd-hover:
-  - 'Website - https://voxmc.com'
-  - 'Reddit  - https://reddit/com/r/voxmc'
-  - 'Discord - https://discord.gg/BCBMZTs'
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+# You can use '&' for color codes, or § if you prefer. The messages rotate, use - to create a new
+# line option. The hover is a multiline statement, just add a new line and indent properly.
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
+server-list:
+  messages:
+    - '§6Come and play because we''re awesome!'
+    - '&cSexy Minecraft Server Here'
+  hover: |
+    Website - https://voxmc.com
+    Reddit  - https://reddit/com/r/voxmc
+    Discord - https://discord.gg/BCBMZTs
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 #   - Player join messages -
-# You can use '&' for color codes.
-# Use - to indicate a new line with another motd option.
-# Use %player% to stub in the joining player's display name.
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-player-motd:
+# You can use '&' for color codes, or § if you prefer. Use - to indicate a new line with another
+# motd option. Use %player% to stub in the joining player's display name.
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
+motd:
   - '&eWelcome back %player%!'
   - '&eHey %player%! Enjoy your stay!'
   - '&eDon''t forget to read the &6/rules&e!'
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+rules:
+  - 'Don''t be a dick'
+  - 'Have fun'
+
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 #   - Joining the server for the first time -
 # The announcement is a list of options, one will be used at random.
 # You can use '&' for color codes.
@@ -40,7 +64,7 @@ player-motd:
 # Use %player% to stub in the joining player's display name.
 # In spawn locations yaw is the horizontal view direction, and pitch
 # is the vertical view direction.
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 first-join-announcements:
   - Welcome %player% to the server!
   - Never gonna give %player% up, never gonna let %player% down
@@ -58,13 +82,13 @@ first-join-spawn:
   z: 0.5
   yaw: 0.0
   pitch: 0.0
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 #   - Server Spawn Locations -
 # In spawn locations yaw is the horizontal view direction, and pitch
 # is the vertical view direction. All spawns can be overridden with the
 # /setspawn <world|death> command, using the location of the command
 # executor.
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 world-spawn: # /spawn
   world: 'world'
   x: 0.5
@@ -87,7 +111,7 @@ nether-spawn:
   yaw: 0.0
   pitch: 0.0
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 #   - Player Homes -
 # You can assign homes by creating new keys under player-homes, each
 # will be checked against a player's corresponding homes permission.
@@ -96,13 +120,13 @@ nether-spawn:
 # lemonaid.homes.<groupname> where <groupname> corresponds with the keys
 # listed under player-homes. You can also use lemonaid.homes.unlimited
 # as needed, operators automatically inherit this node.
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 player-homes:
   default: 3
   vip: 5 # lemonaid.homes.vip
   staff: 10 # lemonaid.homes.staff
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 #   - Moderation settings -
 # Setting you can manipulate for groups inheriting lemonaid.ignoreexempt
 # You can allow your moderators to add players to their ignore list by
@@ -113,7 +137,7 @@ player-homes:
 # Players with the lemonaid.duty permission can toggle their duty status
 # by using /duty. Add permissions to be granted (temporarily) to the
 # duty-permissions.
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 allow-moderator-ignore: false # Allow moderators to add players to their ignore list
 allow-moderator-busy: false # Allow moderators to ignore msg etc while busy
 duty-inventory: true # Give a player a temporary clean inventory while in duty
@@ -129,11 +153,11 @@ duty-permissions:
 
 
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 #   - Teleportation -
 # All timers are in seconds. All teleport options need their below
 # settings, but you can tweak the numbers as necessary.
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 teleport:
   # Cancel a teleportation countdown by walking or jumping
   cancel-countdown: true
@@ -185,8 +209,8 @@ teleport:
     water-spawn: true # water blocks are considered a safe location
 
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 #   - Social Settings -
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 local-chat-radius: 80
 

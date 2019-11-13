@@ -19,6 +19,7 @@ public class DatabaseManager {
     private static Multimap<UUID, UUID> ignoreRemovals = HashMultimap.create();
     // Track home pk removals for deletion <Player, HomeName>
     private static Multimap<UUID, String> homeRemovals = HashMultimap.create();
+    private static HashSet<String> warpRemovals = new HashSet<>();
 
     private static Lemonaid plugin = Lemonaid.instance;
     private static Connection conn; // TODO make this work

@@ -36,17 +36,13 @@ public final class Lemonaid extends JavaPlugin {
 //        getLogger().info(Utils.console("Plugin startup"));
         instance = this;
 
-        // Managers
-        userManager = new UserManager(this);
-        teleportManager = new TeleportManager(this);
-        logManager = new LogManager(this);
-
         // TODO test connection to DB and set up tables etc
 
-        // Register elements
-        registerConfigs();
+        // Boot up plugin parts
         registerCommands();
         registerEvents();
+        registerConfigs();
+        registerManagers();
         registerDependencies();
     }
 
@@ -89,6 +85,7 @@ public final class Lemonaid extends JavaPlugin {
         getCommand("home").setExecutor(new Home(this));
 
         // Teleport utility commands
+        getCommand("sethome").setExecutor(new SetHome(this));
 
     }
 
@@ -107,6 +104,12 @@ public final class Lemonaid extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
 
+    }
+
+    private void registerManagers() {
+        userManager = new UserManager(this);
+        teleportManager = new TeleportManager(this);
+        logManager = new LogManager(this);
     }
 
     private void registerDependencies() {
@@ -155,4 +158,5 @@ public final class Lemonaid extends JavaPlugin {
     }
 
     // WorldGuard Stuff
+
 }

@@ -2,12 +2,14 @@ package me.saurpuss.lemonaid.events;
 
 import me.saurpuss.lemonaid.Lemonaid;
 import me.saurpuss.lemonaid.utils.users.User;
+import me.saurpuss.lemonaid.utils.utility.PermissionMessages;
+import me.saurpuss.lemonaid.utils.utility.Styling;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.player.*;
 
-public class ChatModeration implements Listener {
+public class ChatModeration implements Listener, Styling, PermissionMessages {
     private Lemonaid plugin;
     public ChatModeration(Lemonaid plugin) {
         this.plugin = plugin;
@@ -24,10 +26,10 @@ public class ChatModeration implements Listener {
         }
 
         // Get player from userManager
-        User user = plugin.getUser(player.getUniqueId());
+        User user = plugin.getUserManager().getUser(player.getUniqueId());
         // This player is not allowed to talk
         if (user.isMuted() || user.isCuffed()) {
-            player.sendMessage(Utils.noPermission());
+            player.sendMessage(noPermission());
             event.setCancelled(true);
             return;
         }
@@ -37,7 +39,8 @@ public class ChatModeration implements Listener {
         // allowed to ignore in the config
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (!p.hasPermission("lemonaid.ignoreexempt")) {
-                User u = new User(p.getUniqueId()).getUser();
+                // TODO double check this
+                User u = plugin.getUserManager().getUser(p.getUniqueId());
                 if (u.isIgnored(player.getUniqueId()))
                     event.getRecipients().remove(p);
             } else {
@@ -49,7 +52,7 @@ public class ChatModeration implements Listener {
         // Translate chat colors for those with the permission
         if (player.hasPermission("lemonaid.chat.color")) {
             String message = event.getMessage();
-            event.setMessage(Utils.color(message));
+            event.setMessage(color(message));
         }
     }
 
@@ -64,9 +67,9 @@ public class ChatModeration implements Listener {
         }
 
         // Get player from userManager
-        User user = plugin.getUser(player.getUniqueId());
+        User user = plugin.getUserManager().getUser(player.getUniqueId());
         if (user.isCuffed()) {
-            player.sendMessage(Utils.noPermission());
+            player.sendMessage(noPermission());
             event.setCancelled(true);
         }
     }

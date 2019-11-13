@@ -1,0 +1,27 @@
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
+# HEADER
+# Interesting reference: https://github.com/pavog/MySimpleHelp
+# Do a similar setup
+# Looking for subject, subject aliases, chapters / pages
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
+
+&default-permission lemonaid.help
+
+messages:
+  no-permission: You don''t have permission to do this
+  does-not-exist: This page doesn''t exist
+
+# TODO multimap of strings, topic as key, and then additional values if there are aliases, if
+# either match return key
+pages:
+  topic:
+    aliases:
+      - topicname
+      - alternatename
+    permission: *default-permission
+    pages:
+      1:
+        - "stuff"
+        - "more stuff"
+      2:
+        - "extra stuff"
