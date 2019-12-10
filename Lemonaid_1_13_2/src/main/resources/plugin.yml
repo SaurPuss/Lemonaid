@@ -33,7 +33,7 @@ commands:
       /<command> - Display help topics
       /<command> [topic] - Display a topic
       /<command> [topic] [pagenumber] - Display a specific page for a topic
-    aliases: [ahelp, advancedhelp, help]
+    aliases: [ahelp, advancedhelp, chelp, customhelp]
     permission: lemonaid.help
 
 
@@ -200,6 +200,10 @@ commands:
     usage: |
       /<command> - Teleport to your home if there is only one
       /<command> [homename] - Teleport to your home
+      /<command> [list] - List your available homes #
+      /<command> [delete] [homename] - Delete an existing home
+      /<command> [set|add] [homename] - Add a new home
+      /<command> [update|edit] [homename] - Update and existing home to your current location
     permission: lemonaid.teleport.home
     permission-message: *noperms
   # Home utility commands
@@ -294,6 +298,7 @@ permissions:
     description: Admin level permissions for Lemonaid
     default: op
     children:
+      lemonaid.silentjoin: true
       lemonaid.fly: true
       lemonaid.broadcast: true
       lemonaid.mute: true

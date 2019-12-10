@@ -139,6 +139,7 @@ public class Cuff implements CommandExecutor, PlayerSearch, Styling {
 
         // Update and notify the target
         user.setCuffed(!user.isCuffed());
+        user.setCuffReason(reason);
         lemonaid.getUserManager().updateUser(user);
         target.sendMessage( ChatColor.GOLD + "You are now " + (user.isCuffed() ? ChatColor.RED +
                 "cuffed!" : ChatColor.GREEN  + "uncuffed!") + ChatColor.GOLD +

@@ -48,6 +48,10 @@ public class UserManager {
         lastJoinedPlayer = player;
     }
 
+    public String getLastJoinedPlayer() {
+        return lastJoinedPlayer;
+    }
+
     /**
      * Retrieve a User wrapper from the userManager, or try to retrieve one from the Database if
      * there is no pre-existing User in the map.

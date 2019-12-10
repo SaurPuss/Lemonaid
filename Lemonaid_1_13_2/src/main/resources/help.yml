@@ -21,7 +21,12 @@ pages:
     permission: *default-permission
     pages:
       1:
-        - "stuff"
-        - "more stuff"
+        permission: *default-permission
+        content:
+          - "stuff"
+          - "more stuff"
       2:
-        - "extra stuff"
+        permission: special.permission.node
+        content:
+          - "this is an additional chapter for info that's partially available to players"
+          - "all pages with the permission will have a check before being displayed"

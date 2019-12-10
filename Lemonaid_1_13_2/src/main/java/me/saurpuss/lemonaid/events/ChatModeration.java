@@ -29,7 +29,7 @@ public class ChatModeration implements Listener, Styling, PermissionMessages {
         User user = lemonaid.getUserManager().getUser(player.getUniqueId());
         // This player is not allowed to talk
         if (user.isMuted() || user.isCuffed()) {
-            // TODO tell player when their mute ends
+            // TODO tell player when their mute ends & the mute/cuff reason if logged
 
             player.sendMessage(noPermission());
             event.setCancelled(true);
@@ -71,6 +71,7 @@ public class ChatModeration implements Listener, Styling, PermissionMessages {
         // Get player from userManager
         User user = lemonaid.getUserManager().getUser(player.getUniqueId());
         if (user.isCuffed()) {
+            // TODO tell player their cuff reason if logged
             player.sendMessage(noPermission());
             event.setCancelled(true);
         }

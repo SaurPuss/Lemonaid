@@ -86,7 +86,6 @@ public class DBManagerMySQL extends DBManager {
 
     @Override
     public User getUser(UUID uuid) {
-        // If new user #createUser(new User(uuid))
 
 
 

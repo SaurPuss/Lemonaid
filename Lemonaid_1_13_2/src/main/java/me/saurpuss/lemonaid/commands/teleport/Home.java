@@ -6,6 +6,7 @@ import me.saurpuss.lemonaid.utils.teleport.TeleportType;
 import me.saurpuss.lemonaid.utils.users.User;
 import me.saurpuss.lemonaid.utils.utility.PermissionMessages;
 import me.saurpuss.lemonaid.utils.utility.PlayerSearch;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -60,16 +61,49 @@ public class Home implements CommandExecutor, PlayerSearch, PermissionMessages {
                 if (user.homeCount() == 1) {
                     location = user.getFirstHome();
                     if (location != null) // fallback check
-                        plugin.getTeleportManager().teleportEvent(
+                        plugin.getTeleportManager().addRequest(
                                 new Teleport(player, null, location, TeleportType.HOME));
 
                     return true;
                 }
                 // player error
                 player.sendMessage(ChatColor.LIGHT_PURPLE + "Multiple homes found! Use " +
-                        ChatColor.DARK_PURPLE + "/homelist" + ChatColor.LIGHT_PURPLE +
-                        " do display your options.");
+                        ChatColor.DARK_PURPLE + "/homes" + ChatColor.LIGHT_PURPLE +
+                        " do display them.");
                 return true;
+            }
+
+            // Intercept command meant for other home options
+            if (args[0].equalsIgnoreCase("set") ||
+                    args[0].equalsIgnoreCase("s") ||
+                    args[0].equalsIgnoreCase("add")) {
+                // home set homename
+                // home set player:homename
+                String sethome = "sethome " + args[1];
+
+                return Bukkit.dispatchCommand(sender, sethome);
+            } else if (args[0].equalsIgnoreCase("del") ||
+                    args[0].equalsIgnoreCase("delete") ||
+                    args[0].equalsIgnoreCase("d")) {
+                // home del homename
+                // home del player:homename
+                String delhome = "delhome " + args[1];
+
+                return Bukkit.dispatchCommand(sender, delhome);
+            } else if (args[0].equalsIgnoreCase("update") ||
+                    args[0].equalsIgnoreCase("edit")) {
+                // home edit homename
+                // home edit player:homename
+                String updatehome = "updatehome " + args[1];
+
+                return Bukkit.dispatchCommand(sender, updatehome);
+            } else if (args[0].equalsIgnoreCase("list") ||
+                    (args[0].contains("list:") && sender.hasPermission("lemonaid.teleport.admin"))) {
+                // homes [self]
+                // homes player
+                String homes = "homes " + args[0];
+
+                return Bukkit.dispatchCommand(sender, homes);
             }
 
             // This is an admin attempting to teleport to a specific player's home
@@ -110,7 +144,7 @@ public class Home implements CommandExecutor, PlayerSearch, PermissionMessages {
             }
 
             // Start a TeleportTask with the TeleportManager
-            plugin.getTeleportManager().teleportEvent(
+            plugin.getTeleportManager().addRequest(
                     new Teleport(player, null, location, TeleportType.HOME));
             return true;
         } else {

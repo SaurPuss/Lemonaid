@@ -19,7 +19,8 @@ public class LogManager implements DateFormatting, PermissionMessages, Styling {
     private File cuffFile;
     private File muteFile;
     private File recapFile;
-    private FileConfiguration config;
+    private final FileConfiguration config;
+    private final String path;
 //    log:
 //      append: true
 //      to-recap: true
@@ -42,11 +43,13 @@ public class LogManager implements DateFormatting, PermissionMessages, Styling {
     public LogManager(Lemonaid plugin) {
         lemonaid = plugin;
         config = lemonaid.getConfig();
+        path = lemonaid.getDataFolder() + "log/"; // TODO check if valid
 
         // Set up (pre-existing) logs
-        cuffFile = new File(lemonaid.getDataFolder(), "cuffLog.txt");
-        muteFile = new File(lemonaid.getDataFolder(), "muteLog.txt");
-        recapFile = new File(lemonaid.getDataFolder(), "recapLog.txt");
+        cuffFile = new File(path, "cuffLog.txt");
+        muteFile = new File(path, "muteLog.txt");
+        recapFile = new File(path, "recapLog.txt");
+        // TODO add mkdirs!!
 
         cuffList = readLog(CUFF);
         muteList = readLog(MUTE);

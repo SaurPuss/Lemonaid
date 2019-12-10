@@ -164,6 +164,7 @@ public class Mute implements CommandExecutor, PlayerSearch, DateFormatting {
                     + duration.toMillis());
         }
 
+        user.setMuteReason(reason);
         lemonaid.getUserManager().updateUser(user);
 
         String log = ChatColor.BLUE + sender.getName() + ChatColor.RED + " muted " +

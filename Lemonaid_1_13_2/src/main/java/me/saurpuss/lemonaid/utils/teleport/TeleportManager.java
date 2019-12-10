@@ -1,7 +1,6 @@
 package me.saurpuss.lemonaid.utils.teleport;
 
 import me.saurpuss.lemonaid.Lemonaid;
-import me.saurpuss.lemonaid.utils.database.OldMySQL;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -51,7 +50,7 @@ public class TeleportManager {
         lemonaid = plugin;
         config = lemonaid.getConfig();
         playerRequests = new HashSet<>();
-        warpManager = OldMySQL.getWarps();
+        warpManager = lemonaid.getDbManager().getWarps();
     }
 
     /**
@@ -150,7 +149,7 @@ public class TeleportManager {
      *
      * @param tp Teleportation request object
      */
-    public void teleportEvent(Teleport tp) {
+    private void teleportEvent(Teleport tp) {
         Economy economy = lemonaid.getEconomy();
         if (economy.isEnabled()) {
             double cost = config.getDouble("teleport." + tp.getTpType().getName() + ".cost");
@@ -185,75 +184,73 @@ public class TeleportManager {
     public void addRequest(Teleport tp) {
         // Make sure this is a player to player request
         if (!tp.getTpType().isP2p()) {
-            lemonaid.getLogger().warning("Error TeleportToLocationMixup! " +
-                    "More info in plugin readme.txt!");
-            return;
-        }
-
-        // Check if there are no conflicting requests
-        Player tpClient = tp.getClient();
-        Player tpTarget = tp.getTarget();
-        for (Teleport t : playerRequests) {
-            // requester already has an outgoing request to this specific player regardless of type
-            if (t.getClient() == tpClient && t.getTarget() == tpTarget) {
-                // remove existing and try to add new below
-                playerRequests.remove(t);
-                break;
+            teleportEvent(tp);
+        } else {
+            // Check if there are no conflicting requests
+            Player tpClient = tp.getClient();
+            Player tpTarget = tp.getTarget();
+            for (Teleport t : playerRequests) {
+                // requester already has an outgoing request to this specific player regardless of type
+                if (t.getClient() == tpClient && t.getTarget() == tpTarget) {
+                    // remove existing and try to add new below
+                    playerRequests.remove(t);
+                    break;
+                }
+                // requester already has an outgoing request to tp to another player
+                if (t.getClient() == tpClient &&
+                        (t.getTpType() == TeleportType.TPA || t.getTpType() == TeleportType.PTP)) {
+                    // give warning and abort
+                    tpClient.sendMessage(ChatColor.RED + "You already have an outgoing " +
+                            "teleport request to another player pending. " +
+                            "Type: " + ChatColor.DARK_AQUA + "/tpacancel" +
+                            ChatColor.RED + " remove it, or wait for it to expire.");
+                    return;
+                }
+                if ((t.getClient() == tpTarget && // target has an outgoing request to tp to a player
+                        (t.getTpType() == TeleportType.TPA || t.getTpType() == TeleportType.PTP)) ||
+                        (t.getTarget() == tpTarget && // target needs to handle existing incoming request first
+                                (tp.getTpType() == TeleportType.TPAHERE || tp.getTpType() == TeleportType.PTPHERE))) {
+                    // give requester a warning to try again later and abort
+                    tpClient.sendMessage(ChatColor.RED + tp.getTarget().getName() +
+                            " already has a pending teleport request. Try again later.");
+                    tpTarget.sendMessage(ChatColor.YELLOW + tpClient.getName() + " tried to send you a " +
+                            "teleport request, but you have conflicting request pending.");
+                    return;
+                }
             }
-            // requester already has an outgoing request to tp to another player
-            if (t.getClient() == tpClient &&
-                    (t.getTpType() == TeleportType.TPA || t.getTpType() == TeleportType.PTP)) {
-                // give warning and abort
-                tpClient.sendMessage(ChatColor.RED + "You already have an outgoing " +
-                        "teleport request to another player pending. " +
-                        "Type: " + ChatColor.DARK_AQUA + "/tpacancel" +
-                        ChatColor.RED + " remove it, or wait for it to expire.");
+
+            // Check for cross-world and if it's allowed
+            if (tpClient.getWorld() != tpTarget.getWorld() &&
+                    !config.getBoolean("teleport." + tp.getTpType().getName() + ".cross-world")) {
+                tpClient.sendMessage(ChatColor.RED + "You cannot teleport " +
+                        "between worlds! Request canceled.");
                 return;
             }
-            if ((t.getClient() == tpTarget && // target has an outgoing request to tp to a player
-                    (t.getTpType() == TeleportType.TPA || t.getTpType() == TeleportType.PTP)) ||
-                    (t.getTarget() == tpTarget && // target needs to handle existing incoming request first
-                            (tp.getTpType() == TeleportType.TPAHERE || tp.getTpType() == TeleportType.PTPHERE))) {
-                // give requester a warning to try again later and abort
-                tpClient.sendMessage(ChatColor.RED + tp.getTarget().getName() +
-                        " already has a pending teleport request. Try again later.");
-                tpTarget.sendMessage(ChatColor.YELLOW + tpClient.getName() + " tried to send you a " +
-                        "teleport request, but you have conflicting request pending.");
-                return;
+
+            // align some pretty stuff
+            int delay = config.getInt("teleport." + tp.getTpType().getName() + ".request-timer");
+            if (delay == 0) delay = 30;
+            String request = tpClient.getName() + " wants to teleport to you.";
+
+            // Adjust if necessary
+            switch (tp.getTpType()) {
+                case TPAHERE:
+                case PTPHERE:
+                    request = tpClient.getName() + " wants you to teleport to them.";
             }
+
+            // Save request
+            playerRequests.add(tp);
+
+            // Confirm request existence to client and target
+            tpTarget.sendMessage(ChatColor.GOLD + request);
+            tpClient.sendMessage(ChatColor.GOLD + "Request sent to " + ChatColor.YELLOW + tpTarget.getName());
+
+            // schedule removal task
+            Bukkit.getScheduler().scheduleSyncDelayedTask(lemonaid, () -> {
+                tpClient.sendMessage(ChatColor.RED + "Teleport request expired!");
+                playerRequests.remove(tp);
+            }, delay * 20L);
         }
-
-        // Check for cross-world and if it's allowed
-        if (tpClient.getWorld() != tpTarget.getWorld() &&
-                !config.getBoolean("teleport." + tp.getTpType().getName() + ".cross-world")) {
-            tpClient.sendMessage(ChatColor.RED + "You cannot teleport " +
-                    "between worlds! Request canceled.");
-            return;
-        }
-
-        // align some pretty stuff
-        int delay = config.getInt("teleport." + tp.getTpType().getName() + ".request-timer");
-        if (delay == 0) delay = 30;
-        String request = tpClient.getName() + " wants to teleport to you.";
-
-        // Adjust if necessary
-        switch (tp.getTpType()) {
-            case TPAHERE:
-            case PTPHERE:
-                request = tpClient.getName() + " wants you to teleport to them.";
-        }
-
-        // Save request
-        playerRequests.add(tp);
-
-        // Confirm request existence to client and target
-        tpTarget.sendMessage(ChatColor.GOLD + request);
-        tpClient.sendMessage(ChatColor.GOLD + "Request sent to " + ChatColor.YELLOW + tpTarget.getName());
-
-        // schedule removal task
-        Bukkit.getScheduler().scheduleSyncDelayedTask(lemonaid, () -> {
-            tpClient.sendMessage(ChatColor.RED + "Teleport request expired!");
-            playerRequests.remove(tp);
-        }, delay * 20L);
     }
 }

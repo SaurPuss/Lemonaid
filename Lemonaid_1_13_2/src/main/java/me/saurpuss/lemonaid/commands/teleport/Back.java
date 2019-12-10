@@ -53,7 +53,7 @@ public class Back implements CommandExecutor, PermissionMessages {
                 return true;
             }
 
-            lemonaid.getTeleportManager().teleportEvent(
+            lemonaid.getTeleportManager().addRequest(
                     new Teleport(player, null, user.getLastLocation(), TeleportType.BACK));
         }
         else

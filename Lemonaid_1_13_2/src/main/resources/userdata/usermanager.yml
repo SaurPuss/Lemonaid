@@ -1,0 +1,9 @@
+### Header ###
+# save UUID as a key and the display name as a value for refernce to uuid.dat in the users folder
+
+
+
+
+users:
+  12348574578758475: 'Display name'
+  38483748374878734: 'Display name'

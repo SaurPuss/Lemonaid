@@ -1,7 +1,9 @@
 package me.saurpuss.lemonaid.utils.database;
 
 import me.saurpuss.lemonaid.utils.users.User;
+import org.bukkit.Location;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public abstract class DBManager {
@@ -21,8 +23,8 @@ public abstract class DBManager {
     abstract boolean removeHome();
 
     // Warp related methods
-    abstract boolean saveWarp();
-    abstract boolean updateWarp();
-    abstract boolean deleteWarp();
-
+    public abstract boolean saveWarp();
+    public abstract boolean updateWarp();
+    public abstract boolean deleteWarp();
+    public abstract HashMap<String, Location> getWarps();
 }

@@ -14,7 +14,7 @@ public class User {
 
     private UUID uuid, lastMessage;
     private long muteEnd;
-    private String nickname;
+    private String nickname, muteReason, cuffReason;
     private Location lastLocation;
     private boolean busy, cuffed;
     private HashMap<String, Location> homes;
@@ -29,6 +29,8 @@ public class User {
         lastMessage = null;
         busy = false;
         cuffed = false;
+        muteReason = null;
+        cuffReason = null;
         homes = new HashMap<>();
         ignored = new HashSet<>();
         setMaxHomes();
@@ -37,8 +39,8 @@ public class User {
     }
 
     public User(UUID uuid, long muteEnd, String nickname, Location lastLocation,
-                UUID lastMessage, boolean busy, boolean cuffed,
-                HashMap<String, Location> homes, HashSet<UUID> ignored) {
+                UUID lastMessage, boolean busy, boolean cuffed, String muteReason,
+                String cuffReason, HashMap<String, Location> homes, HashSet<UUID> ignored) {
         this.uuid = uuid;
         this.muteEnd = muteEnd;
         this.nickname = nickname;
@@ -46,6 +48,8 @@ public class User {
         this.lastMessage = lastMessage;
         this.busy = busy;
         this.cuffed = cuffed;
+        this.muteReason = muteReason;
+        this.cuffReason = cuffReason;
         this.homes = homes;
         this.ignored = ignored;
         setMaxHomes();
@@ -66,6 +70,10 @@ public class User {
     public void setBusy(boolean busy) { this.busy = busy; }
     public boolean isCuffed() { return cuffed; }
     public void setCuffed(boolean cuffed) { this.cuffed = cuffed; }
+    public String getMuteReason() { return muteReason; }
+    public void setMuteReason(String muteReason) { this.muteReason = muteReason; }
+    public String getCuffReason() { return cuffReason; }
+    public void setCuffReason(String cuffReason) { this.cuffReason = cuffReason; }
     public HashMap<String, Location> getHomes() { return homes; }
     public void setHomes(HashMap<String, Location> homes) { this.homes = homes;}
     public HashSet<UUID> getIgnored() { return ignored; }

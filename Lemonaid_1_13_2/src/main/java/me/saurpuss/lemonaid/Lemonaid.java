@@ -15,8 +15,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Lemonaid extends JavaPlugin {
 
+    // TODO add tab complete
+
     // This
-    public static Lemonaid instance;
+    private static Lemonaid instance;
 
     // Plugin Managers
     private static UserManager userManager;

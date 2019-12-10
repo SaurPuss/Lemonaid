@@ -50,10 +50,6 @@ public class Homes implements CommandExecutor, PlayerSearch {
 
             }
 
-
-
-
-
             return true;
         } else {
             // Console can list homes of a player
@@ -74,7 +70,7 @@ public class Homes implements CommandExecutor, PlayerSearch {
             User user = plugin.getUserManager().getUser(target.getUniqueId());
             sender.sendMessage(ChatColor.YELLOW + "Saved homes for " + target.getName() + ":");
             user.getHomes().forEach((home, location) -> sender.sendMessage(
-                    ChatColor.YELLOW + "- " + home + ChatColor.GOLD + " location: "
+                    ChatColor.YELLOW + "- " + home + ChatColor.GOLD + " world: "
                             + location.getWorld().toString() + " x: " + location.getBlockX() +
                             " y: " + location.getBlockY() + " z: " + location.getBlockZ()));
             return true;
